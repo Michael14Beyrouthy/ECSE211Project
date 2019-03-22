@@ -169,7 +169,7 @@ public class Project2 {
 		
 		nav.RegularTravelTo(.5*TILE_SIZE, .5*TILE_SIZE);
 		
-		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)+1-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
+		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
 		
 		//nav.RegularGoStraight(3*30.48);
 		
@@ -183,15 +183,21 @@ public class Project2 {
 		Sound.beep();
 		Sound.beep();
 		
-		nav.traverseTunnel();
 		//nav.TravelToLYup((double)(WifiInfo.SZR_UR_x), (double)(WifiInfo.SZR_UR_y));
-		
-		
-		
 		
 		//nav.RegularTravelTo(3.5, 5.5);
 		
-		//nav.traverseTunnel();
+		
+		nav.relocateBeforeTunnel();
+		
+/*=========================================================================================
+		
+		JAMIE, UNCOMMENT NEXT LINE
+		
+===========================================================================================
+*/
+		
+		nav.traverseTunnel();
 		
         //End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)

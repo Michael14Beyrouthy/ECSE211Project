@@ -709,7 +709,7 @@ public void TravelToLYdown(double targetx, double targety) {
 	   * @return
 	   */
 	
-	public void traverseTunnel() {
+	public void relocateBeforeTunnel() {
 		
 		this.moveBackward();
 		correct();
@@ -720,12 +720,10 @@ public void TravelToLYdown(double targetx, double targety) {
 		correct();
 		RegularGoStraight(0.5*Project2.TILE_SIZE-sensorDist);
 		this.turnTo(90);
-		
-		RegularGoStraight(4*Project2.TILE_SIZE);
-		
-		
-		
-		
+	}
+	
+	public void traverseTunnel() {
+		RegularGoStraight(3*Project2.TILE_SIZE);
 	}
 	
 	  public static int convertDistance(double radius, double distance) {
