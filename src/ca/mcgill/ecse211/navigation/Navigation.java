@@ -121,7 +121,7 @@ public class Navigation extends Thread{
 	    }
 	    
 	    double minAng = computeAngle(x, y);
-		System.out.println("        " + minAng);	
+		//System.out.println("        " + minAng);	
 			//turn to that angle
 		this.turnTo(minAng);
 	    

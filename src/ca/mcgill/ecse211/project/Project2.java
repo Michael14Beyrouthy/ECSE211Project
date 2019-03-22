@@ -59,23 +59,21 @@ public class Project2 {
 	public static void main(String[] args) throws OdometerExceptions {
 
 		WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();
+		wifi.getInfo();	
 		
-		
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		
-		
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
 		
 		int buttonChoice;
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
-		Display odometryDisplay = new Display(lcd); 
+		Display odometryDisplay = new Display(lcd, odometer); 
 		
 		//Odometer odometer2 = Odometer.getOdometer(leftMotor, rightMotor);
 
@@ -116,16 +114,34 @@ public class Project2 {
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
 
+		//lcd.clear();
+		
+//		leftMotor.flt();
+//		rightMotor.flt();
+//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+//		
+//		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
+//
+//		leftMotor.flt();
+//		rightMotor.flt();
+//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+//		
+//		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
+//
+//		leftMotor.flt();
+//		rightMotor.flt();
+//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+		
 		//System.out.println("hi");
 		
 		// Create ultrasonicsensor light localizer and navigation objects
-		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, true, usDistance);
+		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		/*Navigation nav = new Navigation(odometer, myColorStatusRight, myColorStatusLeft);*/
 		// start the ultrasonic localization
-		USLocalizer.localize();
+		//USLocalizer.localize();
 			// run the light localization
-		lightLocalizer.initialLocalize();
+		//lightLocalizer.initialLocalize();
 		
 		/*try {
 			odoThread.wait();
@@ -148,26 +164,27 @@ public class Project2 {
 		
 		//Search search = new Search
 		
-		nav.turnTo(45);
-		nav.RegularGoStraight(TILE_SIZE*Math.sqrt(2)/2);
+		/*nav.turnTo(45);
+		nav.RegularGoStraight(TILE_SIZE*Math.sqrt(2)/2);*/
 		
-		//nav.RegularTravelTo(1.5*TILE_SIZE, 1.5*TILE_SIZE);
+		nav.RegularTravelTo(.5*TILE_SIZE, .5*TILE_SIZE);
 		
-		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)+1-0.5, (double)(WifiInfo.TNR_LL_y)-1+0.5);
+		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)+1-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
 		
 		//nav.RegularGoStraight(3*30.48);
 		
+		
+		
+		//nav.TravelToLYdown((double)(WifiInfo.SZR_LL_x), (double)(WifiInfo.SZR_LL_y));
+		
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		
 		nav.traverseTunnel();
-		
-		nav.TravelToLYdown((double)(WifiInfo.SZR_LL_x), (double)(WifiInfo.SZR_LL_y));
-		
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		
-		nav.TravelToLYup((double)(WifiInfo.SZR_UR_x), (double)(WifiInfo.SZR_UR_y));
+		//nav.TravelToLYup((double)(WifiInfo.SZR_UR_x), (double)(WifiInfo.SZR_UR_y));
 		
 		
 		

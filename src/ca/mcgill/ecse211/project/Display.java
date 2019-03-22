@@ -23,8 +23,8 @@ public class Display implements Runnable {
    * @param lcd
    * @throws OdometerExceptions 
    */
-  public Display(TextLCD lcd) throws OdometerExceptions {
-    odo = Odometer.getOdometer();
+  public Display(TextLCD lcd, Odometer odo) throws OdometerExceptions {
+    this.odo = odo;//Odometer.getOdometer();
     this.lcd = lcd;
   }
 
@@ -35,8 +35,8 @@ public class Display implements Runnable {
    * @param timeout
    * @throws OdometerExceptions 
    */
-  public Display(TextLCD lcd, long timeout) throws OdometerExceptions {
-    odo = Odometer.getOdometer();
+  public Display(TextLCD lcd, long timeout, Odometer odo) throws OdometerExceptions {
+    this.odo = odo;//Odometer.getOdometer();
     this.timeout = timeout;
     this.lcd = lcd;
   }

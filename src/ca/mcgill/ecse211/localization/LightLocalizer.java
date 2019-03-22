@@ -19,8 +19,8 @@ public class LightLocalizer {
 	private final int ROTATE_SPEED;
 	private final static double TILE_SIZE = 30.48;
 	private final static double SENSOR_LENGTH = 6.5;
-	public final double WHEEL_RAD = 2.08;
-	public final double TRACK = 13.69;
+	public final double WHEEL_RAD = 2.09;
+	public final double TRACK = 13.75;
 	private Odometer odometer;
 
 	//private static RobotController robot;
@@ -72,14 +72,12 @@ public class LightLocalizer {
 		this.travelDist(-SENSOR_LENGTH,200);
 
 		this.turnBy(90, false); 
-		
-		odometer.setXYT(0.0, 0.0, 0.0);
 
 		//Sound.beep();
 		Sound.beep();
 		Sound.beep();
 		
-		odometer.setXYT(0.0, 0.0, 0.0);
+		odometer.setXYT(30.48, 30.48, 0.0);
 		Sound.buzz();
 		
 		return;

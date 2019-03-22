@@ -29,7 +29,7 @@ public class Odometer extends OdometerData implements Runnable {
   /**
    * Wheel radius (cm)
    */
-	private static final double WHEEL_RAD = 2.2;
+	private static final double WHEEL_RAD = 2.09;
   /**
    * Odometer update period (ms)
    */
@@ -187,13 +187,13 @@ public class Odometer extends OdometerData implements Runnable {
 	  y=Yposition;
   }
   public double getY() {
-	  return y;
+	  return getXYT()[1];
   }
   public double getX() {
-	  return x;
+	  return getXYT()[0];
   }
   public double getTheta() {
-	  return theta;
+	  return getXYT()[2];
   }
 
   // method used to instantiate motors in future constructors
