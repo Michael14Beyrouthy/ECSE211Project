@@ -53,7 +53,7 @@ public class Project2 {
 	public static final double WHEEL_RAD = 2.09;
 	public static final double TRACK = 13.75;
 	public static final double TILE_SIZE = 30.48;
-	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 74;
+	public static final int FORWARD_SPEED = 400, ROTATE_SPEED = 120;
 	
 
 	public static void main(String[] args) throws OdometerExceptions {
@@ -188,7 +188,7 @@ public class Project2 {
 		//nav.RegularTravelTo(3.5, 5.5);
 		
 		
-		nav.relocateBeforeTunnel();
+		//nav.relocateBeforeTunnel();
 		
 /*=========================================================================================
 		

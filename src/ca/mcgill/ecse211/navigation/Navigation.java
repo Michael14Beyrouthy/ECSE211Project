@@ -127,8 +127,8 @@ public class Navigation extends Thread{
 	    
 	    //turnTo(deltaTheta);
 
-	    leftMotor.setSpeed(150);
-	    rightMotor.setSpeed(150);
+	    leftMotor.setSpeed(400);
+	    rightMotor.setSpeed(400);
 	    
 	    RegularGoStraight(distance); 
 	   
@@ -148,8 +148,8 @@ public class Navigation extends Thread{
 */
 	
 	public void RegularGoStraight(double distance) {
-		leftMotor.setSpeed(200);
-		rightMotor.setSpeed(200);
+		leftMotor.setSpeed(325);
+		rightMotor.setSpeed(325);
 		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), true);
 	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
 	}
@@ -222,8 +222,8 @@ public class Navigation extends Thread{
 		boolean left = false;
 		boolean right = false;
 		
-		leftMotor.setSpeed(200);
-		rightMotor.setSpeed(200);
+		leftMotor.setSpeed(400);
+		rightMotor.setSpeed(400);
 		
 		/*leftMotor.forward();
 		rightMotor.forward();*/
@@ -272,8 +272,8 @@ public class Navigation extends Thread{
 		
 		isNavigatingLY2 = true;
 		
-		leftMotor.setSpeed(200);
-		rightMotor.setSpeed(200);
+		leftMotor.setSpeed(400);
+		rightMotor.setSpeed(400);
 		
 		//leftMotor.forward();
 		//rightMotor.forward();
@@ -356,8 +356,8 @@ public void TravelToLYdown(double targetx, double targety) {
 *==============================================================================================================
 */
 		
-		leftMotor.setSpeed(200);
-		rightMotor.setSpeed(200);
+		leftMotor.setSpeed(325);
+		rightMotor.setSpeed(325);
 			
 		while(isNavigatingLY1) {
 		
@@ -399,8 +399,8 @@ public void TravelToLYdown(double targetx, double targety) {
 *==============================================================================================================
 */
 		
-		leftMotor.setSpeed(200);
-		rightMotor.setSpeed(200);
+		leftMotor.setSpeed(325);
+		rightMotor.setSpeed(325);
 		
 		while(isNavigatingLY2) {
 			while (counterX2<XLinesToCross)
@@ -704,11 +704,13 @@ public void TravelToLYdown(double targetx, double targety) {
 	
 	public void relocateBeforeTunnel() {
 		
-		this.moveBackward();
+		/*this.moveBackward();
 		correct();
-		RegularGoStraight(0.5*Project2.TILE_SIZE-sensorDist);
+		RegularGoStraight(0.5*Project2.TILE_SIZE-sensorDist);*/
 		this.turnTo(270);
 		
+		leftMotor.setSpeed(350);
+		rightMotor.setSpeed(350);
 		this.moveBackward();
 		correct();
 		RegularGoStraight(0.5*Project2.TILE_SIZE-sensorDist);
