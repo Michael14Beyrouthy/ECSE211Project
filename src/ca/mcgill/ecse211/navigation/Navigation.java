@@ -140,9 +140,16 @@ public class Navigation extends Thread{
 
 	  }
 	
+/*=============================================================================================================
+* 
+* SET SPEED HERE (in the method below) (1/3)
+*
+*==============================================================================================================
+*/
+	
 	public void RegularGoStraight(double distance) {
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
+		leftMotor.setSpeed(200);
+		rightMotor.setSpeed(200);
 		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), true);
 	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
 	}
@@ -342,12 +349,16 @@ public void TravelToLYdown(double targetx, double targety) {
 		boolean left = false;
 		boolean right = false;
 		
+/*=============================================================================================================
+* 
+* SET SPEED HERE (2/3)
+*
+*==============================================================================================================
+*/
+		
 		leftMotor.setSpeed(200);
 		rightMotor.setSpeed(200);
-		
-		/*leftMotor.forward();
-		rightMotor.forward();*/
-		
+			
 		while(isNavigatingLY1) {
 		
 			while (counterY2<YLinesToCross)
@@ -361,24 +372,13 @@ public void TravelToLYdown(double targetx, double targety) {
 			counterY++;
 			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
 		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
-			//System.out.println("hi");
 		    counterY2++;
 			}
-		
-		//consistently get current position and update distance to destination
-			
+					
 		    RegularGoStraight(extraDistanceY*Project2.TILE_SIZE-sensorDist); 
 		    
 		    isNavigatingLY1 = false;
 			
-			/*double distance = targety * Project2.TILE_SIZE - odometer.getY();
-		
-			//set isNavigating to false once destination reached
-		if (distance < 1) {
-			leftMotor.stop();
-			rightMotor.stop();
-			isNavigatingLY1 = false;
-		}*/
 	}
 
 		try {
@@ -392,11 +392,15 @@ public void TravelToLYdown(double targetx, double targety) {
 		
 		isNavigatingLY2 = true;
 		
+/*=============================================================================================================
+* 
+* SET SPEED HERE (3/3)
+*
+*==============================================================================================================
+*/
+		
 		leftMotor.setSpeed(200);
 		rightMotor.setSpeed(200);
-		
-		//leftMotor.forward();
-		//rightMotor.forward();
 		
 		while(isNavigatingLY2) {
 			while (counterX2<XLinesToCross)
@@ -413,21 +417,10 @@ public void TravelToLYdown(double targetx, double targety) {
 			//System.out.println("hi");
 		    counterX2++;
 			}
-		
-		//consistently get current position and update distance to destination
 			
 		    RegularGoStraight(extraDistanceX*Project2.TILE_SIZE-sensorDist); 
 		    
 		    isNavigatingLY2 = false;
-			
-			/*double distance = targetx * Project2.TILE_SIZE - odometer.getX();
-		
-			//set isNavigating to false once destination reached
-		if (distance < 1) {
-			leftMotor.stop();
-			rightMotor.stop();
-			isNavigatingLY1 = false;
-		}*/
 		
 		}
 		
