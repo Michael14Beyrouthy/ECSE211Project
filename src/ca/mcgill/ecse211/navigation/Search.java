@@ -121,11 +121,21 @@ public class Search implements UltrasonicController, NavigationController{
 		rightMotor.stop();
 		
 	}*/
-	public void searchcans(int SZR_LL[], int SZR_UR[], int targetcolor) {
+	
+	
+	/**
+	 * 1 is green, 2 is red, 3 is yellow, 4 is blue 
+	 * @param SZR_LL
+	 * @param SZR_UR
+	 * @param targetcolor
+	 */
+	//public void searchcans(int SZR_LL[], int SZR_UR[], int targetcolor) {
+	public void searchcans() {
 		// Travel to each of the way-points
 		
-		int column=SZR_UR[0]-SZR_LL[0];
-		int row=SZR_UR[1]-SZR_LL[1];
+		int column=5;//width
+		int row=3; //length
+		int targetColor = 1; ///color of can
 		
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
