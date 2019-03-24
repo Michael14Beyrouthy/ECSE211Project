@@ -15,6 +15,7 @@ import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.localization.*;
 import ca.mcgill.ecse211.navigation.Navigation;
+import ca.mcgill.ecse211.navigation.Search;
 //import ca.mcgill.ecse211.weighing.*;
 
 
@@ -41,8 +42,8 @@ public class Project2 {
 	private static final SensorModes myColorRight = new EV3ColorSensor(portColourRight);
 	private static final SampleProvider myColorStatusRight = myColorRight.getMode("RGB");
 	
-	/*private static final EV3ColorSensor leftLight = new EV3ColorSensor(LocalEV3.get().getPort("S1"));
-	private static final EV3ColorSensor rightLight = new EV3ColorSensor(LocalEV3.get().getPort("S4"));*/
+	private static final EV3ColorSensor leftLight = new EV3ColorSensor(LocalEV3.get().getPort("S1"));
+	private static final EV3ColorSensor rightLight = new EV3ColorSensor(LocalEV3.get().getPort("S4"));
 	
 	
 	private static LightSensorController leftLS = new LightSensorController(myColorLeft);
@@ -53,7 +54,7 @@ public class Project2 {
 	public static final double WHEEL_RAD = 2.09;
 	public static final double TRACK = 13.75;
 	public static final double TILE_SIZE = 30.48;
-	public static final int FORWARD_SPEED = 400, ROTATE_SPEED = 120;
+	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 74;
 	
 
 	public static void main(String[] args) throws OdometerExceptions {
@@ -167,6 +168,12 @@ public class Project2 {
 		/*nav.turnTo(45);
 		nav.RegularGoStraight(TILE_SIZE*Math.sqrt(2)/2);*/
 		
+		
+		
+		
+		//================================== Used for testing tunnel traversal =========================================================
+		/*
+		
 		nav.RegularTravelTo(.5*TILE_SIZE, .5*TILE_SIZE);
 		
 		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
@@ -190,16 +197,26 @@ public class Project2 {
 		
 		//nav.relocateBeforeTunnel();
 		
-/*=========================================================================================
-		
-		JAMIE, UNCOMMENT NEXT LINE
-		
-===========================================================================================
-*/
+
 		
 		nav.traverseTunnel();
 		
-        //End process
+		*/
+		//===============================================End of area for testing tunnel traversal ====================================================================
+        
+		
+		//===============================================Used for testing search =====================================================================================
+		
+		Search search = new Search(rightMotor, leftMotor,
+				odometer,  ultrasonicSensor,  leftLight,  rightLight);
+		//Search search = new Search
+	
+
+		
+		//========================================End of testing for search ===========================================================================================
+		
+		
+		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
 		System.exit(0);
