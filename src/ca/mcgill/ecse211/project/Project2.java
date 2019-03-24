@@ -209,6 +209,7 @@ public class Project2 {
 		
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  ultrasonicSensor,  leftLight,  rightLight);
+	
 		//Search search = new Search
 	
 
