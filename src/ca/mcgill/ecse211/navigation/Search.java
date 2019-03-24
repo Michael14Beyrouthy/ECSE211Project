@@ -17,6 +17,7 @@ import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
 
+//change searchcans method 
 public class Search implements UltrasonicController, NavigationController{
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
@@ -33,8 +34,8 @@ public class Search implements UltrasonicController, NavigationController{
 	private double rDistance=0;
 	private double rAngle=0;
 	
-	private EV3ColorSensor lcolorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S1"));
-	private EV3ColorSensor rcolorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S4"));
+	private EV3ColorSensor lcolorSensor;
+	private EV3ColorSensor rcolorSensor;
 	private float[] lRGBValues = new float[3];			//stores the sample retruned by the color sensor
 	private float lreferenceBrightness;				//initial brightness level returned by the color sensor
 	private float lbrightness;							//brightness level returned by the color sensor, used to identify black lines
@@ -46,11 +47,6 @@ public class Search implements UltrasonicController, NavigationController{
 	private float rbrightness;							//brightness level returned by the color sensor, used to identify black lines
 	private static final long CORRECTION_PERIOD = 10; // odometer correction update period in ms
 
-	
-	private static int SZR_UR_x =3;
-	private static int SZR_UR_y =3;
-	private static int SZR_LL_x =0;
-	private static int SZR_LL_y =0;
 	private int targetcolor = 0;
 	private int step=0;
 	
@@ -70,10 +66,13 @@ public class Search implements UltrasonicController, NavigationController{
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odometer = odometer;
+		this.lcolorSensor=left;
+		this.rcolorSensor=right;
+		
 	}
 
 
-	public void run() {
+/*	public void run() {
 		try {
 			Thread.sleep(4000);
 		} catch (InterruptedException e) {
@@ -120,23 +119,18 @@ public class Search implements UltrasonicController, NavigationController{
 		}
 		leftMotor.stop();
 		rightMotor.stop();
-	}
+		
+	}*/
 	public void searchcans(int SZR_LL[], int SZR_UR[], int targetcolor) {
 		// Travel to each of the way-points
-		SZR_UR_x=SZR_UR[0];
-		SZR_UR_y=SZR_UR[1];
 		
-		SZR_LL_x=SZR_LL[0];
-		SZR_LL_y=SZR_LL[1];
-		
-		int column=SZR_UR_x-SZR_LL_x;
-		int row=SZR_UR_y-SZR_LL_y;
+		int column=SZR_UR[0]-SZR_LL[0];
+		int row=SZR_UR[1]-SZR_LL[1];
 		
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
 			lightcorrection();
-			System.out.println(i+"  "+j);
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
@@ -172,7 +166,6 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 
 	public void searching(int step) {
-		System.out.println(step);
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
 			turnRight(10);
@@ -219,22 +212,25 @@ public class Search implements UltrasonicController, NavigationController{
 		rightMotor.rotate(convertDistance(25),false);
 		int color=-1;
 		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor();
 		if(cc.identifyColor()==targetcolor) {
+			clawMotor.setSpeed(ROTATE_SPEED);
+			clawMotor.rotate(convertAngle(50),false);
+			backtopath(rDistance);
+		}
+		else {
+			leftMotor.rotate(convertDistance(-10),true);
+			rightMotor.rotate(convertDistance(-10),false);
+			clawMotor.setSpeed(ROTATE_SPEED);
+			clawMotor.rotate(convertAngle(50),false);	
+			backtopath(rDistance-10);
+		}
+		/*if(cc.identifyColor()==targetcolor) {
+			clawMotor.setSpeed(ROTATE_SPEED);
+			clawMotor.rotate(convertAngle(50),false);		
 			RegularTravelTo((double)SZR_UR_x,
 		(double)SZR_UR_y);
-		}
+		}*/
 		
-		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(50),false);		
-		
-		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(-50),false);		
-		
-		backtopath(rDistance);
-		
-		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(50),false);		
 		
 	}
 	public void lightcorrection() {
@@ -294,8 +290,6 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 
 	void backtopath(double distance) {
-		Sound.beep();
-		Sound.beep();
 		System.out.println("r  " +distance);
 		leftMotor.rotate(-convertDistance(distance+7),true);
 		rightMotor.rotate(-convertDistance(distance+7),false);
@@ -452,3 +446,4 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 	
 }
+
