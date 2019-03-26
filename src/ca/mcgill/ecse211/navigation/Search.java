@@ -134,8 +134,8 @@ public class Search implements UltrasonicController, NavigationController{
 	public void searchcans() {
 		// Travel to each of the way-points
 		
-		int column=5;//width
-		int row=3; //length
+		int column=SZR_UR_x-SZR_LL_y;
+		int row=SZR_UR_x-SZR_LL_y;
 		int targetColor = 1; ///color of can
 
 
