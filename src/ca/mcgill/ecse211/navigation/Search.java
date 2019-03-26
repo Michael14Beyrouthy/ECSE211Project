@@ -1,7 +1,9 @@
 package ca.mcgill.ecse211.navigation;
+import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.project.Project2;
 import ca.mcgill.ecse211.project.UltrasonicController;
+import ca.mcgill.ecse211.project.WifiInfo;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -20,8 +22,8 @@ import lejos.hardware.sensor.SensorModes;
 public class Search implements UltrasonicController, NavigationController{
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));;
-	private EV3MediumRegulatedMotor sensorMotor=new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
+	private EV3LargeRegulatedMotor clawMotor;
+	private EV3MediumRegulatedMotor sensorMotor;
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] = theta (deg)
 	private static double currentPosition[] = new double[3];
 	private Odometer odometer;
@@ -32,9 +34,8 @@ public class Search implements UltrasonicController, NavigationController{
 	boolean isAvoiding = false; // variable to track when robot is avoiding an obstacle
 	private double rDistance=0;
 	private double rAngle=0;
+	private double color = 0.30;
 	
-	private EV3ColorSensor lcolorSensor;
-	private EV3ColorSensor rcolorSensor;
 	private float[] lRGBValues = new float[3];			//stores the sample retruned by the color sensor
 	private float lreferenceBrightness;				//initial brightness level returned by the color sensor
 	private float lbrightness;							//brightness level returned by the color sensor, used to identify black lines
@@ -46,8 +47,14 @@ public class Search implements UltrasonicController, NavigationController{
 	private float rbrightness;							//brightness level returned by the color sensor, used to identify black lines
 	private static final long CORRECTION_PERIOD = 10; // odometer correction update period in ms
 
-	private int targetcolor = 0;
+	private int SZR_UR_x=WifiInfo.SZR_UR_x;
+	private int SZR_UR_y=WifiInfo.SZR_UR_y;
+	private int SZR_LL_x=WifiInfo.SZR_LL_x;
+	private int SZR_LL_y=WifiInfo.SZR_LL_y;
+	private int targetcolor=3;
 	private int step=0;
+	private static LightSensorController leftLS;
+	private static LightSensorController rightLS;
 	
 	private int total =0;
 	private ColorCalibration cc;
@@ -55,7 +62,8 @@ public class Search implements UltrasonicController, NavigationController{
 	private boolean isNavigating = false;
 	
 	public Search( EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor leftMotor,
-			Odometer odometer, SensorModes usSensor, EV3ColorSensor left, EV3ColorSensor right) {
+			Odometer odometer, SensorModes usSensor,  LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor clawMotor,EV3MediumRegulatedMotor sensorMotor 
+	) {
 		// Reset the motors
 		leftMotor.stop();
 		rightMotor.stop();
@@ -65,9 +73,10 @@ public class Search implements UltrasonicController, NavigationController{
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odometer = odometer;
-		this.lcolorSensor=left;
-		this.rcolorSensor=right;
-		
+		this.leftLS=leftLS;
+		this.rightLS=rightLS;
+		this.sensorMotor=sensorMotor;
+		this.clawMotor=clawMotor;
 	}
 
 
@@ -127,11 +136,10 @@ public class Search implements UltrasonicController, NavigationController{
 	 * @param SZR_UR
 	 * @param targetcolor
 	 */
-	public void searchcans(int SZR_LL[], int SZR_UR[], int targetcolor) {
+	public void searchcans() {
 		// Travel to each of the way-points
-		
-		int column=SZR_UR[0]-SZR_LL[0];
-		int row=SZR_UR[1]-SZR_LL[1];
+		int column=SZR_UR_x-SZR_LL_y;
+		int row=SZR_UR_x-SZR_LL_y;
 		
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
@@ -253,11 +261,6 @@ public class Search implements UltrasonicController, NavigationController{
 		long correctionStart, correctionEnd;
 
 	    //get the first value of the tile 'brightness' to use a reference
-	    lcolorSensor.getRedMode().fetchSample(lRGBValues,0);
-	    lreferenceBrightness = lRGBValues[0];
-	    
-	    rcolorSensor.getRedMode().fetchSample(rRGBValues,0);
-	    rreferenceBrightness = rRGBValues[0];
 	    for(int i=0;i<4;i++) {
 	    	leftstop=false;
 	    	rightstop=false;
@@ -268,20 +271,14 @@ public class Search implements UltrasonicController, NavigationController{
 	    	
 	    while (true) {
 	      correctionStart = System.currentTimeMillis();
-
-	      lcolorSensor.getRedMode().fetchSample(lRGBValues,0); //retrieve the current 'brightness' level
-	      lbrightness = lRGBValues[0];
-	      
-	      rcolorSensor.getRedMode().fetchSample(rRGBValues,0); //retrieve the current 'brightness' level
-	      rbrightness = rRGBValues[0];
-	      
+      
 	      //If the current brightness differs from the reference brightness value by a value greater than the threshold
 	      //the EV3 robot is traveling over a black line. 
-	      if(Math.abs(lbrightness-lreferenceBrightness)*100 > diffThreshold) {
+	      if(leftLS.fetch() < color) {
 	    	leftMotor.stop();
 	    	leftstop=true;
 	      }
-	      if(Math.abs(rbrightness-rreferenceBrightness)*100 > diffThreshold) {
+	      if(rightLS.fetch() < color) {
 	    	  rightMotor.stop();
 	    	  rightstop=true;
 	    	  

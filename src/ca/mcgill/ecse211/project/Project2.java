@@ -5,6 +5,7 @@ import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -41,10 +42,9 @@ public class Project2 {
 	private static final Port portColourRight = LocalEV3.get().getPort("S4");
 	private static final SensorModes myColorRight = new EV3ColorSensor(portColourRight);
 	private static final SampleProvider myColorStatusRight = myColorRight.getMode("RGB");
-	
-	private static final EV3ColorSensor leftLight = new EV3ColorSensor(LocalEV3.get().getPort("S1"));
-	private static final EV3ColorSensor rightLight = new EV3ColorSensor(LocalEV3.get().getPort("S4"));
-	
+		
+	private static final EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));;
+	private static final EV3MediumRegulatedMotor sensorMotor=new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
 	
 	private static LightSensorController leftLS = new LightSensorController(myColorLeft);
 	private static LightSensorController rightLS = new LightSensorController(myColorRight);
@@ -214,8 +214,8 @@ public class Project2 {
 		//===============================================Used for testing search =====================================================================================
 		
 		Search search = new Search(rightMotor, leftMotor,
-				odometer,  ultrasonicSensor,  leftLight,  rightLight);
-	
+				odometer,  ultrasonicSensor,  leftLS,  rightLS, clawMotor, sensorMotor);
+	    search.searchcans();
 		//Search search = new Search
 	
 
