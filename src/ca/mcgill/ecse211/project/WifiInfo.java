@@ -3,25 +3,29 @@ package ca.mcgill.ecse211.project;
 import java.util.Map;
 import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 
-
-public class WifiInfo {
 /**
+ * WifiInfo class, used to connect robot to a server and pass it parameters
+ * @author micha
+ *
+ */
+public class WifiInfo {
+/*
  * The server IP to connect to
  * During the demo and final demo, it is "192.168.2.3"
  * When we test, it is the laptop's IP assigned by the DPM router (get from network settings on laptop)
  */
- private static final String SERVER_IP = "192.168.2.15";
- /**
+ private static final String SERVER_IP = "192.168.2.34";
+ /*
   * Our team number
   */
  private static final int TEAM_NUMBER = 5;
 
-/**
+/*
  * Enable/diable printing of debug info from Wifi class
  */
  private static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
  
- /**
+ /*
   * An int array to store the parameters
   */
  private static int[] parameters=new int[18];
@@ -42,7 +46,7 @@ public class WifiInfo {
  
  
  /**
-  * Constructor
+  * Class Constructor
   */
  public WifiInfo() {
    

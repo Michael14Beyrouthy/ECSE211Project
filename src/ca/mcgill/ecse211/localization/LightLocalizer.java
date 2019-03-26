@@ -12,6 +12,11 @@ import ca.mcgill.ecse211.project.*;
 import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.navigation.*;
 
+/**
+ * LightLocalizer class, performs Light Localization once US Localization is complete
+ * @author Hongshuo
+ *
+ */
 public class LightLocalizer {
 
 	//Constants
@@ -33,7 +38,7 @@ public class LightLocalizer {
 
 	private double color = 0.30;
 	/**
-	 * This is a constructor for this lightLocalizer class
+	 * Constructor for this class
 	 * @param odometer odometer of the robot (singleton)
 	 * @param leftLS left front light sensor that is used
 	 * @param rightLS right front light sensor that is used
@@ -50,7 +55,7 @@ public class LightLocalizer {
 	}
 
 	/**
-	 * This method localizes the robot to the starting point using the two front light sensors
+	 * Localizes the robot to the starting point using the two light sensors
 	 */
 	public void initialLocalize() {
 
@@ -82,6 +87,10 @@ public class LightLocalizer {
 		
 		return;
 	}
+	
+	/**
+	 * Moves robot forward 
+	 */
 	public void moveForward() {
 		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 		leftMotor.startSynchronization();
@@ -90,13 +99,22 @@ public class LightLocalizer {
 		leftMotor.endSynchronization();
 	}
 
-	public void travelDist(double distance,int speed) {
+	/**
+	 * Makes the robot travel a certain distance with a certain speed
+	 * @param distance
+	 * @param speed
+	 */
+	public void travelDist(double distance, int speed) {
 
 		resetMotors();
 		setSpeeds(speed,speed);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, distance), true);
 		rightMotor.rotate(convertDistance(WHEEL_RAD, distance), false);
 	}
+	
+	/**
+	 * Resets the motors, setting their acceleration to a default 3000
+	 */
 	public void resetMotors() {
 		// reset the motor
 		leftMotor.stop(true);
@@ -109,13 +127,32 @@ public class LightLocalizer {
 		} catch (InterruptedException e) {
 		}
 	}
+	
+	/**
+	 * Sets the speeds of the motors
+	 * @param leftSpeed
+	 * @param rightSpeed
+	 */
 	public void setSpeeds(int leftSpeed, int rightSpeed) {
 		leftMotor.setSpeed(leftSpeed);
 		rightMotor.setSpeed(rightSpeed);
 	}
+	
+	/**
+	 * Converts a distance in cm to the corresponding wheel rotations required
+	 * @param radius
+	 * @param distance
+	 * @return converted distance
+	 */
 	public static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
+	
+	/**
+	 * Turns the robot by a certain angle
+	 * @param dTheta
+	 * @param clockwise
+	 */
 	public void turnBy(double dTheta, boolean clockwise) {
 		if(clockwise) {
 			leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, dTheta), true);
@@ -126,9 +163,23 @@ public class LightLocalizer {
 			rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, dTheta), false);
 		}
 	}
+	
+	/**
+	 * Converts an angle in degrees to the corresponding wheel rotations required
+	 * @param radius
+	 * @param width
+	 * @param angle
+	 * @return converted angle
+	 */
 	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
+	
+	/**
+	 * Stops the robot from moving
+	 * @param stopLeft
+	 * @param stopRight
+	 */
 	public void stopMoving(boolean stopLeft, boolean stopRight) {
 		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 		leftMotor.startSynchronization();
@@ -138,12 +189,16 @@ public class LightLocalizer {
 			rightMotor.stop();
 		leftMotor.endSynchronization();
 	}
+	
+	/**
+	 * Stops the robot from moving
+	 */
 	public void stopMoving() {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 	}
 	/**
-	 * This method serves to correct the orientation of the robot with line detection
+	 * corrects the orientation of the robot with line detection
 	 */
 	private void correct() {
 

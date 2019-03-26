@@ -1,20 +1,13 @@
-/**
- * This class implements the odometer logic.
- * 
- * @author Rodrigo Silva
- * @author Dirk Dubois
- * @author Derek Yu
- * @author Karim El-Baba
- * @author Michael Smith
- * @author Jamie McLeish
- */
-
 package ca.mcgill.ecse211.odometer;
-
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 
+/**
+ * Odometer class, implements odometry logic
+ * @author Jamie
+ *
+ */
 public class Odometer extends OdometerData implements Runnable {
 
   private OdometerData odoData;
@@ -22,15 +15,15 @@ public class Odometer extends OdometerData implements Runnable {
   private EV3LargeRegulatedMotor leftMotor;
   private EV3LargeRegulatedMotor rightMotor;
  
-  /**
+  /*
    * Track width (distance between the center line of the two wheels, cm)
    */
 	private static final double TRACK = 13.75; 	
-  /**
+  /*
    * Wheel radius (cm)
    */
 	private static final double WHEEL_RAD = 2.09;
-  /**
+  /*
    * Odometer update period (ms)
    */
   private static final long ODOMETER_PERIOD = 25;
@@ -47,9 +40,7 @@ public class Odometer extends OdometerData implements Runnable {
   private int currRightTachoCount;		// Current right motor tachometer count
   
   /**
-   * This is the default constructor of this class. It initiates all motors and variables once. It
-   * cannot be accessed externally.
-   * 
+   * Class constructor, initiates all motors and variables once.
    * @param leftMotor
    * @param rightMotor
    * @throws OdometerExceptions
@@ -68,11 +59,10 @@ public class Odometer extends OdometerData implements Runnable {
   }
 
   /**
-   * This method is meant to ensure only one instance of the odometer is used throughout the code.
-   * 
+   * Ensures only one instance of the odometer is used throughout the code.
    * @param leftMotor
    * @param rightMotor
-   * @return new or existing Odometer Object
+   * @return odometer object if existing, new odometer if not
    * @throws OdometerExceptions
    */
   public synchronized static Odometer getOdometer(EV3LargeRegulatedMotor leftMotor,
@@ -88,10 +78,9 @@ public class Odometer extends OdometerData implements Runnable {
   }
 
   /**
-   * This method is meant to return the existing Odometer Object. It is meant to be used only if an
-   * odometer object has been created
-   * 
-   * @return error if no previous odometer exists
+   * Returns the existing Odometer Object.
+   * @return odometer if existing, throws OdometerException if not
+   * @throws OdometerExceptions
    */
   public synchronized static Odometer getOdometer() throws OdometerExceptions {
 
@@ -103,7 +92,7 @@ public class Odometer extends OdometerData implements Runnable {
   }
 
   /**
-   * This method is where the logic for the odometer runs.
+   * run() method for thread
    */
   public void run() {
     long updateStart, updateEnd;
@@ -173,31 +162,49 @@ public class Odometer extends OdometerData implements Runnable {
   }
   
   /**
-   * Method to manually set the x-axis position of the robot. Used for correction.
+   * Manually set the x-axis position of the robot. Used for correction.
    * @param Xposition
    */
   public void setXCorr(double Xposition) {
 	  x=Xposition;
   }
   /**
-   * Method to manually set the y-axis position of the robot. Used for correction.
+   * Manually set the y-axis position of the robot. Used for correction.
    * @param Yposition
    */
   public void setYCorr(double Yposition) {
 	  y=Yposition;
   }
+  
+  /**
+   * Gets Y value of odometer
+   * @return Y value of odometer
+   */
   public double getY() {
 	  return getXYT()[1];
   }
+  
+  /**
+   * Gets X value of odometer
+   * @return X value of odometer
+   */
   public double getX() {
 	  return getXYT()[0];
   }
+  
+  /**
+   * Gets Theta value of odometer
+   * @return Theta value of odometer
+   */
   public double getTheta() {
 	  return getXYT()[2];
   }
 
-  // method used to instantiate motors in future constructors
-public EV3LargeRegulatedMotor[] getMotors() {
+/**
+ * Used to instantiate motors in future constructors
+ * @return
+ */
+ public EV3LargeRegulatedMotor[] getMotors() {
 	return new EV3LargeRegulatedMotor[] { this.leftMotor, this.rightMotor };
 
 }

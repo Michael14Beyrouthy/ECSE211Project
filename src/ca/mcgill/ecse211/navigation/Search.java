@@ -1,14 +1,9 @@
 package ca.mcgill.ecse211.navigation;
-
-
-/**
- * Navigation.java
- * This class drives an EV3 robot to search points on the map; 
- */
-
+import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.project.Project2;
 import ca.mcgill.ecse211.project.UltrasonicController;
+import ca.mcgill.ecse211.project.WifiInfo;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
@@ -18,11 +13,17 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
 
 //change searchcans method 
+
+/**
+ * Search class, searches for cans in the search zone
+ * @author Sumail
+ *
+ */
 public class Search implements UltrasonicController, NavigationController{
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));;
-	private EV3MediumRegulatedMotor sensorMotor=new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
+	private EV3LargeRegulatedMotor clawMotor;
+	private EV3MediumRegulatedMotor sensorMotor;
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] = theta (deg)
 	private static double currentPosition[] = new double[3];
 	private Odometer odometer;
@@ -33,9 +34,8 @@ public class Search implements UltrasonicController, NavigationController{
 	boolean isAvoiding = false; // variable to track when robot is avoiding an obstacle
 	private double rDistance=0;
 	private double rAngle=0;
+	private double color = 0.30;
 	
-	private EV3ColorSensor lcolorSensor;
-	private EV3ColorSensor rcolorSensor;
 	private float[] lRGBValues = new float[3];			//stores the sample retruned by the color sensor
 	private float lreferenceBrightness;				//initial brightness level returned by the color sensor
 	private float lbrightness;							//brightness level returned by the color sensor, used to identify black lines
@@ -47,8 +47,14 @@ public class Search implements UltrasonicController, NavigationController{
 	private float rbrightness;							//brightness level returned by the color sensor, used to identify black lines
 	private static final long CORRECTION_PERIOD = 10; // odometer correction update period in ms
 
-	private int targetcolor = 0;
+	private int SZR_UR_x=WifiInfo.SZR_UR_x;
+	private int SZR_UR_y=WifiInfo.SZR_UR_y;
+	private int SZR_LL_x=WifiInfo.SZR_LL_x;
+	private int SZR_LL_y=WifiInfo.SZR_LL_y;
+	private int targetcolor=3;
 	private int step=0;
+	private static LightSensorController leftLS;
+	private static LightSensorController rightLS;
 	
 	private int total =0;
 	private ColorCalibration cc;
@@ -56,7 +62,8 @@ public class Search implements UltrasonicController, NavigationController{
 	private boolean isNavigating = false;
 	
 	public Search( EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor leftMotor,
-			Odometer odometer, SensorModes usSensor, EV3ColorSensor left, EV3ColorSensor right) {
+			Odometer odometer, SensorModes usSensor,  LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor clawMotor,EV3MediumRegulatedMotor sensorMotor 
+	) {
 		// Reset the motors
 		leftMotor.stop();
 		rightMotor.stop();
@@ -66,9 +73,10 @@ public class Search implements UltrasonicController, NavigationController{
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odometer = odometer;
-		this.lcolorSensor=left;
-		this.rcolorSensor=right;
-		
+		this.leftLS=leftLS;
+		this.rightLS=rightLS;
+		this.sensorMotor=sensorMotor;
+		this.clawMotor=clawMotor;
 	}
 
 
@@ -122,25 +130,19 @@ public class Search implements UltrasonicController, NavigationController{
 		
 	}*/
 	
-	
-	/**
-	 * 1 is green, 2 is red, 3 is yellow, 4 is blue 
-	 * @param SZR_LL
-	 * @param SZR_UR
-	 * @param targetcolor
-	 */
-	//public void searchcans(int SZR_LL[], int SZR_UR[], int targetcolor) {
+
 	public void searchcans() {
 		// Travel to each of the way-points
 		
 		int column=5;//width
 		int row=3; //length
 		int targetColor = 1; ///color of can
-		
+
+
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
-			lightcorrection();
+			//lightcorrection();
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
@@ -155,7 +157,7 @@ public class Search implements UltrasonicController, NavigationController{
 			else {
 				for(int j=0;j<row+1;j++) {
 					System.out.println(i+"  "+j);
-						lightcorrection();
+						//lightcorrection();
 						rAngle=odometer.getTheta();
 						if(j!=row) {
 						searching(i);
@@ -175,6 +177,10 @@ public class Search implements UltrasonicController, NavigationController{
 
 	}
 
+	/**
+	 * Searching process
+	 * @param step
+	 */
 	public void searching(int step) {
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
@@ -202,7 +208,9 @@ public class Search implements UltrasonicController, NavigationController{
 		}
 	}
 	
-	
+	/**
+	 * Determines color of a can
+	 */
 	public void get() {
 		Sound.beep();
 		leftMotor.rotate(convertDistance(distance)-10,true);
@@ -243,15 +251,14 @@ public class Search implements UltrasonicController, NavigationController{
 		
 		
 	}
+	
+	/**
+	 * Corrects robot with light sensors
+	 */
 	public void lightcorrection() {
 		long correctionStart, correctionEnd;
 
 	    //get the first value of the tile 'brightness' to use a reference
-	    lcolorSensor.getRedMode().fetchSample(lRGBValues,0);
-	    lreferenceBrightness = lRGBValues[0];
-	    
-	    rcolorSensor.getRedMode().fetchSample(rRGBValues,0);
-	    rreferenceBrightness = rRGBValues[0];
 	    for(int i=0;i<4;i++) {
 	    	leftstop=false;
 	    	rightstop=false;
@@ -262,20 +269,14 @@ public class Search implements UltrasonicController, NavigationController{
 	    	
 	    while (true) {
 	      correctionStart = System.currentTimeMillis();
-
-	      lcolorSensor.getRedMode().fetchSample(lRGBValues,0); //retrieve the current 'brightness' level
-	      lbrightness = lRGBValues[0];
-	      
-	      rcolorSensor.getRedMode().fetchSample(rRGBValues,0); //retrieve the current 'brightness' level
-	      rbrightness = rRGBValues[0];
-	      
+      
 	      //If the current brightness differs from the reference brightness value by a value greater than the threshold
 	      //the EV3 robot is traveling over a black line. 
-	      if(Math.abs(lbrightness-lreferenceBrightness)*100 > diffThreshold) {
+	      if(leftLS.fetch() < color) {
 	    	leftMotor.stop();
 	    	leftstop=true;
 	      }
-	      if(Math.abs(rbrightness-rreferenceBrightness)*100 > diffThreshold) {
+	      if(rightLS.fetch() < color) {
 	    	  rightMotor.stop();
 	    	  rightstop=true;
 	    	  
@@ -299,6 +300,10 @@ public class Search implements UltrasonicController, NavigationController{
 	    }
 	}
 
+	/**
+	 * Puts the robot back on track
+	 * @param distance
+	 */
 	void backtopath(double distance) {
 		System.out.println("r  " +distance);
 		leftMotor.rotate(-convertDistance(distance+7),true);
@@ -307,11 +312,19 @@ public class Search implements UltrasonicController, NavigationController{
 		
 		
 	}
+	
+	/**
+	 * Moves robot forward a certain distance
+	 */
 	void movingforward() {
 		leftMotor.rotate(convertDistance(30),true);
 		rightMotor.rotate(convertDistance(30),false);
 	}
 	
+	/**
+	 * Turns robot to a certain angle
+	 * @param theta
+	 */
 	void turnTo(double theta) {
 		// determine the correction in angle required
 		currentPosition = odometer.getXYT();
@@ -332,7 +345,8 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 	
 	/**
-	 * @param theta (deg)
+	 * Turns robot left by a certain angle
+	 * @param theta
 	 */
 	void turnLeft(double theta) {
 		leftMotor.setSpeed(ROTATE_SPEED);
@@ -342,7 +356,8 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 
 	/**
-	 * @param theta (deg)
+	 * Turns robot right by a certain angle
+	 * @param theta
 	 */
 	void turnRight(double theta) {
 		leftMotor.setSpeed(ROTATE_SPEED);
@@ -350,38 +365,48 @@ public class Search implements UltrasonicController, NavigationController{
 		leftMotor.rotate(convertAngle(Math.abs(theta)), true);
 		rightMotor.rotate(-convertAngle(Math.abs(theta)), false);
 	}
+	
 	/**
-	 * Converts a distance in centimeters to the corresponding wheel rotations required
+	 * Converts a distance in cm to the corresponding wheel rotations required
 	 * @param distance (cm)
-	 * @return distance in wheel rotations 
+	 * @return converted distance
 	 */
 	int convertDistance(double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * WHEEL_RADIUS));
 	}
+	
 	/**
-	 * Converts a direction in degrees to the corresponding wheel rotations required
+	 * Converts an angle in degrees to the corresponding wheel rotations required
 	 * @param direction (deg)
-	 * @return distance in wheel rotations 
+	 * @return converted angle
 	 */
 	int convertAngle(double angle) {
 		return convertDistance(Math.PI * TRACK * angle / 360.0);
 	}
 
-
-
-
-
+	
 	@Override
+	/**
+	 * Processes the distance read by the US sensor
+	 */
 	public void processUSData(int distance) {
 		this.distance = distance;
 		filter(distance);
 	}
 
 	@Override
+	/**
+	 * Returns the distance read by the US sensor 
+	 */
 	public int readUSDistance() {
 		// TODO Auto-generated method stub
 		return this.distance;
 	}
+	
+	/**
+	 * Filter to prevent false readings
+	 * @param distance
+	 */
 	public void filter(int distance) {
 		int FILTER_OUT = 25;
 		int filterControl = 0;
@@ -400,6 +425,11 @@ public class Search implements UltrasonicController, NavigationController{
 		}
 	}
 	
+	/**
+	 * Moves robot to a certain point
+	 * @param x
+	 * @param y
+	 */
 	public void RegularTravelTo (double x, double y) {
 
 	    isNavigating = true; 
@@ -448,6 +478,10 @@ public class Search implements UltrasonicController, NavigationController{
 
 	  }
 
+	/**
+	 * Moves robot straight by a certain distance
+	 * @param distance
+	 */
 	public void RegularGoStraight(double distance) {
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);

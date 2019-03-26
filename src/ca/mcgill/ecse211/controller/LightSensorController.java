@@ -7,9 +7,8 @@ import lejos.hardware.sensor.SensorModes;
 
 /**
  * This class implements the light sensor controller
- * It is used in the navigation, odometryCorrection, lightLocalization classes
- * It is used for line detection on the board
- *
+ * used for line detection on the board
+ * @author Hongshuo
  */
 public class LightSensorController{
 	
@@ -21,19 +20,18 @@ public class LightSensorController{
 	//private TextLCD lcd;
 	
 	/**
-	 * This method is a constructor for this class
+	 * A constructor for this class
 	 * @param mycolorleft light sensor to use
-	 * @param lcd lcd screen on the ev3 block
+	 * 
 	 */
 	public LightSensorController(SensorModes mycolorleft) {
 		this.lightSensor = mycolorleft;
 		idColour = this.lightSensor.getMode(1);
 		colorValue = new float[idColour.sampleSize()];
-		//this.lcd = lcd;
 	}
 	
 	/**
-	 * This method fetches samples from the light sensor 
+	 * fetches samples from the light sensor 
 	 * @return color intensity (float)
 	 */
 	public float fetch() {

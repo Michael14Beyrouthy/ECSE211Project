@@ -5,15 +5,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * This class stores and provides thread safe access to the odometer data.
- * 
- * @author Rodrigo Silva
- * @author Dirk Dubois
- * @author Derek Yu
- * @author Karim El-Baba
- * @author Michael Smith
+ * OdometerData class, stores and provides thread safe access to the odometer data.
+ * @author Jamie
  */
-
 public class OdometerData {
 
   // Position parameters
@@ -33,7 +27,7 @@ public class OdometerData {
   private static OdometerData odoData = null;
 
   /**
-   * Default constructor. The constructor is private. A factory is used instead such that only one
+   * Default constructor. The constructor is protected. A factory is used instead such that only one
    * instance of this class is ever created.
    */
   protected OdometerData() {
@@ -44,7 +38,7 @@ public class OdometerData {
 
   /**
    * OdometerData factory. Returns an OdometerData instance and makes sure that only one instance is
-   * ever created. If the user tries to instantiate multiple objects, the method throws a
+   * ever created. If user tries to instantiate multiple objects, method throws
    * MultipleOdometerDataException.
    * 
    * @return An OdometerData object
@@ -64,12 +58,8 @@ public class OdometerData {
   }
 
   /**
-   * Return the Odomometer data.
-   * <p>
-   * Writes the current position and orientation of the robot onto the odoData array. odoData[0] =
-   * x, odoData[1] = y; odoData[2] = theta;
-   * 
-   * @return the odometer data.
+   * Return Odometer's data.
+   * @return position array with X, Y and Theta values
    */
   public double[] getXYT() {
     double[] position = new double[3];
@@ -97,10 +87,9 @@ public class OdometerData {
   /**
    * Adds dx, dy and dtheta to the current values of x, y and theta, respectively. Useful for
    * odometry.
-   * 
-   * @param dx (cm)
-   * @param dy (cm)
-   * @param dtheta (deg)
+   * @param dx
+   * @param dy
+   * @param dtheta
    */
   public void update(double dx, double dy, double dtheta) {
     lock.lock();
@@ -120,10 +109,9 @@ public class OdometerData {
 
   /**
    * Overrides the values of x, y and theta. Use for odometry correction.
-   * 
-   * @param x the value of x (cm)
-   * @param y the value of y (cm)
-   * @param theta the value of theta (deg)
+   * @param x
+   * @param y
+   * @param theta
    */
   public void setXYT(double x, double y, double theta) {
     lock.lock();
@@ -142,8 +130,7 @@ public class OdometerData {
 
   /**
    * Overrides x. Use for odometry correction.
-   * 
-   * @param x the value of x
+   * @param x
    */
   public void setX(double x) {
     lock.lock();
@@ -160,8 +147,7 @@ public class OdometerData {
 
   /**
    * Overrides y. Use for odometry correction.
-   * 
-   * @param y the value of y
+   * @param y
    */
   public void setY(double y) {
     lock.lock();
@@ -178,8 +164,7 @@ public class OdometerData {
 
   /**
    * Overrides theta. Use for odometry correction.
-   * 
-   * @param theta the value of theta
+   * @param theta
    */
   public void setTheta(double theta) {
     lock.lock();
