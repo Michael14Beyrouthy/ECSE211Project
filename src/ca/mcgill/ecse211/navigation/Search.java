@@ -144,7 +144,7 @@ public class Search implements UltrasonicController, NavigationController{
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
-			lightcorrection();
+			//lightcorrection();
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
@@ -159,7 +159,7 @@ public class Search implements UltrasonicController, NavigationController{
 			else {
 				for(int j=0;j<row+1;j++) {
 					System.out.println(i+"  "+j);
-						lightcorrection();
+						//lightcorrection();
 						rAngle=odometer.getTheta();
 						if(j!=row) {
 						searching(i);
