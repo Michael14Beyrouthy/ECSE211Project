@@ -1,5 +1,10 @@
 package ca.mcgill.ecse211.navigation;
 
+/**
+ * NavigationController class, holds certain robot constants 
+ * @author Sumail
+ *
+ */
 public interface NavigationController {
 
 		// vehicle hardware parameters

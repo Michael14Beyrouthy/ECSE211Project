@@ -1,11 +1,4 @@
 package ca.mcgill.ecse211.navigation;
-
-
-/**
- * Navigation.java
- * This class drives an EV3 robot to search points on the map; 
- */
-
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.project.Project2;
 import ca.mcgill.ecse211.project.UltrasonicController;
@@ -18,6 +11,12 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
 
 //change searchcans method 
+
+/**
+ * Search class, searches for cans in the search zone
+ * @author Sumail
+ *
+ */
 public class Search implements UltrasonicController, NavigationController{
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
@@ -121,6 +120,13 @@ public class Search implements UltrasonicController, NavigationController{
 		rightMotor.stop();
 		
 	}*/
+	
+	/**
+	 * Searches for the correct can(s)
+	 * @param SZR_LL
+	 * @param SZR_UR
+	 * @param targetcolor
+	 */
 	public void searchcans(int SZR_LL[], int SZR_UR[], int targetcolor) {
 		// Travel to each of the way-points
 		
@@ -165,6 +171,10 @@ public class Search implements UltrasonicController, NavigationController{
 
 	}
 
+	/**
+	 * Searching process
+	 * @param step
+	 */
 	public void searching(int step) {
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
@@ -192,7 +202,9 @@ public class Search implements UltrasonicController, NavigationController{
 		}
 	}
 	
-	
+	/**
+	 * Determines color of a can
+	 */
 	public void get() {
 		Sound.beep();
 		leftMotor.rotate(convertDistance(distance)-10,true);
@@ -233,6 +245,10 @@ public class Search implements UltrasonicController, NavigationController{
 		
 		
 	}
+	
+	/**
+	 * Corrects robot with light sensors
+	 */
 	public void lightcorrection() {
 		long correctionStart, correctionEnd;
 
@@ -289,6 +305,10 @@ public class Search implements UltrasonicController, NavigationController{
 	    }
 	}
 
+	/**
+	 * Puts the robot back on track
+	 * @param distance
+	 */
 	void backtopath(double distance) {
 		System.out.println("r  " +distance);
 		leftMotor.rotate(-convertDistance(distance+7),true);
@@ -297,11 +317,19 @@ public class Search implements UltrasonicController, NavigationController{
 		
 		
 	}
+	
+	/**
+	 * Moves robot forward a certain distance
+	 */
 	void movingforward() {
 		leftMotor.rotate(convertDistance(30),true);
 		rightMotor.rotate(convertDistance(30),false);
 	}
 	
+	/**
+	 * Turns robot to a certain angle
+	 * @param theta
+	 */
 	void turnTo(double theta) {
 		// determine the correction in angle required
 		currentPosition = odometer.getXYT();
@@ -322,7 +350,8 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 	
 	/**
-	 * @param theta (deg)
+	 * Turns robot left by a certain angle
+	 * @param theta
 	 */
 	void turnLeft(double theta) {
 		leftMotor.setSpeed(ROTATE_SPEED);
@@ -332,7 +361,8 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 
 	/**
-	 * @param theta (deg)
+	 * Turns robot right by a certain angle
+	 * @param theta
 	 */
 	void turnRight(double theta) {
 		leftMotor.setSpeed(ROTATE_SPEED);
@@ -340,38 +370,48 @@ public class Search implements UltrasonicController, NavigationController{
 		leftMotor.rotate(convertAngle(Math.abs(theta)), true);
 		rightMotor.rotate(-convertAngle(Math.abs(theta)), false);
 	}
+	
 	/**
-	 * Converts a distance in centimeters to the corresponding wheel rotations required
+	 * Converts a distance in cm to the corresponding wheel rotations required
 	 * @param distance (cm)
-	 * @return distance in wheel rotations 
+	 * @return converted distance
 	 */
 	int convertDistance(double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * WHEEL_RADIUS));
 	}
+	
 	/**
-	 * Converts a direction in degrees to the corresponding wheel rotations required
+	 * Converts an angle in degrees to the corresponding wheel rotations required
 	 * @param direction (deg)
-	 * @return distance in wheel rotations 
+	 * @return converted angle
 	 */
 	int convertAngle(double angle) {
 		return convertDistance(Math.PI * TRACK * angle / 360.0);
 	}
 
-
-
-
-
+	
 	@Override
+	/**
+	 * Processes the distance read by the US sensor
+	 */
 	public void processUSData(int distance) {
 		this.distance = distance;
 		filter(distance);
 	}
 
 	@Override
+	/**
+	 * Returns the distance read by the US sensor 
+	 */
 	public int readUSDistance() {
 		// TODO Auto-generated method stub
 		return this.distance;
 	}
+	
+	/**
+	 * Filter to prevent false readings
+	 * @param distance
+	 */
 	public void filter(int distance) {
 		int FILTER_OUT = 25;
 		int filterControl = 0;
@@ -390,6 +430,11 @@ public class Search implements UltrasonicController, NavigationController{
 		}
 	}
 	
+	/**
+	 * Moves robot to a certain point
+	 * @param x
+	 * @param y
+	 */
 	public void RegularTravelTo (double x, double y) {
 
 	    isNavigating = true; 
@@ -438,6 +483,10 @@ public class Search implements UltrasonicController, NavigationController{
 
 	  }
 
+	/**
+	 * Moves robot straight by a certain distance
+	 * @param distance
+	 */
 	public void RegularGoStraight(double distance) {
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);

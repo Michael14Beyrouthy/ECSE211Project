@@ -12,6 +12,11 @@ import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 
+/**
+ * Navigation class, holds multiple methods to navigate the robot around the map accurately
+ * @author Michael
+ *
+ */
 public class Navigation extends Thread{
 	
 	
@@ -30,11 +35,13 @@ public class Navigation extends Thread{
 	private static LightSensorController rightLS;
 	
 	/**
-	 * Class constructor; takes in odometer and two sample providers
-	 * 
+	 * Class constructor
 	 * @param odometer
+	 * @param leftLS
+	 * @param rightLS
+	 * @param leftMotor
+	 * @param rightMotor
 	 */
-
 	public Navigation(Odometer odometer, LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) {
 		
 			//set odometer and sensor to input 
@@ -50,16 +57,12 @@ public class Navigation extends Thread{
 		
 	    }
 	
-	
 	/**
-	 * computeAngle method; takes current position and direction, as well as target position
-	 * and computes the angle at which our robot needs to turn to face the target position 
-	 * 
+	 * Computes the angle by which to turn the robot for it to face a certain point from its current point
 	 * @param targetx
 	 * @param targety
-	 * @return
+	 * @return angle to turn the robot by
 	 */
-
 	public double computeAngle(double targetx , double targety) {
 
 			//get current position and compute variation in x and y coords
@@ -77,16 +80,12 @@ public class Navigation extends Thread{
 			//return
 		return trajectoryAngle;
 	}
-	
+
 	/**
-	 * travelTo method; takes in current and target position and moves robot towards target position.
-	 * Uses computeAngle to determine where the robot needs to face
-	 * Uses turnTo to turn to that angle
-	 * 
+	 * Moves robot towards target position.
 	 * @param x
 	 * @param y
 	 */
-	
 	public void RegularTravelTo (double x, double y) {
 
 	    isNavigating = true; 
@@ -147,6 +146,10 @@ public class Navigation extends Thread{
 *==============================================================================================================
 */
 	
+	/**
+	 * Moves robot straight by a certain distance
+	 * @param distance
+	 */
 	public void RegularGoStraight(double distance) {
 		leftMotor.setSpeed(325);
 		rightMotor.setSpeed(325);
@@ -154,6 +157,11 @@ public class Navigation extends Thread{
 	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
 	}
 	
+	/**
+	 * Moves robot towards target position.
+	 * @param targetx
+	 * @param targety
+	 */
 	public void travelTo(double targetx, double targety) {
 
 		isNavigating = true;
@@ -187,18 +195,16 @@ public class Navigation extends Thread{
 		}
 		
 	/**
-	 * travelToLYup method; takes in current and target position and moves robot towards target position.
+	 * Moves robot towards target position.
 	 * Goes in an L formation, correcting odometry and heading as it crosses each line. 
 	 * Starts parallel to the Y axes, going up.
 	 * 
 	 * @param targetx
 	 * @param targety
 	 */
-	
 	public void TravelToLYup(double targetx, double targety) {
 		
 		isNavigatingLY1 = true;
-		
 		
 		double minAng1 = computeAngle((odometer.getXYT()[0]/Project2.TILE_SIZE), targety);
 		this.turnTo(minAng1);
@@ -212,10 +218,7 @@ public class Navigation extends Thread{
 		
 		int YLinesToCross = (int) (targety - startingYcoord);
 		int XLinesToCross = (int) (targetx - startingXcoord);
-		
-		//System.out.println(YLinesToCross);
-		//System.out.println(XLinesToCross);
-		
+
 		double extraDistanceY = targety - YLinesToCross;
 		double extraDistanceX = targetx - XLinesToCross;
 		
@@ -224,9 +227,6 @@ public class Navigation extends Thread{
 		
 		leftMotor.setSpeed(400);
 		rightMotor.setSpeed(400);
-		
-		/*leftMotor.forward();
-		rightMotor.forward();*/
 		
 		while(isNavigatingLY1) {
 		
@@ -241,24 +241,11 @@ public class Navigation extends Thread{
 			counterY++;
 			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
 		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
-			//System.out.println("hi");
 		    counterY2++;
 			}
-		
-		//consistently get current position and update distance to destination
-			
+					
 		    RegularGoStraight(extraDistanceY*Project2.TILE_SIZE-sensorDist); 
-		    
 		    isNavigatingLY1 = false;
-			
-			/*double distance = targety * Project2.TILE_SIZE - odometer.getY();
-		
-			//set isNavigating to false once destination reached
-		if (distance < 1) {
-			leftMotor.stop();
-			rightMotor.stop();
-			isNavigatingLY1 = false;
-		}*/
 	}
 
 		try {
@@ -275,9 +262,6 @@ public class Navigation extends Thread{
 		leftMotor.setSpeed(400);
 		rightMotor.setSpeed(400);
 		
-		//leftMotor.forward();
-		//rightMotor.forward();
-		
 		while(isNavigatingLY2) {
 			while (counterX2<XLinesToCross)
 			{
@@ -290,39 +274,25 @@ public class Navigation extends Thread{
 			counterX++;
 			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
 		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
-			//System.out.println("hi");
 		    counterX2++;
 			}
-		
-		//consistently get current position and update distance to destination
-			
+					
 		    RegularGoStraight(extraDistanceX*Project2.TILE_SIZE-sensorDist); 
 		    
 		    isNavigatingLY2 = false;
-			
-			/*double distance = targetx * Project2.TILE_SIZE - odometer.getX();
-		
-			//set isNavigating to false once destination reached
-		if (distance < 1) {
-			leftMotor.stop();
-			rightMotor.stop();
-			isNavigatingLY1 = false;
-		}*/
-		
 		}
 		
 	}
 	
 	/**
-	 * travelToLYdown method; takes in current and target position and moves robot towards target position.
+	 * Moves robot towards target position.
 	 * Goes in an L formation, correcting odometry and heading as it crosses each line. 
 	 * Starts parallel to the Y axes, going down.
 	 * 
 	 * @param targetx
 	 * @param targety
 	 */
-	
-public void TravelToLYdown(double targetx, double targety) {
+	public void TravelToLYdown(double targetx, double targety) {
 		
 		isNavigatingLY1 = true;
 		
@@ -339,9 +309,6 @@ public void TravelToLYdown(double targetx, double targety) {
 		
 		int YLinesToCross = Math.abs((int) (targety - startingYcoord));
 		int XLinesToCross = Math.abs((int) (targetx - startingXcoord));
-		
-		//System.out.println(YLinesToCross);
-		//System.out.println(XLinesToCross);
 		
 		double extraDistanceY = targety - YLinesToCross;
 		double extraDistanceX = targetx - XLinesToCross;
@@ -565,11 +532,9 @@ public void TravelToLYdown(double targetx, double targety) {
 	
 
 	/**
-	 * turnTo method; takes in an angle and rotates the robot covering the shortest arc length to that angle.
-	 * 
+	 * Turns robot by a certain angle
 	 * @param ang
 	 */
-	
 	public void turnTo(double ang)
 	{
 			//set rotate speeds
@@ -593,15 +558,11 @@ public void TravelToLYdown(double targetx, double targety) {
 	    
 	}
 	
-	
 	/**
-	 * setSpeeds method; takes in the desired speeds and sets the motor speeds accordingly
-	 * 
+	 * Sets motors' speeds and moves robot forward
 	 * @param lSpd
 	 * @param rSpd
 	 */
-	
-	
 	public void setSpeeds(float lSpd, float rSpd) {
 		this.leftMotor.setSpeed(lSpd);
 		this.rightMotor.setSpeed(rSpd);
@@ -615,6 +576,11 @@ public void TravelToLYdown(double targetx, double targety) {
 			this.rightMotor.forward();
 	}
 
+	/**
+	 * Sets motors' speeds and moves robot forward
+	 * @param lSpd
+	 * @param rSpd
+	 */
 	public void setSpeeds(int lSpd, int rSpd) {
 		this.leftMotor.setSpeed(lSpd);
 		this.rightMotor.setSpeed(rSpd);
@@ -628,10 +594,6 @@ public void TravelToLYdown(double targetx, double targety) {
 			this.rightMotor.forward();
 	}
 	
-	/*public int reading() {
-		us.fetchSample(usData, 0); 
-		return (int) (usData[0] * 100); 
-	}*/ 
 	
 	/*public void traverseTunnel()
 	{
@@ -693,15 +655,10 @@ public void TravelToLYdown(double targetx, double targety) {
 	}
 	*/
 	
+
 	/**
-	   * This method allows the conversion of a distance to the total rotation of each wheel need to
-	   * cover that distance.
-	   * 
-	   * @param radius
-	   * @param distance
-	   * @return
-	   */
-	
+	 * Relocates robot before traversing the tunnel
+	 */
 	public void relocateBeforeTunnel() {
 		
 		/*this.moveBackward();
@@ -717,18 +674,37 @@ public void TravelToLYdown(double targetx, double targety) {
 		this.turnTo(90);
 	}
 	
+	/**
+	 * Traverses the tunnel once robot is facing it
+	 */
 	public void traverseTunnel() {
 		RegularGoStraight(3*Project2.TILE_SIZE);
 	}
 	
+	/**
+	 * Converts a distance in cm to the corresponding wheel rotations required
+	 * @param radius
+	 * @param distance
+	 * @return converted distance
+	 */
 	  public static int convertDistance(double radius, double distance) {
 	    return (int) ((180.0 * distance) / (Math.PI * radius));
 	  }
 
+	  /**
+	   * Converts an angle in degrees to the corresponding wheel rotations required
+	   * @param radius
+	   * @param width
+	   * @param angle
+	   * @return converted angle
+	   */
 	  public static int convertAngle(double radius, double width, double angle) {
 	    return convertDistance(radius, Math.PI * width * angle / 360.0);
 	  }
 	
+	  /**
+	   * Moves robot forward
+	   */
 	  public void moveForward() {
 			leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 			leftMotor.startSynchronization();
@@ -737,6 +713,9 @@ public void TravelToLYdown(double targetx, double targety) {
 			leftMotor.endSynchronization();
 		}
 	  
+	  /**
+	   * Moves robot backward
+	   */
 	  public void moveBackward() {
 			leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 			leftMotor.startSynchronization();
@@ -745,6 +724,9 @@ public void TravelToLYdown(double targetx, double targety) {
 			leftMotor.endSynchronization();
 		}
 	  
+	  /**
+	   * corrects the orientation of the robot with line detection
+	   */
 	  private void correct() {
 
 			boolean rightLineDetected = false;
@@ -779,6 +761,11 @@ public void TravelToLYdown(double targetx, double targety) {
 
 		}
 	  
+	  /**
+	   * Stops the robot
+	   * @param stopLeft
+	   * @param stopRight
+	   */
 	  public void stopMoving(boolean stopLeft, boolean stopRight) {
 			leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 			leftMotor.startSynchronization();
@@ -792,10 +779,4 @@ public void TravelToLYdown(double targetx, double targety) {
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 		}
-	
-		
-	
-	
-	
-	
 }

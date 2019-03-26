@@ -8,6 +8,11 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 
+/**
+ * ColorCalibration class, determines color of a can
+ * @author Jamie
+ *
+ */
 public class ColorCalibration {
 	
 	
@@ -17,28 +22,28 @@ public class ColorCalibration {
 	
 	private static double redMean, greenMean, blueMean;
 	
-	/**
+	/*
 	 * Target RBG Mean values for a GREEN can
 	 */
 	final private static double GREEN_TR = 0.302959415;
 	final private static double GREEN_TB = 0.263884275;
 	final private static double GREEN_TG = 0.667320124;
 	
-	/**
+	/*
 	 * Target RBG Mean values for a BLUE can
 	 */
 	final private static double BLUE_TR = 0.384866034;
 	final private static double BLUE_TB = 0.709316646;
 	final private static double BLUE_TG = 0.645135536;
 	
-	/**
+	/*
 	 * Target RBG Mean values for a RED can
 	 */
 	final private static double	RED_TR = 0.840905986;
 	final private static double RED_TB = 0.229910294;
 	final private static double RED_TG = 0.320875403;
 	
-	/**
+	/*
 	 * Target RBG Mean values for a YELLOW can
 	 */
 	final private static double YELLOW_TR = 0.66308114;
@@ -53,17 +58,27 @@ public class ColorCalibration {
 	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
 	private static float[] RGBValues = new float[3]; // Stores the sample returned by the color sensor
 
+	/**
+	 * Class constructor
+	 * @param sensorMotor
+	 */
 	public ColorCalibration(EV3MediumRegulatedMotor sensorMotor) {
 		this.sensorMotor = sensorMotor;
 		onLeftSide = false;
 		sensorMotor.setSpeed(70);
 	}
 	
+	/**
+	 * run() method
+	 */
 	public void run() {
 		identifyColor();
 	}
 	
-	
+	/**
+	 * Identifies the color of the can in front of the robot
+	 * @return 1, 2, 3 or 4 depending on which colour was detected
+	 */
 	public int identifyColor() {
 		
 		//rotate the sensor 90 degrees, take a sample of the can color each 9 degrees
@@ -136,9 +151,10 @@ public class ColorCalibration {
 	
 	}
 	
-	
+	/**
+	 * Computes the mean RGB Values returned for the can
+	 */
 	private void computeMean() {
-		// compute the mean RGB Values returned for the can
 		double sumRed = 0;
 		double sumBlue = 0;
 		double sumGreen = 0;

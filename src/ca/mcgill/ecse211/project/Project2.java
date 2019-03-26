@@ -20,8 +20,8 @@ import ca.mcgill.ecse211.navigation.Search;
 
 
 /**
- * Our project class, instantiates the motors and sets some constants
- * instantiates all threads and objects of other classes and runs them accordingly
+ * Project class, instantiates the motors and sets some constants
+ * Instantiates all threads and objects of other classes and runs them accordingly
  * @author micha
  * 
  */
@@ -57,6 +57,12 @@ public class Project2 {
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 74;
 	
 
+	/**
+	 * main() method of class 
+	 * This is the method that runs when the whole project is run
+	 * @param args
+	 * @throws OdometerExceptions
+	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
 		WifiInfo wifi = new WifiInfo();

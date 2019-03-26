@@ -6,6 +6,11 @@ import lejos.robotics.SampleProvider;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.project.*;
 
+/**
+ * USLocalizer class, performs US localization to correct heading
+ * @author Hongshuo
+ *
+ */
 public class USLocalizer {
 
   // robot constants
@@ -24,7 +29,7 @@ public class USLocalizer {
   private double k = 2;
 
   /**
-   * Constructor to initialize variables 
+   * Class constructor
    * @param odo
    * @param leftMotor
    * @param rightMotor
@@ -45,7 +50,7 @@ public class USLocalizer {
 	}
 
 	/**
-	 * A method to determine which localization method to call
+	 * determines which localization to use
 	 */
 	public void localize() {
 		if (Risingorfalling) {
@@ -56,7 +61,7 @@ public class USLocalizer {
 	}
 
 	/**
-	 * A method to localize position using the rising edge
+	 * Localize robot using rising edge
 	 */
 	public void localizeRisingEdge() {
 
@@ -112,8 +117,7 @@ public class USLocalizer {
 	}
 
 	/**
-	 * A method to localize position using the falling edge
-	 * 
+	 * Localize robot using rising edge
 	 */
 	public void localizeFallingEdge() {
 
@@ -171,9 +175,8 @@ public class USLocalizer {
 	}
 
 	/**
-	 * A method to get the distance from our sensor
-	 * 
-	 * @return
+	 * Gets the distance detected by the sensor
+	 * @return distance read in cm
 	 */
 	private int fetchUS() {
 		usDistance.fetchSample(usData, 0);
@@ -181,25 +184,21 @@ public class USLocalizer {
 	}
 
 	/**
-	 * This method implement the conversion of a distance to rotation of each
-	 * wheel need to cover the distance.
-	 * 
+	 * Converts a distance in cm to the corresponding wheel rotations required
 	 * @param radius
 	 * @param distance
-	 * @return
+	 * @return converted distance
 	 */
 	private static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
 	/**
-	 * This method implement the conversion of a angle to rotation of each
-	 * wheel need to cover the distance.
-	 * 
+	 * Converts anm angle in degrees to the corresponding wheel rotations required
 	 * @param radius
 	 * @param distance
 	 * @param angle
-	 * @return
+	 * @return converted angle
 	 */
 	private static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
