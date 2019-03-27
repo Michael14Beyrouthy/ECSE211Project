@@ -169,7 +169,7 @@ public class Project2 {
 				
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		
-		//Search search = new Search
+		
 		
 		/*nav.turnTo(45);
 		nav.RegularGoStraight(TILE_SIZE*Math.sqrt(2)/2);*/
@@ -216,7 +216,7 @@ public class Project2 {
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  ultrasonicSensor,  leftLS,  rightLS, clawMotor, sensorMotor);
 	    search.searchcans();
-		//Search search = new Search
+		
 	
 
 		
