@@ -144,7 +144,7 @@ public class Project2 {
 		// Create ultrasonicsensor light localizer and navigation objects
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
-		/*Navigation nav = new Navigation(odometer, myColorStatusRight, myColorStatusLeft);*/
+		//Navigation nav = new Navigation(odometer, myColorStatusRight, myColorStatusLeft);
 		// start the ultrasonic localization
 		//USLocalizer.localize();
 			// run the light localization
@@ -212,7 +212,7 @@ public class Project2 {
         
 		
 		//===============================================Used for testing search =====================================================================================
-		
+		//call the search cans method, search start
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  ultrasonicSensor,  leftLS,  rightLS, clawMotor, sensorMotor);
 	    search.searchcans();
