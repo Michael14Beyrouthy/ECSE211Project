@@ -21,7 +21,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
  * @author Sumail
  *
  */
-public class Search implements UltrasonicController, NavigationController{
+public class Search implements  NavigationController{
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
@@ -37,6 +37,9 @@ public class Search implements UltrasonicController, NavigationController{
 	private double rDistance=0;
 	private double rAngle=0;
 	private double color = 0.30;
+	
+	  private float[] usData;
+	  private SampleProvider usDistance;
 	
 	private float[] lRGBValues = new float[3];			//stores the sample retruned by the color sensor
 	private float lreferenceBrightness;				//initial brightness level returned by the color sensor
@@ -64,14 +67,13 @@ public class Search implements UltrasonicController, NavigationController{
 	private boolean isNavigating = false;
 	
 	public Search( EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor leftMotor,
-			Odometer odometer, SensorModes usSensor,  LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor clawMotor,EV3MediumRegulatedMotor sensorMotor 
+			Odometer odometer, SampleProvider usDistance,  LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor clawMotor,EV3MediumRegulatedMotor sensorMotor 
 	) {
 		// Reset the motors
 		leftMotor.stop();
 		rightMotor.stop();
 		leftMotor.setAcceleration(600);
 		rightMotor.setAcceleration(600);
-		this.usSensor = usSensor;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odometer = odometer;
@@ -79,8 +81,11 @@ public class Search implements UltrasonicController, NavigationController{
 		this.rightLS=rightLS;
 		this.sensorMotor=sensorMotor;
 		this.clawMotor=clawMotor;
-	}
+		this.usDistance = usDistance;
+		this.usData = new float[usDistance.sampleSize()];
 
+	}
+	
 
 /*	public void run() {
 		try {
@@ -136,8 +141,8 @@ public class Search implements UltrasonicController, NavigationController{
 	public void searchcans() {
 		// Travel to each of the way-points
 		
-		int column=SZR_UR_x-SZR_LL_y;
-		int row=SZR_UR_x-SZR_LL_y;
+		int column=SZR_UR_x-SZR_LL_x;
+		int row=SZR_UR_y-SZR_LL_y;
 		int targetColor = 1; ///color of can
 
 
@@ -187,7 +192,7 @@ public class Search implements UltrasonicController, NavigationController{
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
 			turnRight(10);
-		if(distance<35) {
+		if(fetchUS()<35) {
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=distance;
@@ -199,7 +204,7 @@ public class Search implements UltrasonicController, NavigationController{
 		else {
 		for(int i=0;i<10;i++) {
 			turnLeft(10);
-		if(distance<35) {
+		if(fetchUS()<35) {
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=distance;
@@ -216,8 +221,8 @@ public class Search implements UltrasonicController, NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(distance)-10,true);
-		rightMotor.rotate(convertDistance(distance)-10,false);	
+		leftMotor.rotate(convertDistance(fetchUS())-10,true);
+		rightMotor.rotate(convertDistance(fetchUS())-10,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
@@ -388,45 +393,14 @@ public class Search implements UltrasonicController, NavigationController{
 	}
 
 	
-	@Override
+	private int fetchUS() {
+		usDistance.fetchSample(usData, 0);
+		return (int) (usData[0] * 100);
+	}
 	/**
 	 * Processes the distance read by the US sensor
 	 */
-	public void processUSData(int distance) {
-		this.distance = distance;
-		filter(distance);
-	}
 
-	@Override
-	/**
-	 * Returns the distance read by the US sensor 
-	 */
-	public int readUSDistance() {
-		// TODO Auto-generated method stub
-		return this.distance;
-	}
-	
-	/**
-	 * Filter to prevent false readings
-	 * @param distance
-	 */
-	public void filter(int distance) {
-		int FILTER_OUT = 25;
-		int filterControl = 0;
-		if (distance >= 255 && filterControl < FILTER_OUT) {
-			// bad value, do not set the distance variable, however do increment the filter
-			// value
-			filterControl++;
-		} else if (distance >= 255) {
-			// We have repeated large values, so there must actually be nothing there: leave
-			// the distance alone
-			this.distance = distance;
-		} else {
-			// distance went below 255: reset filter and leave distance alone.
-			filterControl = 0;
-			this.distance = distance;
-		}
-	}
 	
 	/**
 	 * Moves robot to a certain point
@@ -437,8 +411,8 @@ public class Search implements UltrasonicController, NavigationController{
 
 	    isNavigating = true; 
 	     
-	    double deltaX = x - odometer.getX();
-	    double deltaY = y - odometer.getY();
+	    double deltaX = x - odometer.getXYT()[0];
+	    double deltaY = y - odometer.getXYT()[1];
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
@@ -457,7 +431,7 @@ public class Search implements UltrasonicController, NavigationController{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }    
 
-	    deltaTheta = theta - odometer.getTheta();
+	    deltaTheta = theta - odometer.getXYT()[2];
 	    
 	    if (deltaTheta > 180) { 
 	      deltaTheta -= 360;
@@ -490,7 +464,7 @@ public class Search implements UltrasonicController, NavigationController{
 		rightMotor.setSpeed(150);
 		leftMotor.rotate(convertDistance(distance), true);
 	    rightMotor.rotate(convertDistance(distance), false);
-	}
-	
-}
+	}}
+
+
 

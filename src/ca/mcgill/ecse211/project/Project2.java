@@ -70,10 +70,10 @@ public class Project2 {
 		WifiInfo wifi = new WifiInfo();
 		wifi.getInfo();	
 		
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
@@ -119,31 +119,40 @@ public class Project2 {
 		}*/
 
 		// Start odometer and display threads
+		
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
 
 		//Thread odoThread2 = new Thread(odometer2);
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
+		
+		Search search = new Search(rightMotor, leftMotor,
+				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
+		
+		search.searchcans();
+			//lcd.clear();
+		
+		/*leftMotor.flt();
+		rightMotor.flt();
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+		
+		odometer.setXYT(0, 0, 45);
+		odometer.setX(0);
+		odometer.setY(0);
+		odometer.setTheta(0);
 
-		//lcd.clear();
+		leftMotor.flt();
+		rightMotor.flt();
 		
-//		leftMotor.flt();
-//		rightMotor.flt();
-//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-//		
-//		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
-//
-//		leftMotor.flt();
-//		rightMotor.flt();
-//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-//		
-//		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
-//
-//		leftMotor.flt();
-//		rightMotor.flt();
-//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		
+		odometer.setXYT(0, 0, 90);
+
+		leftMotor.flt();
+		rightMotor.flt();
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+*/		
 		//System.out.println("hi");
 		
 		// Create ultrasonicsensor light localizer and navigation objects
@@ -176,18 +185,18 @@ public class Project2 {
 		
 		
 		
-		/*nav.turnTo(45);
-		nav.RegularGoStraight(TILE_SIZE*Math.sqrt(2)/2);*/
+		/*nav.turnTo(45);*/
+		/*nav.RegularGoStraight(TILE_SIZE*5);
 		
-		
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);*/	
 		
 		
 		//================================== Used for testing tunnel traversal =========================================================
-		/*
 		
-		nav.RegularTravelTo(.5*TILE_SIZE, .5*TILE_SIZE);
 		
-		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
+		//nav.RegularTravelTo(1.5*TILE_SIZE, 1.5*TILE_SIZE);
+		
+		//nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
 		
 		//nav.RegularGoStraight(3*30.48);
 		
@@ -195,11 +204,11 @@ public class Project2 {
 		
 		//nav.TravelToLYdown((double)(WifiInfo.SZR_LL_x), (double)(WifiInfo.SZR_LL_y));
 		
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
 		
 		//nav.TravelToLYup((double)(WifiInfo.SZR_UR_x), (double)(WifiInfo.SZR_UR_y));
 		
@@ -210,21 +219,16 @@ public class Project2 {
 		
 
 		
-		nav.traverseTunnel();
+		//nav.traverseTunnel();
 		
-		*/
+		
 		//===============================================End of area for testing tunnel traversal ====================================================================
         
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		Search search = new Search(rightMotor, leftMotor,
-				odometer,  ultrasonicSensor,  leftLS,  rightLS, clawMotor, sensorMotor);
 		
-	    search.searchcans();
-	    usPoller = new UltrasonicPoller(usDistance, usData, search);
-		usPoller.start();
-		
+	  
 		
 	
 
