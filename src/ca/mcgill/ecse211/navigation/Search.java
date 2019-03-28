@@ -11,6 +11,8 @@ import lejos.hardware.port.Port;
 import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.SampleProvider;
+import ca.mcgill.ecse211.controller.UltrasonicPoller;
 
 //change searchcans method 
 
@@ -28,7 +30,7 @@ public class Search implements UltrasonicController, NavigationController{
 	private static double currentPosition[] = new double[3];
 	private Odometer odometer;
 	private static boolean traveling; // Variable to track whether the robot is current navigating
-	private int distance; // distance between the robot and the obstacle (cm)
+	private int distance ; // distance between the robot and the obstacle (cm)
 	private SensorModes usSensor; // ultrasonic sensor
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] =
 	boolean isAvoiding = false; // variable to track when robot is avoiding an obstacle
@@ -185,7 +187,7 @@ public class Search implements UltrasonicController, NavigationController{
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
 			turnRight(10);
-		if(distance<30) {
+		if(distance<35) {
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=distance;
@@ -197,7 +199,7 @@ public class Search implements UltrasonicController, NavigationController{
 		else {
 		for(int i=0;i<10;i++) {
 			turnLeft(10);
-		if(distance<30) {
+		if(distance<35) {
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=distance;
@@ -212,6 +214,7 @@ public class Search implements UltrasonicController, NavigationController{
 	 * Determines color of a can
 	 */
 	public void get() {
+		System.out.println(distance);
 		Sound.beep();
 		leftMotor.rotate(convertDistance(distance)-10,true);
 		rightMotor.rotate(convertDistance(distance)-10,false);	

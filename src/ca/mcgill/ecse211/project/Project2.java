@@ -14,6 +14,7 @@ import lejos.robotics.SampleProvider;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
+import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
 import ca.mcgill.ecse211.navigation.Navigation;
 import ca.mcgill.ecse211.navigation.Search;
@@ -48,6 +49,7 @@ public class Project2 {
 	
 	private static LightSensorController leftLS = new LightSensorController(myColorLeft);
 	private static LightSensorController rightLS = new LightSensorController(myColorRight);
+	private static UltrasonicController search;
 	
 
 	//Robot related parameters
@@ -86,10 +88,13 @@ public class Project2 {
 
 		@SuppressWarnings("resource") // Because we don't bother to close this resource
 		// Instance  ultrasonicsensor 
+		UltrasonicPoller usPoller = null;
 		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);
+		
 		// usDistance fetch samples from this instance
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");
-		
+		float[] usData = new float[usDistance.sampleSize()];
+
 		
 
 		/*do {
@@ -215,7 +220,11 @@ public class Project2 {
 		//call the search cans method, search start
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  ultrasonicSensor,  leftLS,  rightLS, clawMotor, sensorMotor);
+		
 	    search.searchcans();
+	    usPoller = new UltrasonicPoller(usDistance, usData, search);
+		usPoller.start();
+		
 		
 	
 
