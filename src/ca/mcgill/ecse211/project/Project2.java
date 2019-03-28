@@ -65,7 +65,7 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		WifiInfo wifi = new WifiInfo();
+		/*WifiInfo wifi = new WifiInfo();
 		wifi.getInfo();	
 		
 		System.out.println("");
@@ -74,7 +74,7 @@ public class Project2 {
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
-		System.out.println("");
+		System.out.println("");*/
 		
 		int buttonChoice;
 
@@ -123,22 +123,26 @@ public class Project2 {
 
 		//lcd.clear();
 		
-//		leftMotor.flt();
-//		rightMotor.flt();
-//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-//		
-//		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
-//
-//		leftMotor.flt();
-//		rightMotor.flt();
-//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-//		
-//		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
-//
-//		leftMotor.flt();
-//		rightMotor.flt();
-//		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+		/*leftMotor.flt();
+		rightMotor.flt();
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 		
+		odometer.setXYT(0, 0, 45);
+		odometer.setX(0);
+		odometer.setY(0);
+		odometer.setTheta(0);
+
+		leftMotor.flt();
+		rightMotor.flt();
+		
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+		
+		odometer.setXYT(0, 0, 90);
+
+		leftMotor.flt();
+		rightMotor.flt();
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+*/		
 		//System.out.println("hi");
 		
 		// Create ultrasonicsensor light localizer and navigation objects
@@ -171,16 +175,16 @@ public class Project2 {
 		
 		
 		
-		/*nav.turnTo(45);
-		nav.RegularGoStraight(TILE_SIZE*Math.sqrt(2)/2);*/
+		/*nav.turnTo(45);*/
+		nav.RegularGoStraight(TILE_SIZE*5);
 		
-		
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);	
 		
 		
 		//================================== Used for testing tunnel traversal =========================================================
-		/*
 		
-		nav.RegularTravelTo(.5*TILE_SIZE, .5*TILE_SIZE);
+		
+		nav.RegularTravelTo(1.5*TILE_SIZE, 1.5*TILE_SIZE);
 		
 		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
 		
@@ -207,7 +211,7 @@ public class Project2 {
 		
 		nav.traverseTunnel();
 		
-		*/
+		
 		//===============================================End of area for testing tunnel traversal ====================================================================
         
 		

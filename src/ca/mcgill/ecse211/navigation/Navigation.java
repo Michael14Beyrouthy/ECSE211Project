@@ -90,8 +90,8 @@ public class Navigation extends Thread{
 
 	    isNavigating = true; 
 	     
-	    double deltaX = x - odometer.getX();
-	    double deltaY = y - odometer.getY();
+	    double deltaX = x - odometer.getXYT()[0];
+	    double deltaY = y - odometer.getXYT()[1];
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
@@ -110,7 +110,7 @@ public class Navigation extends Thread{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }    
 
-	    deltaTheta = theta - odometer.getTheta();
+	    deltaTheta = theta - odometer.getXYT()[2];
 	    
 	    if (deltaTheta > 180) { 
 	      deltaTheta -= 360;
@@ -151,8 +151,8 @@ public class Navigation extends Thread{
 	 * @param distance
 	 */
 	public void RegularGoStraight(double distance) {
-		leftMotor.setSpeed(325);
-		rightMotor.setSpeed(325);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), true);
 	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
 	}
@@ -219,14 +219,14 @@ public class Navigation extends Thread{
 		int YLinesToCross = (int) (targety - startingYcoord);
 		int XLinesToCross = (int) (targetx - startingXcoord);
 
-		double extraDistanceY = targety - YLinesToCross;
-		double extraDistanceX = targetx - XLinesToCross;
+		double extraDistanceY = targety - YLinesToCross - startingYcoord;
+		double extraDistanceX = targetx - XLinesToCross - startingXcoord;
 		
 		boolean left = false;
 		boolean right = false;
 		
-		leftMotor.setSpeed(400);
-		rightMotor.setSpeed(400);
+		leftMotor.setSpeed(300);
+		rightMotor.setSpeed(300);
 		
 		while(isNavigatingLY1) {
 		
@@ -259,8 +259,8 @@ public class Navigation extends Thread{
 		
 		isNavigatingLY2 = true;
 		
-		leftMotor.setSpeed(400);
-		rightMotor.setSpeed(400);
+		leftMotor.setSpeed(300);
+		rightMotor.setSpeed(300);
 		
 		while(isNavigatingLY2) {
 			while (counterX2<XLinesToCross)

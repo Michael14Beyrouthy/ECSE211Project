@@ -434,8 +434,8 @@ public class Search implements UltrasonicController, NavigationController{
 
 	    isNavigating = true; 
 	     
-	    double deltaX = x - odometer.getX();
-	    double deltaY = y - odometer.getY();
+	    double deltaX = x - odometer.getXYT()[0];
+	    double deltaY = y - odometer.getXYT()[1];
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
@@ -454,7 +454,7 @@ public class Search implements UltrasonicController, NavigationController{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }    
 
-	    deltaTheta = theta - odometer.getTheta();
+	    deltaTheta = theta - odometer.getXYT()[2];
 	    
 	    if (deltaTheta > 180) { 
 	      deltaTheta -= 360;
