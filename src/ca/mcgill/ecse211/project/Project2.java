@@ -150,9 +150,9 @@ public class Project2 {
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		//Navigation nav = new Navigation(odometer, myColorStatusRight, myColorStatusLeft);
 		// start the ultrasonic localization
-		//USLocalizer.localize();
+		USLocalizer.localize();
 			// run the light localization
-		//lightLocalizer.initialLocalize();
+		lightLocalizer.initialLocalize();
 		
 		/*try {
 			odoThread.wait();
@@ -176,9 +176,9 @@ public class Project2 {
 		
 		
 		/*nav.turnTo(45);*/
-		nav.RegularGoStraight(TILE_SIZE*5);
+		/*nav.RegularGoStraight(TILE_SIZE*5);
 		
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);	
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE);*/	
 		
 		
 		//================================== Used for testing tunnel traversal =========================================================
