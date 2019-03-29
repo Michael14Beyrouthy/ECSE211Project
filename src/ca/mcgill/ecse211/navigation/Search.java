@@ -149,6 +149,10 @@ public class Search implements  NavigationController{
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
+				if(numcans==2) {
+					RegularTravelTo(0,0);
+					return;
+				}
 			//lightcorrection();
 			rAngle=odometer.getTheta();
 			if(j!=0) {
@@ -163,7 +167,10 @@ public class Search implements  NavigationController{
 			}
 			else {
 				for(int j=0;j<row+1;j++) {
-					System.out.println(i+"  "+j);
+					if(numcans==2) {
+						RegularTravelTo(0,0);
+						return;
+					}
 						//lightcorrection();
 						rAngle=odometer.getTheta();
 						if(j!=row) {
@@ -192,10 +199,10 @@ public class Search implements  NavigationController{
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
 			turnRight(10);
-		if(fetchUS()<35) {
+		if(fetchUS()<33) {
 			leftMotor.stop();
 			rightMotor.stop();
-			rDistance=distance;
+			rDistance=fetchUS();
 			get();
 		}
 		}
@@ -204,10 +211,10 @@ public class Search implements  NavigationController{
 		else {
 		for(int i=0;i<10;i++) {
 			turnLeft(10);
-		if(fetchUS()<35) {
+		if(fetchUS()<33) {
 			leftMotor.stop();
 			rightMotor.stop();
-			rDistance=distance;
+			rDistance=fetchUS();
 			get();
 		}
 		}
@@ -221,8 +228,8 @@ public class Search implements  NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(fetchUS())-10,true);
-		rightMotor.rotate(convertDistance(fetchUS())-10,false);	
+		leftMotor.rotate(convertDistance(fetchUS())-12,true);
+		rightMotor.rotate(convertDistance(fetchUS())-12,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
@@ -236,14 +243,19 @@ public class Search implements  NavigationController{
 			
 		leftMotor.rotate(convertDistance(25),true);
 		rightMotor.rotate(convertDistance(25),false);
-		int color=-1;
 		cc= new ColorCalibration(sensorMotor);
-			clawMotor.setSpeed(ROTATE_SPEED);
-			clawMotor.rotate(convertAngle(50),false);
-			backtopath(rDistance);
-			numcans++;
-		if(numcans>2)
-			RegularTravelTo(0,0);
+		cc.identifyColor();
+		leftMotor.rotate(convertDistance(5),true);
+		rightMotor.rotate(convertDistance(5),false);	
+		clawMotor.setSpeed(ROTATE_SPEED);
+		clawMotor.rotate(convertAngle(50),false);
+		leftMotor.rotate(convertDistance(-5),true);
+		rightMotor.rotate(convertDistance(-5),false);	
+		
+		backtopath(rDistance);
+		numcans++;
+		
+			
 		/*if(cc.identifyColor()==targetcolor) {
 			clawMotor.setSpeed(ROTATE_SPEED);
 			clawMotor.rotate(convertAngle(50),false);		
