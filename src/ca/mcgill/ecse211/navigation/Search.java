@@ -37,7 +37,7 @@ public class Search implements  NavigationController{
 	private double rDistance=0;
 	private double rAngle=0;
 	private double color = 0.30;
-	
+	private int numcans = 0;
 	  private float[] usData;
 	  private SampleProvider usDistance;
 	
@@ -238,18 +238,12 @@ public class Search implements  NavigationController{
 		rightMotor.rotate(convertDistance(25),false);
 		int color=-1;
 		cc= new ColorCalibration(sensorMotor);
-		if(cc.identifyColor()==targetcolor) {
 			clawMotor.setSpeed(ROTATE_SPEED);
 			clawMotor.rotate(convertAngle(50),false);
 			backtopath(rDistance);
-		}
-		else {
-			leftMotor.rotate(convertDistance(-10),true);
-			rightMotor.rotate(convertDistance(-10),false);
-			clawMotor.setSpeed(ROTATE_SPEED);
-			clawMotor.rotate(convertAngle(50),false);	
-			backtopath(rDistance-10);
-		}
+			numcans++;
+		if(numcans>2)
+			RegularTravelTo(0,0);
 		/*if(cc.identifyColor()==targetcolor) {
 			clawMotor.setSpeed(ROTATE_SPEED);
 			clawMotor.rotate(convertAngle(50),false);		
