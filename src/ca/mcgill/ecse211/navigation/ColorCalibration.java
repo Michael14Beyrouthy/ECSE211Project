@@ -65,7 +65,7 @@ public class ColorCalibration {
 	public ColorCalibration(EV3MediumRegulatedMotor sensorMotor) {
 		this.sensorMotor = sensorMotor;
 		onLeftSide = false;
-		sensorMotor.setSpeed(70);
+		sensorMotor.setSpeed(100);
 	}
 	
 	/**

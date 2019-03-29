@@ -11,6 +11,7 @@ import lejos.hardware.port.Port;
 import lejos.hardware.Sound;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import ca.mcgill.ecse211.controller.UltrasonicPoller;
 
@@ -74,6 +75,8 @@ public class Search implements  NavigationController{
 		rightMotor.stop();
 		leftMotor.setAcceleration(600);
 		rightMotor.setAcceleration(600);
+		leftMotor.setSpeed(250);
+    	rightMotor.setSpeed(250);
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odometer = odometer;
@@ -143,44 +146,54 @@ public class Search implements  NavigationController{
 		
 		int column=SZR_UR_x-SZR_LL_x;
 		int row=SZR_UR_y-SZR_LL_y;
-		int targetColor = 1; ///color of can
 
 
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
 				if(numcans==2) {
-					RegularTravelTo(0,0);
+					//RegularTravelTo(SZR_LL_x,SZR_LL_y);
+					stopMoving();
 					return;
 				}
-			//lightcorrection();
+			
+			
+			
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
 				movingforward();
 			}
-			else
+			else {
+				correct();
 				turnLeft(90);
 			}
+			}
 			movingforward();
+			correct();
 			turnLeft(90);
 			}
 			else {
 				for(int j=0;j<row+1;j++) {
 					if(numcans==2) {
-						RegularTravelTo(0,0);
+						//RegularTravelTo(SZR_LL_x,SZR_LL_y);
+						stopMoving();
 						return;
 					}
-						//lightcorrection();
+					
+					
 						rAngle=odometer.getTheta();
 						if(j!=row) {
 						searching(i);
 						movingforward();
 						}
-						else 
+						else {
+							correct();
 							turnRight(90);
+						}
 				}
 			movingforward();
+			correct();
 			turnRight(90);
 			}
 			
@@ -196,29 +209,33 @@ public class Search implements  NavigationController{
 	 * @param step
 	 */
 	public void searching(int step) {
+		correct();
 		if(step%2==0) {
 		for(int i=0;i<10;i++) {
 			turnRight(10);
-		if(fetchUS()<33) {
+		if(fetchUS()<25) {
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=fetchUS();
 			get();
 		}
 		}
-		turnLeft(98);
+		correct();
+		turnLeft(90);
 		}
 		else {
 		for(int i=0;i<10;i++) {
 			turnLeft(10);
-		if(fetchUS()<33) {
+		if(fetchUS()<25) {
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=fetchUS();
 			get();
 		}
 		}
-		turnRight(98);
+		correct();
+		turnRight(90);
+		
 		}
 	}
 	
@@ -243,17 +260,21 @@ public class Search implements  NavigationController{
 			
 		leftMotor.rotate(convertDistance(25),true);
 		rightMotor.rotate(convertDistance(25),false);
-		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor();
-		leftMotor.rotate(convertDistance(5),true);
-		rightMotor.rotate(convertDistance(5),false);	
+		
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
-		leftMotor.rotate(convertDistance(-5),true);
-		rightMotor.rotate(convertDistance(-5),false);	
 		
-		backtopath(rDistance);
+		clawMotor.setSpeed(ROTATE_SPEED);
+		clawMotor.rotate(convertAngle(-50),false);
+		
+		cc= new ColorCalibration(sensorMotor);
+		cc.identifyColor();
+		clawMotor.setSpeed(ROTATE_SPEED);
+		clawMotor.rotate(convertAngle(50),false);
+	
 		numcans++;
+		backtopath(rDistance);
+		
 		
 			
 		/*if(cc.identifyColor()==targetcolor) {
@@ -266,9 +287,55 @@ public class Search implements  NavigationController{
 		
 	}
 	
+	
+	
+	private void correct() {
+
+		boolean rightLineDetected = false;
+		boolean leftLineDetected = false;
+		
+		leftMotor.setSpeed(150);
+    	rightMotor.setSpeed(150);
+    	leftMotor.forward();
+    	rightMotor.forward();
+		// Move the robot until one of the sensors detects a line
+		while (!leftLineDetected && !rightLineDetected ) {
+			if (rightLS.fetch() < color) {
+				rightLineDetected = true;
+				// Stop the right motor
+				this.stopMoving(false, true);
+
+			} else if (leftLS.fetch() < color) {
+				leftLineDetected = true;
+
+				// Stop the left motor
+				this.stopMoving(true, false);
+			}
+		}
+
+		// Keep moving the left/right motor until both lines have been detected
+		while ((!leftLineDetected || !rightLineDetected)) {
+			// If the other line detected, stop the motors
+			if (rightLineDetected && leftLS.fetch() < color) {
+				leftLineDetected = true;
+				this.stopMoving();
+			} else if (leftLineDetected && rightLS.fetch() < color) {
+				rightLineDetected = true;
+				this.stopMoving();
+			}
+		}
+		leftMotor.setSpeed(250);
+    	rightMotor.setSpeed(250);
+		leftMotor.rotate(-convertDistance(6.5),true);
+  	  	rightMotor.rotate(-convertDistance(6.5),false);
+  	 
+		
+
+	}
+	
 	/**
 	 * Corrects robot with light sensors
-	 */
+	/* 
 	public void lightcorrection() {
 		long correctionStart, correctionEnd;
 
@@ -312,7 +379,7 @@ public class Search implements  NavigationController{
 	      }
 	    }
 	    }
-	}
+	}*/
 
 	/**
 	 * Puts the robot back on track
@@ -320,8 +387,8 @@ public class Search implements  NavigationController{
 	 */
 	void backtopath(double distance) {
 		System.out.println("r  " +distance);
-		leftMotor.rotate(-convertDistance(distance+7),true);
-		rightMotor.rotate(-convertDistance(distance+7),false);
+		leftMotor.rotate(-convertDistance(distance+13),true);
+		rightMotor.rotate(-convertDistance(distance+13),false);
 		
 		
 		
@@ -331,8 +398,8 @@ public class Search implements  NavigationController{
 	 * Moves robot forward a certain distance
 	 */
 	void movingforward() {
-		leftMotor.rotate(convertDistance(30),true);
-		rightMotor.rotate(convertDistance(30),false);
+		leftMotor.rotate(convertDistance(25),true);
+		rightMotor.rotate(convertDistance(25),false);
 	}
 	
 	/**
@@ -448,8 +515,8 @@ public class Search implements  NavigationController{
 	    
 	    turnTo(deltaTheta);
 
-	    leftMotor.setSpeed(150);
-	    rightMotor.setSpeed(150);
+	    leftMotor.setSpeed(250);
+	    rightMotor.setSpeed(250);
 	    
 	    RegularGoStraight(distance); 
 	   
@@ -466,11 +533,33 @@ public class Search implements  NavigationController{
 	 * @param distance
 	 */
 	public void RegularGoStraight(double distance) {
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
+		leftMotor.setSpeed(250);
+		rightMotor.setSpeed(250);
 		leftMotor.rotate(convertDistance(distance), true);
 	    rightMotor.rotate(convertDistance(distance), false);
-	}}
+	}
+	
+	
+	
+	
+	
+	public void stopMoving(boolean stopLeft, boolean stopRight) {
+		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
+		leftMotor.startSynchronization();
+		if (stopLeft)
+			leftMotor.stop();
+		if (stopRight)
+			rightMotor.stop();
+		leftMotor.endSynchronization();
+	}
+	
+
+	public void stopMoving() {
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+	}
+
+}
 
 
 
