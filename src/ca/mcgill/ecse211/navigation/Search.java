@@ -228,8 +228,8 @@ public class Search implements  NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(fetchUS())-12,true);
-		rightMotor.rotate(convertDistance(fetchUS())-12,false);	
+		leftMotor.rotate(convertDistance(fetchUS())-14,true);
+		rightMotor.rotate(convertDistance(fetchUS())-14,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
