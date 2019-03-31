@@ -152,7 +152,7 @@ public class Search implements  NavigationController{
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
 				if(numcans==2) {
-					//RegularTravelTo(SZR_LL_x,SZR_LL_y);
+					RegularTravelTo(SZR_LL_x,SZR_LL_y);
 					stopMoving();
 					return;
 				}
@@ -176,7 +176,7 @@ public class Search implements  NavigationController{
 			else {
 				for(int j=0;j<row+1;j++) {
 					if(numcans==2) {
-						//RegularTravelTo(SZR_LL_x,SZR_LL_y);
+						RegularTravelTo(SZR_LL_x,SZR_LL_y);
 						stopMoving();
 						return;
 					}
@@ -294,8 +294,8 @@ public class Search implements  NavigationController{
 		boolean rightLineDetected = false;
 		boolean leftLineDetected = false;
 		
-		leftMotor.setSpeed(150);
-    	rightMotor.setSpeed(150);
+		leftMotor.setSpeed(300);
+    	rightMotor.setSpeed(300);
     	leftMotor.forward();
     	rightMotor.forward();
 		// Move the robot until one of the sensors detects a line
@@ -484,8 +484,8 @@ public class Search implements  NavigationController{
 
 	    isNavigating = true; 
 	     
-	    double deltaX = x - odometer.getXYT()[0];
-	    double deltaY = y - odometer.getXYT()[1];
+	    double deltaX = x*30.48 - odometer.getXYT()[0];
+	    double deltaY = y*30.48 - odometer.getXYT()[1];
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
