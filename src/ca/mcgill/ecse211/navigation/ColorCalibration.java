@@ -94,7 +94,7 @@ public class ColorCalibration {
 				blueArray[i] = RGBValues[2];
 				i++;
 			}
-			sensorMotor.rotate(95,false);
+			sensorMotor.rotate(105,false);
 			onLeftSide = true;
 		}
 		else {

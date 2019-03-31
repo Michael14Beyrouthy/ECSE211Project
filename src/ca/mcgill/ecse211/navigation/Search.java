@@ -149,18 +149,16 @@ public class Search implements  NavigationController{
 
 
 		for(int i=0;i<4;i++){
+			if(numcans==2)
+				return;
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
-
-				if(numcans==2) {
-					RegularTravelTo(SZR_LL_x,SZR_LL_y);
-					stopMoving();
-					return;
-				}
 			
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
+				if(numcans==2)
+					return;
 				movingforward();
 			}
 			else {
@@ -179,6 +177,8 @@ public class Search implements  NavigationController{
 						rAngle=odometer.getTheta();
 						if(j!=row) {
 						searching(i);
+						if(numcans==2)
+							return;
 						movingforward();
 						}
 						else {
@@ -243,13 +243,13 @@ public class Search implements  NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(fetchUS())+15,true);
-		rightMotor.rotate(convertDistance(fetchUS())+15,false);	
+		leftMotor.rotate(convertDistance(fetchUS())+25,true);
+		rightMotor.rotate(convertDistance(fetchUS())+25,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
 		WeightIdentification test = new WeightIdentification(clawMotor);
-		test.getWeight();
+		//test.getWeight();
 		leftMotor.rotate(convertDistance(-10),true);
 		rightMotor.rotate(convertDistance(-10),false);
 		
@@ -275,6 +275,7 @@ public class Search implements  NavigationController{
 		backtopath(rDistance);
 		if(numcans==2) {
 			RegularTravelTo(SZR_LL_x,SZR_LL_y);
+			turnTo(0);
 			stopMoving();
 			Sound.beepSequence();
 			return;
@@ -298,8 +299,8 @@ public class Search implements  NavigationController{
 		boolean rightLineDetected = false;
 		boolean leftLineDetected = false;
 		
-		leftMotor.setSpeed(300);
-    	rightMotor.setSpeed(300);
+		leftMotor.setSpeed(150);
+    	rightMotor.setSpeed(150);
     	leftMotor.forward();
     	rightMotor.forward();
 		// Move the robot until one of the sensors detects a line

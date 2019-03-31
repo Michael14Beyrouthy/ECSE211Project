@@ -243,7 +243,7 @@ public class Project2 {
 	    
 //=========================================Start this code facing 0.0 at beginning of search zone===========================	    
 	    
-	    odometer.setXYT(WifiInfo.SZR_LL_x, WifiInfo.SZR_LL_y, 0.0);
+/*	    odometer.setXYT(WifiInfo.SZR_LL_x, WifiInfo.SZR_LL_y, 0.0);
 	    
 	    nav.travelTo(WifiInfo.SZR_LL_x-0.5, WifiInfo.SZR_LL_y+0.5);
 	    nav.TravelToLXdown(WifiInfo.TNR_UR_x+0.5, WifiInfo.SZR_UR_y-0.5);
@@ -252,7 +252,7 @@ public class Project2 {
 	    nav.traverseTunnel();
 	    
 	    nav.TravelToLXYdown(WifiInfo.Red_UR_x-0.5, WifiInfo.Red_UR_y-0.5);
-		
+		*/
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
