@@ -14,7 +14,7 @@ public class WifiInfo {
  * During the demo and final demo, it is "192.168.2.3"
  * When we test, it is the laptop's IP assigned by the DPM router (get from network settings on laptop)
  */
- private static final String SERVER_IP = "192.168.2.5";
+ private static final String SERVER_IP = "192.168.2.12";
  /*
   * Our team number
   */

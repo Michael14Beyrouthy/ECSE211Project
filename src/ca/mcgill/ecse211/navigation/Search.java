@@ -152,7 +152,7 @@ public class Search implements  NavigationController{
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
 				if(numcans==2) {
-					RegularTravelTo(SZR_LL_x,SZR_LL_y);
+					//RegularTravelTo(SZR_LL_x,SZR_LL_y);
 					stopMoving();
 					return;
 				}
@@ -245,12 +245,13 @@ public class Search implements  NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(fetchUS())-14,true);
-		rightMotor.rotate(convertDistance(fetchUS())-14,false);	
+		leftMotor.rotate(convertDistance(fetchUS())+15,true);
+		rightMotor.rotate(convertDistance(fetchUS())+15,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
-		
+		WeightIdentification test = new WeightIdentification(clawMotor);
+		test.getWeight();
 		leftMotor.rotate(convertDistance(-10),true);
 		rightMotor.rotate(convertDistance(-10),false);
 		

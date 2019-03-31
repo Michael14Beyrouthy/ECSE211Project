@@ -21,6 +21,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
 import ca.mcgill.ecse211.navigation.Navigation;
 import ca.mcgill.ecse211.navigation.Search;
+import ca.mcgill.ecse211.navigation.WeightIdentification;
 //import ca.mcgill.ecse211.weighing.*;
 
 
@@ -69,8 +70,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		//WifiInfo wifi = new WifiInfo();
-		//wifi.getInfo();	
+		WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();	
 		
 		//System.out.println("");
 		//System.out.println("");
@@ -132,22 +133,8 @@ public class Project2 {
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
 		
-		//search.searchcans();
-		clawMotor.flt();
-		clawMotor.close();
-		UnregulatedMotor testMotor=new UnregulatedMotor(LocalEV3.get().getPort("B"));
-		int firstTacho = testMotor.getTachoCount();
-		testMotor.setPower(15);
-		testMotor.forward();
-		try {
-		      Thread.sleep(500);
-		    } catch (InterruptedException e) {
-		      // There is nothing to be done here
-		    }
-		testMotor.stop();
-		int secondTacho = testMotor.getTachoCount();
-		System.out.println("first: " + firstTacho);
-		System.out.println("second: " + secondTacho);
+		search.searchcans();
+		
 			//lcd.clear();
 		
 		/*leftMotor.flt();
@@ -171,6 +158,7 @@ public class Project2 {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
 */		
 		//System.out.println("hi");
+		
 		
 		// Create ultrasonicsensor light localizer and navigation objects
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
