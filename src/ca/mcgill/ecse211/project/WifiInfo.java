@@ -40,7 +40,10 @@ public class WifiInfo {
  public static int SZR_UR_x;
  public static int SZR_UR_y;
  
- 
+ public static int Red_LL_x;
+ public static int Red_LL_y;
+ public static int Red_UR_x;
+ public static int Red_UR_y; 
  
  
  
@@ -63,10 +66,10 @@ public class WifiInfo {
        parameters[1]=1;//((Long) data.get("GreenTeam")).intValue(); //can to look for, for the beta demo it is
                                                                 // in the GreenTeam key
        
-       parameters[2]=((Long) data.get("Red_LL_x")).intValue(); //lower left x of base region
-       parameters[3]=((Long) data.get("Red_LL_y")).intValue(); //lower left y of base region
-       parameters[4]=((Long) data.get("Red_UR_x")).intValue(); //Upper right x of base region
-       parameters[5]=((Long) data.get("Red_UR_y")).intValue(); //Upper right y of base region
+       Red_LL_x=((Long) data.get("Red_LL_x")).intValue(); //lower left x of base region
+       Red_LL_y=((Long) data.get("Red_LL_y")).intValue(); //lower left y of base region
+       Red_UR_x=((Long) data.get("Red_UR_x")).intValue(); //Upper right x of base region
+       Red_UR_y=((Long) data.get("Red_UR_y")).intValue(); //Upper right y of base region
        
        parameters[6]=((Long) data.get("Island_LL_x")).intValue(); //lower left x of island
        parameters[7]=((Long) data.get("Island_LL_y")).intValue(); //lower left y of island

@@ -28,6 +28,8 @@ public class Navigation extends Thread{
 	public boolean isNavigatingLX2 = false;
 	public boolean isNavigatingLY1 = false;	
 	public boolean isNavigatingLY2 = false;
+	public boolean isNavigatingLXY1 = false;	
+	public boolean isNavigatingLXY2 = false;
 	public double sensorDist = 6.5; 
 	private double color = 0.30;
 
@@ -270,7 +272,7 @@ public class Navigation extends Thread{
 				
 			Sound.beepSequenceUp();
 			odometer.setX(((counterX+startingXcoord+1)*30.48)+sensorDist);
-			odometer.setTheta(0.0);		
+			odometer.setTheta(90.0);		
 			counterX++;
 			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
 		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
@@ -335,7 +337,7 @@ public class Navigation extends Thread{
 				
 			Sound.beepSequenceUp();
 			odometer.setY(((startingYcoord-counterY)*30.48)-sensorDist);
-			odometer.setTheta(0.0);		
+			odometer.setTheta(180.0);		
 			counterY++;
 			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
 		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
@@ -355,7 +357,7 @@ public class Navigation extends Thread{
 			e.printStackTrace();
 		}
 		
-		this.turnTo(90);
+		this.turnTo(270);
 		
 		isNavigatingLY2 = true;
 		
@@ -377,7 +379,7 @@ public class Navigation extends Thread{
 				
 			Sound.beepSequenceUp();
 			odometer.setX(((counterX+startingXcoord+1)*30.48)+sensorDist);
-			odometer.setTheta(0.0);		
+			odometer.setTheta(90.0);		
 			counterX++;
 			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
 		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
@@ -392,6 +394,192 @@ public class Navigation extends Thread{
 		}
 		
 	}
+	
+public void TravelToLXdown(double targetx, double targety) {
+		
+		isNavigatingLX1 = true;
+		
+		double minAng1 = computeAngle(targetx, (odometer.getXYT()[1]/Project2.TILE_SIZE));
+		this.turnTo(minAng1);
+		double startingXcoord = (int)(odometer.getXYT()[0]/30.48);
+		double startingYcoord = (int)(odometer.getXYT()[1]/30.48);
+		int counterY = 0;
+		int counterX = 0;
+		
+		int counterY2 = 0;
+		int counterX2 = 0;
+		
+		int YLinesToCross = Math.abs((int) (targety - startingYcoord));
+		int XLinesToCross = Math.abs((int) (targetx - startingXcoord));
+
+		double extraDistanceY = Math.abs(targety - YLinesToCross - startingYcoord);
+		double extraDistanceX = Math.abs(targetx - XLinesToCross - startingXcoord);
+		
+		boolean left = false;
+		boolean right = false;
+		
+		leftMotor.setSpeed(300);
+		rightMotor.setSpeed(300);
+		
+		while(isNavigatingLX1) {
+			
+			while (counterX2<XLinesToCross)
+			{
+				this.moveForward();
+				correct();
+				
+			Sound.beepSequenceUp();
+			odometer.setX(((startingXcoord-counterX)*30.48)-sensorDist);
+			odometer.setTheta(270.0);		
+			counterX++;
+			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
+		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
+		    counterX2++;
+			}
+					
+		    RegularGoStraight(extraDistanceX*Project2.TILE_SIZE-sensorDist); 
+		    
+		    isNavigatingLX1 = false;
+			
+	}
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		this.turnTo(90);
+		
+		isNavigatingLX2 = true;
+		
+/*=============================================================================================================
+* 
+* SET SPEED HERE (3/3)
+*
+*==============================================================================================================
+*/
+		
+		leftMotor.setSpeed(325);
+		rightMotor.setSpeed(325);
+		
+		while(isNavigatingLX2) {
+			while (counterY2<YLinesToCross)
+			{
+				this.moveForward();
+				correct();
+				
+			Sound.beepSequenceUp();
+			odometer.setY(((counterY+startingYcoord+1)*30.48)+sensorDist);
+			odometer.setTheta(0.0);		
+			counterY++;
+			leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
+		    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
+			//System.out.println("hi");
+		    counterY2++;
+			}
+			
+		    RegularGoStraight(extraDistanceY*Project2.TILE_SIZE-sensorDist); 
+		    
+		    isNavigatingLX2 = false;
+		
+		}
+		
+	}
+
+public void TravelToLXYdown(double targetx, double targety) {
+	
+	isNavigatingLXY1 = true;
+	
+	double minAng1 = computeAngle(targetx, (odometer.getXYT()[1]/Project2.TILE_SIZE));
+	//this.turnTo(minAng1);
+	double startingXcoord = (int)(odometer.getXYT()[0]/30.48);
+	double startingYcoord = (int)(odometer.getXYT()[1]/30.48);
+	int counterY = 0;
+	int counterX = 0;
+	
+	int counterY2 = 0;
+	int counterX2 = 0;
+	
+	int YLinesToCross = Math.abs((int) (targety - startingYcoord));
+	int XLinesToCross = Math.abs((int) (targetx - startingXcoord));
+
+	double extraDistanceY = Math.abs(targety - YLinesToCross - startingYcoord);
+	double extraDistanceX = Math.abs(targetx - XLinesToCross - startingXcoord);
+	
+	boolean left = false;
+	boolean right = false;
+	
+	leftMotor.setSpeed(300);
+	rightMotor.setSpeed(300);
+	
+	while(isNavigatingLXY1) {
+		
+		while (counterX2<XLinesToCross)
+		{
+			this.moveForward();
+			correct();
+			
+		Sound.beepSequenceUp();
+		odometer.setX(((startingXcoord-counterX)*30.48)-sensorDist);
+		odometer.setTheta(270.0);		
+		counterX++;
+		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
+	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
+	    counterX2++;
+		}
+				
+	    RegularGoStraight(extraDistanceX*Project2.TILE_SIZE-sensorDist); 
+	    
+	    isNavigatingLXY1 = false;
+		
+}
+
+	try {
+		Thread.sleep(1000);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	this.turnTo(270);
+	
+	isNavigatingLXY2 = true;
+	
+/*=============================================================================================================
+* 
+* SET SPEED HERE (3/3)
+*
+*==============================================================================================================
+*/
+	
+	leftMotor.setSpeed(325);
+	rightMotor.setSpeed(325);
+	
+	while(isNavigatingLX2) {
+		while (counterY2<YLinesToCross)
+		{
+			this.moveForward();
+			correct();
+			
+		Sound.beepSequenceUp();
+		odometer.setY(((startingYcoord-counterY)*30.48)-sensorDist);
+		odometer.setTheta(180.0);		
+		counterY++;
+		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), true);
+	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, 1), false);
+		//System.out.println("hi");
+	    counterY2++;
+		}
+		
+	    RegularGoStraight(extraDistanceY*Project2.TILE_SIZE-sensorDist); 
+	    
+	    isNavigatingLXY2 = false;
+	
+	}
+	
+}
 	
 /*public void TravelToLYdown(double targetx, double targety) {
 		
