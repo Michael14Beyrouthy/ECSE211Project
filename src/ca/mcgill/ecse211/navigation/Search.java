@@ -151,14 +151,7 @@ public class Search implements  NavigationController{
 		for(int i=0;i<4;i++){
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
-				if(numcans==2) {
-					RegularTravelTo(SZR_LL_x,SZR_LL_y);
-					stopMoving();
-					return;
-				}
-			
-			
-			
+							
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
@@ -175,11 +168,6 @@ public class Search implements  NavigationController{
 			}
 			else {
 				for(int j=0;j<row+1;j++) {
-					if(numcans==2) {
-						RegularTravelTo(SZR_LL_x,SZR_LL_y);
-						stopMoving();
-						return;
-					}
 					
 					
 						rAngle=odometer.getTheta();
@@ -218,6 +206,8 @@ public class Search implements  NavigationController{
 			rightMotor.stop();
 			rDistance=fetchUS();
 			get();
+			if(numcans==2)
+				return;
 		}
 		}
 		correct();
@@ -231,6 +221,8 @@ public class Search implements  NavigationController{
 			rightMotor.stop();
 			rDistance=fetchUS();
 			get();
+			if(numcans==2)
+				return;
 		}
 		}
 		correct();
@@ -274,7 +266,12 @@ public class Search implements  NavigationController{
 	
 		numcans++;
 		backtopath(rDistance);
-		
+		if(numcans==2) {
+			RegularTravelTo(SZR_LL_x,SZR_LL_y);
+			stopMoving();
+			Sound.beepSequence();
+			return;
+		}
 		
 			
 		/*if(cc.identifyColor()==targetcolor) {
