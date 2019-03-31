@@ -6,14 +6,18 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.motor.UnregulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
+import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
 import ca.mcgill.ecse211.navigation.Navigation;
 import ca.mcgill.ecse211.navigation.Search;
@@ -43,18 +47,18 @@ public class Project2 {
 	private static final SensorModes myColorRight = new EV3ColorSensor(portColourRight);
 	private static final SampleProvider myColorStatusRight = myColorRight.getMode("RGB");
 		
-	private static final EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));;
+	private static final EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 	private static final EV3MediumRegulatedMotor sensorMotor=new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
-	
 	private static LightSensorController leftLS = new LightSensorController(myColorLeft);
 	private static LightSensorController rightLS = new LightSensorController(myColorRight);
+	private static UltrasonicController search;
 	
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
 	public static final double TRACK = 13.75;
 	public static final double TILE_SIZE = 30.48;
-	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 74;
+	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
 	
 
 	/**
@@ -65,16 +69,16 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		/*WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();	
+		//WifiInfo wifi = new WifiInfo();
+		//wifi.getInfo();	
 		
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");*/
 		
 		int buttonChoice;
 
@@ -86,10 +90,13 @@ public class Project2 {
 
 		@SuppressWarnings("resource") // Because we don't bother to close this resource
 		// Instance  ultrasonicsensor 
+		UltrasonicPoller usPoller = null;
 		SensorModes ultrasonicSensor = new EV3UltrasonicSensor(usPort);
+		
 		// usDistance fetch samples from this instance
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");
-		
+		float[] usData = new float[usDistance.sampleSize()];
+
 		
 
 		/*do {
@@ -114,14 +121,34 @@ public class Project2 {
 		}*/
 
 		// Start odometer and display threads
+		
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
 
 		//Thread odoThread2 = new Thread(odometer2);
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
-
-		//lcd.clear();
+		
+		Search search = new Search(rightMotor, leftMotor,
+				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
+		
+		//search.searchcans();
+		clawMotor.flt();
+		clawMotor.close();
+		UnregulatedMotor testMotor=new UnregulatedMotor(LocalEV3.get().getPort("B"));
+		int firstTacho = testMotor.getTachoCount();
+		testMotor.setPower(15);
+		testMotor.forward();
+		try {
+		      Thread.sleep(500);
+		    } catch (InterruptedException e) {
+		      // There is nothing to be done here
+		    }
+		testMotor.stop();
+		int secondTacho = testMotor.getTachoCount();
+		System.out.println("first: " + firstTacho);
+		System.out.println("second: " + secondTacho);
+			//lcd.clear();
 		
 		/*leftMotor.flt();
 		rightMotor.flt();
@@ -150,9 +177,9 @@ public class Project2 {
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		//Navigation nav = new Navigation(odometer, myColorStatusRight, myColorStatusLeft);
 		// start the ultrasonic localization
-		USLocalizer.localize();
+		//USLocalizer.localize();
 			// run the light localization
-		lightLocalizer.initialLocalize();
+		//lightLocalizer.initialLocalize();
 		
 		/*try {
 			odoThread.wait();
@@ -184,9 +211,9 @@ public class Project2 {
 		//================================== Used for testing tunnel traversal =========================================================
 		
 		
-		nav.RegularTravelTo(1.5*TILE_SIZE, 1.5*TILE_SIZE);
+		//nav.RegularTravelTo(1.5*TILE_SIZE, 1.5*TILE_SIZE);
 		
-		nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
+		//nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
 		
 		//nav.RegularGoStraight(3*30.48);
 		
@@ -194,11 +221,11 @@ public class Project2 {
 		
 		//nav.TravelToLYdown((double)(WifiInfo.SZR_LL_x), (double)(WifiInfo.SZR_LL_y));
 		
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
-		Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
+		//Sound.beep();
 		
 		//nav.TravelToLYup((double)(WifiInfo.SZR_UR_x), (double)(WifiInfo.SZR_UR_y));
 		
@@ -209,7 +236,7 @@ public class Project2 {
 		
 
 		
-		nav.traverseTunnel();
+		//nav.traverseTunnel();
 		
 		
 		//===============================================End of area for testing tunnel traversal ====================================================================
@@ -217,9 +244,8 @@ public class Project2 {
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		Search search = new Search(rightMotor, leftMotor,
-				odometer,  ultrasonicSensor,  leftLS,  rightLS, clawMotor, sensorMotor);
-	    search.searchcans();
+		
+	  
 		
 	
 
@@ -243,6 +269,9 @@ public class Project2 {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
 		System.exit(0);
+	}
+	static int convertDistance(double distance) {
+		return (int) ((180.0 * distance) / (Math.PI * WHEEL_RAD));
 	}
 
 }
