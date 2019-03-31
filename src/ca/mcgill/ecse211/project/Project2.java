@@ -6,11 +6,14 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
+import lejos.hardware.motor.UnregulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
@@ -44,9 +47,8 @@ public class Project2 {
 	private static final SensorModes myColorRight = new EV3ColorSensor(portColourRight);
 	private static final SampleProvider myColorStatusRight = myColorRight.getMode("RGB");
 		
-	private static final EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));;
+	private static final EV3LargeRegulatedMotor clawMotor=new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 	private static final EV3MediumRegulatedMotor sensorMotor=new EV3MediumRegulatedMotor(LocalEV3.get().getPort("C"));
-	
 	private static LightSensorController leftLS = new LightSensorController(myColorLeft);
 	private static LightSensorController rightLS = new LightSensorController(myColorRight);
 	private static UltrasonicController search;
@@ -67,8 +69,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();	
+		//WifiInfo wifi = new WifiInfo();
+		//wifi.getInfo();	
 		
 		//System.out.println("");
 		//System.out.println("");
@@ -130,7 +132,22 @@ public class Project2 {
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
 		
-		search.searchcans();
+		//search.searchcans();
+		clawMotor.flt();
+		clawMotor.close();
+		UnregulatedMotor testMotor=new UnregulatedMotor(LocalEV3.get().getPort("B"));
+		int firstTacho = testMotor.getTachoCount();
+		testMotor.setPower(15);
+		testMotor.forward();
+		try {
+		      Thread.sleep(500);
+		    } catch (InterruptedException e) {
+		      // There is nothing to be done here
+		    }
+		testMotor.stop();
+		int secondTacho = testMotor.getTachoCount();
+		System.out.println("first: " + firstTacho);
+		System.out.println("second: " + secondTacho);
 			//lcd.clear();
 		
 		/*leftMotor.flt();
@@ -240,6 +257,9 @@ public class Project2 {
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
 		System.exit(0);
+	}
+	static int convertDistance(double distance) {
+		return (int) ((180.0 * distance) / (Math.PI * WHEEL_RAD));
 	}
 
 }
