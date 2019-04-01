@@ -21,7 +21,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
 import ca.mcgill.ecse211.navigation.Navigation;
 import ca.mcgill.ecse211.navigation.Search;
-import ca.mcgill.ecse211.navigation.WeightIdentification;
+//import ca.mcgill.ecse211.navigation.WeightIdentification;
 //import ca.mcgill.ecse211.weighing.*;
 
 
@@ -57,9 +57,10 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static final double TRACK = 13.75;
+	public static final double TRACK = 14.13;
+	public static final double TRACK2= 14.4;
 	public static final double TILE_SIZE = 30.48;
-	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
+	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 75;
 	
 
 	/**
@@ -77,9 +78,9 @@ public class Project2 {
 		//System.out.println("");
 		//System.out.println("");
 		//System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
+		//System.out.println("");
 		
 		int buttonChoice;
 
@@ -133,9 +134,9 @@ public class Project2 {
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
 		
+
 		search.searchcans();
-		
-			//lcd.clear();
+		//lcd.clear();
 		
 		/*leftMotor.flt();
 		rightMotor.flt();
@@ -242,6 +243,7 @@ public class Project2 {
 		
 	    
 //=========================================Start this code facing 0.0 at beginning of search zone===========================	    
+
 	    
 /*	    odometer.setXYT(WifiInfo.SZR_LL_x, WifiInfo.SZR_LL_y, 0.0);
 	    
@@ -251,8 +253,32 @@ public class Project2 {
 	    nav.turnTo(270);
 	    nav.traverseTunnel();
 	    
-	    nav.TravelToLXYdown(WifiInfo.Red_UR_x-0.5, WifiInfo.Red_UR_y-0.5);
-		*/
+
+	    nav.TravelToLXYdown(WifiInfo.Red_UR_x-0.5, WifiInfo.Red_UR_y-0.5);*/
+	    
+	    /*odometer.setXYT(6*TILE_SIZE, TILE_SIZE, 0.0);
+	    
+	    nav.newTravelTo(4, 2);
+	    nav.localizeBeforeTunnel(3.5, 2.5);
+	    nav.RegularGoStraight(TILE_SIZE*3);
+	    nav.localizeAfterTunnel(0, 0);*/
+	    
+	    /*nav.travelTo(5.5, 1.5);
+	    nav.TravelToLYupXdown(4.5, 4.5);
+
+	    nav.turnTo(270);
+	    nav.traverseTunnel();*/
+		
+		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
+		
+		nav.newTravelTo(2, 2);
+	    nav.localizeBeforeTunnel(3.5, 2.5);
+	    nav.RegularGoStraight(TILE_SIZE*3);
+	    nav.localizeAfterTunnel(0, 0);
+		
+	    
+	    //baby nav.TravelToLXYdown(0.5, 0.5);
+		
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
