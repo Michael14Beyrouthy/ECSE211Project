@@ -68,18 +68,12 @@ public class ColorCalibration {
 		sensorMotor.setSpeed(100);
 	}
 	
-	/**
-	 * run() method
-	 */
-	public void run() {
-		identifyColor();
-	}
 	
 	/**
 	 * Identifies the color of the can in front of the robot
 	 * @return 1, 2, 3 or 4 depending on which colour was detected
 	 */
-	public int identifyColor() {
+	public int identifyColor(int weight) {
 		
 		//rotate the sensor 90 degrees, take a sample of the can color each 9 degrees
 		int i = 0;
@@ -94,7 +88,7 @@ public class ColorCalibration {
 				blueArray[i] = RGBValues[2];
 				i++;
 			}
-			sensorMotor.rotate(95,false);
+			sensorMotor.rotate(105,false);
 			onLeftSide = true;
 		}
 		else {
@@ -124,28 +118,28 @@ public class ColorCalibration {
 	
 		if(sortColors[0]== eGreen) {
 			System.out.println("GREEN");
-			Sound.beep();
+			Sound.playTone(100, weight);
 			return 1;
 		}
 		if(sortColors[0]==eRed) {
 			System.out.println("RED");
-			Sound.beep();
-			Sound.beep();
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
 			return 2;
 		}
 		if(sortColors[0]==eYellow) {
 			System.out.println("YELLOW");
-			Sound.beep();
-			Sound.beep();
-			Sound.beep();
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
 			return 3;
 		}
 		else {
 			System.out.println("BLUE");
-			Sound.beep();
-			Sound.beep();
-			Sound.beep();
-			Sound.beep();
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
 			return 4;
 		}
 	
