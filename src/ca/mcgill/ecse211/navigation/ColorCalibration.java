@@ -25,9 +25,12 @@ public class ColorCalibration {
 	/*
 	 * Target RBG Mean values for a GREEN can
 	 */
-	final private static double GREEN_TR = 0.302959415;
-	final private static double GREEN_TB = 0.263884275;
-	final private static double GREEN_TG = 0.667320124;
+	//final private static double GREEN_TR = 0.302959415;
+	//final private static double GREEN_TB = 0.263884275;
+	//final private static double GREEN_TG = 0.667320124;
+	final private static double GREEN_TR = 0.272959415;
+	final private static double GREEN_TB = 0.173884275;
+	final private static double GREEN_TG = 0.947320124;
 	
 	/*
 	 * Target RBG Mean values for a BLUE can
@@ -46,8 +49,11 @@ public class ColorCalibration {
 	/*
 	 * Target RBG Mean values for a YELLOW can
 	 */
-	final private static double YELLOW_TR = 0.66308114;
-	final private static double YELLOW_TB = 0.298730941;
+	//final private static double YELLOW_TR = 0.66308114;
+	//final private static double YELLOW_TB = 0.298730941;
+	//final private static double YELLOW_TG = 0.518506479;
+	final private static double YELLOW_TR = 0.8308114;
+	final private static double YELLOW_TB = 0.198730941;
 	final private static double YELLOW_TG = 0.518506479;
 	
 	private EV3MediumRegulatedMotor sensorMotor;
