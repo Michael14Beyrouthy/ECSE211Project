@@ -149,18 +149,16 @@ public class Search implements  NavigationController{
 
 
 		for(int i=0;i<4;i++){
+			if(numcans==2)
+				return;
 			if(i%2!=0) {
 			for(int j=row;j>-1;j--) {
-
-				if(numcans==2) {
-					RegularTravelTo(SZR_LL_x,SZR_LL_y);
-					stopMoving();
-					return;
-				}
 			
 			rAngle=odometer.getTheta();
 			if(j!=0) {
 				searching(i);
+				if(numcans==2)
+					return;
 				movingforward();
 			}
 			else {
@@ -179,6 +177,8 @@ public class Search implements  NavigationController{
 						rAngle=odometer.getTheta();
 						if(j!=row) {
 						searching(i);
+						if(numcans==2)
+							return;
 						movingforward();
 						}
 						else {
@@ -212,12 +212,27 @@ public class Search implements  NavigationController{
 			rightMotor.stop();
 			rDistance=fetchUS();
 			get();
-			if(numcans==2)
-				return;
+			
+		
 		}
 		}
 		correct();
 		turnLeft(90);
+		odometer.setTheta(0);
+		if(numcans==2) {
+			correct();
+			RegularTravelTo(SZR_LL_x,SZR_LL_y,0);
+			turnTo(0);
+			/*correct();
+			turnLeft(90);
+			correct();
+			turnRight(90);
+			*/
+			stopMoving();
+			Sound.beepSequence();
+			
+			return;
+		}
 		}
 		else {
 		for(int i=0;i<10;i++) {
@@ -227,12 +242,27 @@ public class Search implements  NavigationController{
 			rightMotor.stop();
 			rDistance=fetchUS();
 			get();
-			if(numcans==2)
-				return;
+			
+			
 		}
 		}
 		correct();
 		turnRight(90);
+		odometer.setTheta(180);
+		if(numcans==2) {
+			correct();
+			RegularTravelTo(SZR_LL_x,SZR_LL_y,1);
+			turnTo(0);
+			/*correct();
+			stopMoving();
+			turnLeft(90);
+			correct();
+			turnRight(90);
+			*/
+			Sound.beepSequence();
+			return;
+		}
+		
 		
 		}
 	}
@@ -243,13 +273,13 @@ public class Search implements  NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(fetchUS())+15,true);
-		rightMotor.rotate(convertDistance(fetchUS())+15,false);	
+		leftMotor.rotate(convertDistance(fetchUS())+20,true);
+		rightMotor.rotate(convertDistance(fetchUS())+20,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
 		WeightIdentification test = new WeightIdentification(clawMotor);
-		test.getWeight();
+		//test.getWeight();
 		leftMotor.rotate(convertDistance(-10),true);
 		rightMotor.rotate(convertDistance(-10),false);
 		
@@ -273,13 +303,7 @@ public class Search implements  NavigationController{
 	
 		numcans++;
 		backtopath(rDistance);
-		if(numcans==2) {
-			RegularTravelTo(SZR_LL_x,SZR_LL_y);
-			stopMoving();
-			Sound.beepSequence();
-			return;
-		}
-		
+				
 			
 		/*if(cc.identifyColor()==targetcolor) {
 			clawMotor.setSpeed(ROTATE_SPEED);
@@ -298,8 +322,8 @@ public class Search implements  NavigationController{
 		boolean rightLineDetected = false;
 		boolean leftLineDetected = false;
 		
-		leftMotor.setSpeed(300);
-    	rightMotor.setSpeed(300);
+		leftMotor.setSpeed(150);
+    	rightMotor.setSpeed(150);
     	leftMotor.forward();
     	rightMotor.forward();
 		// Move the robot until one of the sensors detects a line
@@ -415,7 +439,6 @@ public class Search implements  NavigationController{
 		currentPosition = odometer.getXYT();
 		double error = theta - currentPosition[2];
 		System.out.println("theta  "+theta );
-		System.out.println("currentPosition "+currentPosition[2]);
 		if (error < -180.0) { // if the error is less than -180 deg
 			error = error + 360; // add 360 degrees to the error, for a minimum angle
 			turnRight(error);
@@ -484,16 +507,18 @@ public class Search implements  NavigationController{
 	 * @param x
 	 * @param y
 	 */
-	public void RegularTravelTo (double x, double y) {
-
-	    isNavigating = true; 
-	     
+	public void RegularTravelTo (double x, double y, int direction) {
+		
+		isNavigating = true; 	
+	     	System.out.println("xodo "+odometer.getX());
+			System.out.println("yodo "+odometer.getY());
 	    double deltaX = x*30.48 - odometer.getXYT()[0];
 	    double deltaY = y*30.48 - odometer.getXYT()[1];
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-
+	    System.out.println("x "+deltaX);
+		System.out.println("y "+deltaY);
 	    if (deltaY == 0) {
 	        if (deltaX >= 0) {
 	          theta = 90;
@@ -507,17 +532,20 @@ public class Search implements  NavigationController{
 	    else {
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }    
-
-	    deltaTheta = theta - odometer.getXYT()[2];
 	    
+	    deltaTheta = theta - odometer.getXYT()[2];
+	    System.out.println("theta  "+theta);
+	    System.out.println("odometer theta "+odometer.getXYT()[2]);
 	    if (deltaTheta > 180) { 
 	      deltaTheta -= 360;
 	    }
 	    else if (deltaTheta < -180) {
 	      deltaTheta += 360;
 	    }
-	    
-	    turnTo(deltaTheta);
+	    if(direction==1)
+	    turnRight(deltaTheta+20);
+	    if(direction==0)
+		 turnLeft(deltaTheta-20);
 
 	    leftMotor.setSpeed(250);
 	    rightMotor.setSpeed(250);
