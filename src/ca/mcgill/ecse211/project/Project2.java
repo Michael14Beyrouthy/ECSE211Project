@@ -21,7 +21,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
 import ca.mcgill.ecse211.navigation.Navigation;
 import ca.mcgill.ecse211.navigation.Search;
-//import ca.mcgill.ecse211.navigation.WeightIdentification;
+import ca.mcgill.ecse211.navigation.WeightIdentification;
 //import ca.mcgill.ecse211.weighing.*;
 
 
@@ -271,10 +271,10 @@ public class Project2 {
 		
 		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
 		
-		nav.newTravelTo(2, 2);
+		/*nav.newTravelTo(2, 2);
 	    nav.localizeBeforeTunnel(3.5, 2.5);
 	    nav.RegularGoStraight(TILE_SIZE*3);
-	    nav.localizeAfterTunnel(0, 0);
+	    nav.localizeAfterTunnel(0, 0);*/
 		
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
