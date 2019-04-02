@@ -39,8 +39,11 @@ public class Search implements  NavigationController{
 	private double rAngle=0;
 	private double color = 0.30;
 	private int numcans = 0;
-	  private float[] usData;
-	  private SampleProvider usDistance;
+	private float[] usData;
+	private SampleProvider usDistance;
+	
+	private double xcoor=0;
+	private double ycoor=0;
 	
 	private float[] lRGBValues = new float[3];			//stores the sample retruned by the color sensor
 	private float lreferenceBrightness;				//initial brightness level returned by the color sensor
@@ -148,47 +151,50 @@ public class Search implements  NavigationController{
 		int row=SZR_UR_y-SZR_LL_y;
 
 
-		for(int i=0;i<4;i++){
+		for(int i=0;i<column;i++){
 			if(numcans==2)
 				return;
 			if(i%2!=0) {
-			for(int j=row;j>-1;j--) {
+				for(int j=row;j>-1;j--) {
 			
-			rAngle=odometer.getTheta();
-			if(j!=0) {
-				searching(i);
-				if(numcans==2)
-					return;
-				movingforward();
-			}
-			else {
-				correct();
-				turnLeft(90);
-			}
+				rAngle=odometer.getTheta();
+				if(j!=0) {
+					searching(i);
+					if(numcans==2)
+						return;
+					movingforward();
+					ycoor=ycoor-30.48;
+				}
+				else {
+					correct();
+					turnLeft(90);
+				}
 			}
 			movingforward();
 			correct();
 			turnLeft(90);
+			xcoor=xcoor+30.48;
 			}
 			else {
 				for(int j=0;j<row+1;j++) {
 					
-					
-						rAngle=odometer.getTheta();
-						if(j!=row) {
-						searching(i);
-						if(numcans==2)
-							return;
-						movingforward();
-						}
-						else {
-							correct();
-							turnRight(90);
-						}
+					rAngle=odometer.getTheta();
+					if(j!=row) {
+					searching(i);
+					if(numcans==2)
+						return;
+					movingforward();
+					ycoor=ycoor+30.48;
+					}
+					else {
+						correct();
+						turnRight(90);
+					}
 				}
 			movingforward();
 			correct();
 			turnRight(90);
+			xcoor=xcoor+30.48;
 			}
 			
 			
@@ -508,17 +514,12 @@ public class Search implements  NavigationController{
 	 * @param y
 	 */
 	public void RegularTravelTo (double x, double y, int direction) {
-		
-		isNavigating = true; 	
-	     	System.out.println("xodo "+odometer.getX());
-			System.out.println("yodo "+odometer.getY());
-	    double deltaX = x*30.48 - odometer.getXYT()[0];
-	    double deltaY = y*30.48 - odometer.getXYT()[1];
+		 
+	    double deltaX = xcoor - x*30.48;
+	    double deltaY = ycoor - y*30.48;
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-	    System.out.println("x "+deltaX);
-		System.out.println("y "+deltaY);
 	    if (deltaY == 0) {
 	        if (deltaX >= 0) {
 	          theta = 90;
@@ -543,9 +544,9 @@ public class Search implements  NavigationController{
 	      deltaTheta += 360;
 	    }
 	    if(direction==1)
-	    turnRight(deltaTheta+20);
+	    turnRight(deltaTheta);
 	    if(direction==0)
-		 turnLeft(deltaTheta-20);
+		 turnLeft(deltaTheta);
 
 	    leftMotor.setSpeed(250);
 	    rightMotor.setSpeed(250);
