@@ -30,7 +30,6 @@ public class Search implements  NavigationController{
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] = theta (deg)
 	private static double currentPosition[] = new double[3];
 	private Odometer odometer;
-	private static boolean traveling; // Variable to track whether the robot is current navigating
 	private int distance ; // distance between the robot and the obstacle (cm)
 	private SensorModes usSensor; // ultrasonic sensor
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] =
@@ -43,21 +42,17 @@ public class Search implements  NavigationController{
 	private SampleProvider usDistance;
 	
 	private double xcoor=0;
-	private double ycoor=0;
-	private boolean leftstop=false;
-	private boolean rightstop=false;					
+	private double ycoor=0;					
 
 	private int SZR_UR_x=WifiInfo.SZR_UR_x;
 	private int SZR_UR_y=WifiInfo.SZR_UR_y;
 	private int SZR_LL_x=WifiInfo.SZR_LL_x;
 	private int SZR_LL_y=WifiInfo.SZR_LL_y;
-	private int targetcolor=3;
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
 
 	private ColorCalibration cc;
-	private boolean isNavigating = false;
-	
+
 	public Search( EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor leftMotor,
 			Odometer odometer, SampleProvider usDistance,  LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor clawMotor,EV3MediumRegulatedMotor sensorMotor 
 	) {
@@ -82,6 +77,7 @@ public class Search implements  NavigationController{
 
     /**
      * Main method for searching 
+     * 
      * @param
      *
      */
@@ -92,7 +88,7 @@ public class Search implements  NavigationController{
 		int column=SZR_UR_x-SZR_LL_x;
 		int row=SZR_UR_y-SZR_LL_y;
 
-		//traverse points in y direction
+		//travel to points throught the map
 		for(int i=0;i<column;i++){
 			if(numcans==2)
 				return;
@@ -209,6 +205,7 @@ public class Search implements  NavigationController{
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
+		//reach to the detected can 
 		leftMotor.rotate(convertDistance(fetchUS())+20,true);
 		rightMotor.rotate(convertDistance(fetchUS())+20,false);	
 		
@@ -239,7 +236,6 @@ public class Search implements  NavigationController{
 		cc.identifyColor(weight);
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
-	
 		numcans++;
 		backtopath(rDistance);
 				
@@ -434,8 +430,7 @@ public class Search implements  NavigationController{
 	    odometer.setY(y);
 	    odometer.setTheta(theta);
 	    
-	  isNavigating = false;
-
+	  
 	  }
 
 	/**
