@@ -102,16 +102,16 @@ public class Project2 {
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		// start the ultrasonic localization
-	    USLocalizer.localize();
+	 //   USLocalizer.localize();
 	    // run the light localization
-		lightLocalizer.initialLocalize();
+	//	lightLocalizer.initialLocalize();
 		
-		try {
+	/*	try {
 			odoThread.wait();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		

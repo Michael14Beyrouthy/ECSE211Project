@@ -212,8 +212,8 @@ public class Search implements  NavigationController{
 		leftMotor.stop();
 		rightMotor.stop();
 		//initialize weight 
-		WeightIdentification test = new WeightIdentification();
-		int weight = test.getWeight(clawMotor);
+		//WeightIdentification test = new WeightIdentification();
+		//int weight = test.getWeight(clawMotor);
 		
 		leftMotor.rotate(convertDistance(-10),true);
 		rightMotor.rotate(convertDistance(-10),false);
@@ -233,7 +233,7 @@ public class Search implements  NavigationController{
 		
 		//color identification with weighing result
 		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor(weight);
+		cc.identifyColor(500);
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
 		numcans++;
@@ -393,13 +393,8 @@ public class Search implements  NavigationController{
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-	    if (deltaY == 0) {
-	        if (deltaX >= 0) {
-	          theta = 90;
-	        } 
-	        else {
-	          theta = -90;
-	        }
+	    if (deltaX == 0) {
+	       theta=180;
 	      }
 	    
 	      //calculate the theta that the robot should travel to 
@@ -407,7 +402,7 @@ public class Search implements  NavigationController{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }    
 	    
-	    deltaTheta = theta - odometer.getXYT()[2];
+	    deltaTheta = theta;
 	    System.out.println("theta  "+theta);
 	    System.out.println("odometer theta "+odometer.getXYT()[2]);
 	    if (deltaTheta > 180) { 
@@ -417,18 +412,17 @@ public class Search implements  NavigationController{
 	      deltaTheta += 360;
 	    }
 	    if(direction==1)
-	    turnRight(deltaTheta);
+	    turnRight(Math.abs(deltaTheta));
 	    if(direction==0)
-		 turnLeft(deltaTheta);
+		 turnLeft(Math.abs(deltaTheta));
 
 	    leftMotor.setSpeed(250);
 	    rightMotor.setSpeed(250);
 	    
 	    RegularGoStraight(distance); 
 	   
-	    odometer.setX(x);
-	    odometer.setY(y);
-	    odometer.setTheta(theta);
+	    odometer.setX(0);
+	    odometer.setY(0);
 	    
 	  
 	  }

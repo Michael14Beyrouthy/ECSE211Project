@@ -9,7 +9,7 @@ public interface NavigationController {
 
 		// vehicle hardware parameters
 		public static final double WHEEL_RADIUS = 2.09;	// (cm)
-		public static final double TRACK = 13.75;		//(cm)
+		public static final double TRACK = 14.13;		//(cm)
 		public static final double TILE_LENGTH = 30.48;	//(cm)
 		// motor parameters
 		public static final int FORWARD_SPEED = 250;
