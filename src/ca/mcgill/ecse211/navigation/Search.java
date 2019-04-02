@@ -23,6 +23,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
  *
  */
 public class Search implements  NavigationController{
+	public static double TRACK =13.80;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
@@ -40,6 +41,7 @@ public class Search implements  NavigationController{
 	private int numcans = 0;
 	private float[] usData;
 	private SampleProvider usDistance;
+	private int numheavy=0;
 	
 	private double xcoor=0;
 	private double ycoor=0;					
@@ -165,6 +167,10 @@ public class Search implements  NavigationController{
 		odometer.setTheta(0);
 		if(numcans==2) {
 			correct();
+			if(numheavy==1)
+				TRACK=14.14;
+			if(numheavy==2)
+				TRACK=14.44;
 			RegularTravelTo(SZR_LL_x,SZR_LL_y,0);
 			turnTo(0);
 			stopMoving();
@@ -188,6 +194,10 @@ public class Search implements  NavigationController{
 		odometer.setTheta(180);
 		if(numcans==2) {
 			correct();
+			if(numheavy==1)
+				TRACK=14.14;
+			if(numheavy==2)
+				TRACK=14.44;
 			RegularTravelTo(SZR_LL_x,SZR_LL_y,1);
 			turnTo(0);
 			Sound.beepSequence();
@@ -206,24 +216,25 @@ public class Search implements  NavigationController{
 		System.out.println(distance);
 		Sound.beep();
 		//reach to the detected can 
-		leftMotor.rotate(convertDistance(fetchUS())+20,true);
-		rightMotor.rotate(convertDistance(fetchUS())+20,false);	
+		leftMotor.rotate(convertDistance(fetchUS()+5),true);
+		rightMotor.rotate(convertDistance(fetchUS()+5),false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
 		//initialize weight 
-		//WeightIdentification test = new WeightIdentification();
-		//int weight = test.getWeight(clawMotor);
-		
-		leftMotor.rotate(convertDistance(-10),true);
-		rightMotor.rotate(convertDistance(-10),false);
+		WeightIdentification test = new WeightIdentification();
+		int weight = test.getWeight(clawMotor);
+		if(weight==1000)
+			numheavy++;
+		leftMotor.rotate(convertDistance(-15),true);
+		rightMotor.rotate(convertDistance(-15),false);
 		
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(-50),false);
 		
 			
-		leftMotor.rotate(convertDistance(25),true);
-		rightMotor.rotate(convertDistance(25),false);
+		leftMotor.rotate(convertDistance(23),true);
+		rightMotor.rotate(convertDistance(23),false);
 		
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
@@ -233,7 +244,7 @@ public class Search implements  NavigationController{
 		
 		//color identification with weighing result
 		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor(500);
+		cc.identifyColor(weight);
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
 		numcans++;
