@@ -187,8 +187,8 @@ public class Navigation extends Thread{
 	    	//if angle is less than 180, turn to that angle
 	    else 
 	    {
-	    	leftMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK2, ang), true);
-	    	rightMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK2, ang), false);
+	    	leftMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, ang), true);
+	    	rightMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, ang), false);
 	    }
 	    
 	    

@@ -57,8 +57,8 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static final double TRACK = 14.13;
-	public static final double TRACK2= 14.4;
+	public static final double TRACK = 14.4; //no cans
+	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 75;
 	
@@ -71,8 +71,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();	
+		//WifiInfo wifi = new WifiInfo();
+		//wifi.getInfo();	
 		
 		//System.out.println("");
 		//System.out.println("");
@@ -135,7 +135,7 @@ public class Project2 {
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
 		
 
-		search.searchcans();
+		//search.searchcans();
 		//lcd.clear();
 		
 		/*leftMotor.flt();
@@ -269,12 +269,14 @@ public class Project2 {
 	    nav.turnTo(270);
 	    nav.traverseTunnel();*/
 		
-		odometer.setXYT(TILE_SIZE, TILE_SIZE, 0.0);
+		//odometer.setXYT(0, 0, 0.0);
 		
-		/*nav.newTravelTo(2, 2);
-	    nav.localizeBeforeTunnel(3.5, 2.5);
+
+		nav.newTravelTo(2, 3);
+	    nav.localizeBeforeTunnel2(3.5, 2.5);
+	    Sound.beep();
 	    nav.RegularGoStraight(TILE_SIZE*3);
-	    nav.localizeAfterTunnel(0, 0);*/
+	    nav.localizeAfterTunnel2(0, 0);
 		
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
