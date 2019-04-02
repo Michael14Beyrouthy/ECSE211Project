@@ -25,9 +25,12 @@ public class ColorCalibration {
 	/*
 	 * Target RBG Mean values for a GREEN can
 	 */
-	final private static double GREEN_TR = 0.302959415;
-	final private static double GREEN_TB = 0.263884275;
-	final private static double GREEN_TG = 0.667320124;
+	//final private static double GREEN_TR = 0.302959415;
+	//final private static double GREEN_TB = 0.263884275;
+	//final private static double GREEN_TG = 0.667320124;
+	final private static double GREEN_TR = 0.272959415;
+	final private static double GREEN_TB = 0.173884275;
+	final private static double GREEN_TG = 0.947320124;
 	
 	/*
 	 * Target RBG Mean values for a BLUE can
@@ -46,8 +49,11 @@ public class ColorCalibration {
 	/*
 	 * Target RBG Mean values for a YELLOW can
 	 */
-	final private static double YELLOW_TR = 0.66308114;
-	final private static double YELLOW_TB = 0.298730941;
+	//final private static double YELLOW_TR = 0.66308114;
+	//final private static double YELLOW_TB = 0.298730941;
+	//final private static double YELLOW_TG = 0.518506479;
+	final private static double YELLOW_TR = 0.8308114;
+	final private static double YELLOW_TB = 0.198730941;
 	final private static double YELLOW_TG = 0.518506479;
 	
 	private EV3MediumRegulatedMotor sensorMotor;
@@ -68,18 +74,12 @@ public class ColorCalibration {
 		sensorMotor.setSpeed(100);
 	}
 	
-	/**
-	 * run() method
-	 */
-	public void run() {
-		identifyColor();
-	}
 	
 	/**
 	 * Identifies the color of the can in front of the robot
 	 * @return 1, 2, 3 or 4 depending on which colour was detected
 	 */
-	public int identifyColor() {
+	public int identifyColor(int weight) {
 		
 		//rotate the sensor 90 degrees, take a sample of the can color each 9 degrees
 		int i = 0;
@@ -124,28 +124,28 @@ public class ColorCalibration {
 	
 		if(sortColors[0]== eGreen) {
 			System.out.println("GREEN");
-			Sound.beep();
+			Sound.playTone(100, weight);
 			return 1;
 		}
 		if(sortColors[0]==eRed) {
 			System.out.println("RED");
-			Sound.beep();
-			Sound.beep();
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
 			return 2;
 		}
 		if(sortColors[0]==eYellow) {
 			System.out.println("YELLOW");
-			Sound.beep();
-			Sound.beep();
-			Sound.beep();
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
 			return 3;
 		}
 		else {
 			System.out.println("BLUE");
-			Sound.beep();
-			Sound.beep();
-			Sound.beep();
-			Sound.beep();
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
 			return 4;
 		}
 	

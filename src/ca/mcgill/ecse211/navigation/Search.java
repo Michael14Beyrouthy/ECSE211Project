@@ -284,8 +284,9 @@ public class Search implements  NavigationController{
 		
 		leftMotor.stop();
 		rightMotor.stop();
-		WeightIdentification test = new WeightIdentification(clawMotor);
-		//test.getWeight();
+		WeightIdentification test = new WeightIdentification();
+		int weight = test.getWeight(clawMotor);
+		
 		leftMotor.rotate(convertDistance(-10),true);
 		rightMotor.rotate(convertDistance(-10),false);
 		
@@ -303,7 +304,7 @@ public class Search implements  NavigationController{
 		clawMotor.rotate(convertAngle(-50),false);
 		
 		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor();
+		cc.identifyColor(weight);
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
 	
