@@ -205,7 +205,8 @@ public class LightLocalizer {
 		boolean rightLineDetected = false;
 		boolean leftLineDetected = false;
 
-		// Move the robot until one of the sensors detects a line
+		//robot moving until one of the sensors detects a line 
+		//stop corresponding motor
 		while (!leftLineDetected && !rightLineDetected ) {
 			if (rightLS.fetch() < color) {
 				rightLineDetected = true;
