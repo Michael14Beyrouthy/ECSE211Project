@@ -22,7 +22,7 @@ public class WeightIdentification {
 	 * @param clawMotor The motor used to grasp cans
 	 * @return 500mS for a light can, 1000mS for a heavy can
 	 */
-	public int getWeight(EV3LargeRegulatedMotor clawMotor) {
+	public EV3LargeRegulatedMotor getWeight(EV3LargeRegulatedMotor clawMotor) {
 		
 		//close clawMotor instance
 		clawMotor.close();
@@ -60,18 +60,18 @@ public class WeightIdentification {
 		weighingMotor.close();
 		
 		// Re-instantiate claw motor as a regulated motor
-		clawMotor= new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+		//clawMotor= new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		
 		// Get difference in tachometer count after pushing can
 		int weight = Math.abs(secondTacho-firstTacho);
 		
 		if(weight>=TACHO_THRESHOLD) {
 			System.out.println("LIGHT");
-			return 500;
+			return new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		}
 		else {
 			System.out.println("HEAVY");
-			return 1000;
+			return new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		}
 	}
 }

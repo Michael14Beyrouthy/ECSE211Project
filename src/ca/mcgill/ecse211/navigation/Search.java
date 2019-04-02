@@ -167,8 +167,10 @@ public class Search implements  NavigationController{
 		odometer.setTheta(0);
 		if(numcans==2) {
 			correct();
-			if(numheavy==1)
+			if(numheavy==0)
 				TRACK=14.14;
+			if(numheavy==1)
+				TRACK=14.24;
 			if(numheavy==2)
 				TRACK=14.44;
 			RegularTravelTo(SZR_LL_x,SZR_LL_y,0);
@@ -183,6 +185,7 @@ public class Search implements  NavigationController{
 		for(int i=0;i<10;i++) {
 			turnLeft(10);
 		if(fetchUS()<25) {
+			turnLeft(5);
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=fetchUS();
@@ -194,8 +197,10 @@ public class Search implements  NavigationController{
 		odometer.setTheta(180);
 		if(numcans==2) {
 			correct();
-			if(numheavy==1)
+			if(numheavy==0)
 				TRACK=14.14;
+			if(numheavy==1)
+				TRACK=14.24;
 			if(numheavy==2)
 				TRACK=14.44;
 			RegularTravelTo(SZR_LL_x,SZR_LL_y,1);
@@ -216,16 +221,16 @@ public class Search implements  NavigationController{
 		System.out.println(distance);
 		Sound.beep();
 		//reach to the detected can 
-		leftMotor.rotate(convertDistance(fetchUS()+5),true);
-		rightMotor.rotate(convertDistance(fetchUS()+5),false);	
+		leftMotor.rotate(convertDistance(fetchUS()+10),true);
+		rightMotor.rotate(convertDistance(fetchUS()+10),false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
 		//initialize weight 
 		WeightIdentification test = new WeightIdentification();
-		int weight = test.getWeight(clawMotor);
-		if(weight==1000)
-			numheavy++;
+		clawMotor= test.getWeight(clawMotor);
+		//if(weight==1000)
+			//numheavy++;
 		leftMotor.rotate(convertDistance(-15),true);
 		rightMotor.rotate(convertDistance(-15),false);
 		
@@ -244,7 +249,7 @@ public class Search implements  NavigationController{
 		
 		//color identification with weighing result
 		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor(weight);
+		cc.identifyColor(500);
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
 		numcans++;
