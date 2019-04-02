@@ -270,14 +270,6 @@ public class Project2 {
 	    nav.traverseTunnel();*/
 		
 		//odometer.setXYT(0, 0, 0.0);
-		
-
-		nav.newTravelTo(2, 3);
-	    nav.localizeBeforeTunnel2(3.5, 2.5);
-	    Sound.beep();
-	    nav.RegularGoStraight(TILE_SIZE*3);
-	    nav.localizeAfterTunnel2(0, 0);
-		
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
 		
