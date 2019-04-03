@@ -28,7 +28,7 @@ import ca.mcgill.ecse211.navigation.WeightIdentification;
 /**
  * Project class, instantiates the motors and sets some constants
  * Instantiates all threads and objects of other classes and runs them accordingly
- * @author micha
+ * @author michael
  * 
  */
 public class Project2 {
@@ -71,24 +71,12 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		//WifiInfo wifi = new WifiInfo();
-		//wifi.getInfo();	
-		
-		//System.out.println("");
-		//System.out.println("");
-		//System.out.println("");
-		//System.out.println("");
-		//System.out.println("");
-		//System.out.println("");
-		//System.out.println("");
-		
-		int buttonChoice;
+		WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();	
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
 		Display odometryDisplay = new Display(lcd, odometer); 
-		
-		//Odometer odometer2 = Odometer.getOdometer(leftMotor, rightMotor);
 
 		@SuppressWarnings("resource") // Because we don't bother to close this resource
 		// Instance  ultrasonicsensor 
@@ -99,133 +87,36 @@ public class Project2 {
 		SampleProvider usDistance = ultrasonicSensor.getMode("Distance");
 		float[] usData = new float[usDistance.sampleSize()];
 
-		
-
-		/*do {
-			// clear display
-			lcd.clear();
-
-			// ask the user whether the motors should use rising or falling edge
-			lcd.drawString("< Left | Right >", 0, 0);
-			lcd.drawString("       |        ", 0, 1);
-			lcd.drawString("Rising |Falling ", 0, 2); 
-			lcd.drawString(" Edge  |  Edge  ", 0, 3);
-			lcd.drawString("       |        ", 0, 4);
-
-			buttonChoice = Button.waitForAnyPress(); // Record choice (left or right press)
-		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
-
-		// Select which edge to use.
-		if (buttonChoice == Button.ID_LEFT) {
-			Risingorfalling = true;
-		} else {
-			Risingorfalling = false;
-		}*/
-
-		// Start odometer and display threads
-		
+		// Start odometer threads
 		Thread odoThread = new Thread(odometer);
 		odoThread.start();
 
-		//Thread odoThread2 = new Thread(odometer2);
+		//Start display thread
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
 		
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
-		
 
-		//search.searchcans();
-		//lcd.clear();
-		
-		/*leftMotor.flt();
-		rightMotor.flt();
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-		
-		odometer.setXYT(0, 0, 45);
-		odometer.setX(0);
-		odometer.setY(0);
-		odometer.setTheta(0);
-
-		leftMotor.flt();
-		rightMotor.flt();
-		
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-		
-		odometer.setXYT(0, 0, 90);
-
-		leftMotor.flt();
-		rightMotor.flt();
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
-*/		
-		//System.out.println("hi");
-		
-		
 		// Create ultrasonicsensor light localizer and navigation objects
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
-		//Navigation nav = new Navigation(odometer, myColorStatusRight, myColorStatusLeft);
 		// start the ultrasonic localization
-		//USLocalizer.localize();
-			// run the light localization
-		//lightLocalizer.initialLocalize();
+	 //   USLocalizer.localize();
+	    // run the light localization
+	//	lightLocalizer.initialLocalize();
 		
-		/*try {
+	/*	try {
 			odoThread.wait();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		
-		/*leftMotor.resetTachoCount();
-		rightMotor.resetTachoCount();*/
-		
-		/*Odometer odometer2 = Odometer.getOdometer(leftMotor, rightMotor);
-		Thread odoThread2 = new Thread(odometer2);
-		
-		odoThread2.start();*/
-		
-		//nav.RegularTravelTo(2.5*TILE_SIZE, 3.5*TILE_SIZE);
-				
+	
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		
 		
-		
-		/*nav.turnTo(45);*/
-		/*nav.RegularGoStraight(TILE_SIZE*5);
-		
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);*/	
-		
-		
 		//================================== Used for testing tunnel traversal =========================================================
-		
-		
-		//nav.RegularTravelTo(1.5*TILE_SIZE, 1.5*TILE_SIZE);
-		
-		//nav.TravelToLYup((double)(WifiInfo.TNR_LL_x)-0.5, (double)(WifiInfo.TNR_LL_y)+0.5);
-		
-		//nav.RegularGoStraight(3*30.48);
-		
-		
-		
-		//nav.TravelToLYdown((double)(WifiInfo.SZR_LL_x), (double)(WifiInfo.SZR_LL_y));
-		
-		//Sound.beep();
-		//Sound.beep();
-		//Sound.beep();
-		//Sound.beep();
-		//Sound.beep();
-		
-		//nav.TravelToLYup((double)(WifiInfo.SZR_UR_x), (double)(WifiInfo.SZR_UR_y));
-		
-		//nav.RegularTravelTo(3.5, 5.5);
-		
-		
-		//nav.relocateBeforeTunnel();
-		
-
-		
-		//nav.traverseTunnel();
 		
 		
 		//===============================================End of area for testing tunnel traversal ====================================================================
@@ -233,12 +124,8 @@ public class Project2 {
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		
-	  
-		
-	
-
-		
+		search.searchcans();
+	  	
 		//========================================End of testing for search ===========================================================================================
 		
 	    

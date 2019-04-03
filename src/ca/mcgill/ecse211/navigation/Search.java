@@ -23,6 +23,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
  *
  */
 public class Search implements  NavigationController{
+	public static double TRACK =13.80;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
@@ -30,10 +31,8 @@ public class Search implements  NavigationController{
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] = theta (deg)
 	private static double currentPosition[] = new double[3];
 	private Odometer odometer;
-	private static boolean traveling; // Variable to track whether the robot is current navigating
 	private int distance ; // distance between the robot and the obstacle (cm)
 	private SensorModes usSensor; // ultrasonic sensor
-	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] =
 	boolean isAvoiding = false; // variable to track when robot is avoiding an obstacle
 	private double rDistance=0;
 	private double rAngle=0;
@@ -41,35 +40,20 @@ public class Search implements  NavigationController{
 	private int numcans = 0;
 	private float[] usData;
 	private SampleProvider usDistance;
+	private int numheavy=0;
 	
 	private double xcoor=0;
-	private double ycoor=0;
-	
-	private float[] lRGBValues = new float[3];			//stores the sample retruned by the color sensor
-	private float lreferenceBrightness;				//initial brightness level returned by the color sensor
-	private float lbrightness;							//brightness level returned by the color sensor, used to identify black lines
-	double diffThreshold=7; 	
-	private boolean leftstop=false;
-	private boolean rightstop=false;
-	private float[] rRGBValues = new float[3];			//stores the sample retruned by the color sensor
-	private float rreferenceBrightness;				//initial brightness level returned by the color sensor
-	private float rbrightness;							//brightness level returned by the color sensor, used to identify black lines
-	private static final long CORRECTION_PERIOD = 10; // odometer correction update period in ms
+	private double ycoor=0;					
 
 	private int SZR_UR_x=WifiInfo.SZR_UR_x;
 	private int SZR_UR_y=WifiInfo.SZR_UR_y;
 	private int SZR_LL_x=WifiInfo.SZR_LL_x;
 	private int SZR_LL_y=WifiInfo.SZR_LL_y;
-	private int targetcolor=3;
-	private int step=0;
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
-	
-	private int total =0;
+
 	private ColorCalibration cc;
-	
-	private boolean isNavigating = false;
-	
+
 	public Search( EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor leftMotor,
 			Odometer odometer, SampleProvider usDistance,  LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor clawMotor,EV3MediumRegulatedMotor sensorMotor 
 	) {
@@ -91,66 +75,21 @@ public class Search implements  NavigationController{
 		this.usData = new float[usDistance.sampleSize()];
 
 	}
-	
 
-/*	public void run() {
-		try {
-			Thread.sleep(4000);
-		} catch (InterruptedException e) {
-			// there is nothing to be done here because it is not expected that
-			// the odometer will be interrupted by another thread
-		}
-		// Travel to each of the way-points
-		int column=SZR_UR_x-SZR_LL_x;
-		int row=SZR_UR_y-SZR_LL_y;
-		
-		for(int i=0;i<4;i++){
-			if(i%2!=0) {
-			for(int j=row;j>-1;j--) {
-			lightcorrection();
-			System.out.println(i+"  "+j);
-			rAngle=odometer.getTheta();
-			if(j!=0) {
-				searching(i);
-				movingforward();
-			}
-			else
-				turnLeft(90);
-			}
-			movingforward();
-			turnLeft(90);
-			}
-			else {
-				for(int j=0;j<row+1;j++) {
-					System.out.println(i+"  "+j);
-						lightcorrection();
-						rAngle=odometer.getTheta();
-						if(j!=row) {
-						searching(i);
-						movingforward();
-						}
-						else 
-							turnRight(90);
-				}
-			movingforward();
-			turnRight(90);
-			}
-			
-			
-		}
-		leftMotor.stop();
-		rightMotor.stop();
-		
-	}*/
-	
-
+    /**
+     * Main method for searching 
+     * 
+     * @param
+     *
+     */
 	public void searchcans() {
 		// Travel to each of the way-points
 		
+		//calculate search area size
 		int column=SZR_UR_x-SZR_LL_x;
 		int row=SZR_UR_y-SZR_LL_y;
 
-
+		//travel to points throught the map
 		for(int i=0;i<column;i++){
 			if(numcans==2)
 				return;
@@ -206,6 +145,7 @@ public class Search implements  NavigationController{
 
 	/**
 	 * Searching process
+	 * detects cans by rotating around point
 	 * @param step
 	 */
 	public void searching(int step) {
@@ -217,8 +157,7 @@ public class Search implements  NavigationController{
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=fetchUS();
-			get();
-			
+			get();	
 		
 		}
 		}
@@ -227,13 +166,14 @@ public class Search implements  NavigationController{
 		odometer.setTheta(0);
 		if(numcans==2) {
 			correct();
+			if(numheavy==0)
+				TRACK=14.14;
+			if(numheavy==1)
+				TRACK=14.24;
+			if(numheavy==2)
+				TRACK=14.44;
 			RegularTravelTo(SZR_LL_x,SZR_LL_y,0);
 			turnTo(0);
-			/*correct();
-			turnLeft(90);
-			correct();
-			turnRight(90);
-			*/
 			stopMoving();
 			Sound.beepSequence();
 			
@@ -244,12 +184,11 @@ public class Search implements  NavigationController{
 		for(int i=0;i<10;i++) {
 			turnLeft(10);
 		if(fetchUS()<25) {
+			turnLeft(5);
 			leftMotor.stop();
 			rightMotor.stop();
 			rDistance=fetchUS();
-			get();
-			
-			
+			get();	
 		}
 		}
 		correct();
@@ -257,45 +196,61 @@ public class Search implements  NavigationController{
 		odometer.setTheta(180);
 		if(numcans==2) {
 			correct();
+			if(numheavy==0)
+				TRACK=14.14;
+			if(numheavy==1)
+				TRACK=14.24;
+			if(numheavy==2)
+				TRACK=14.44;
 			RegularTravelTo(SZR_LL_x,SZR_LL_y,1);
 			turnTo(0);
-			/*correct();
-			stopMoving();
-			turnLeft(90);
-			correct();
-			turnRight(90);
-			*/
 			Sound.beepSequence();
 			return;
 		}
-		
 		
 		}
 	}
 	
 	/**
-	 * Determines color of a can
+	 * Upon detecting a can in the search region, approaches the can, performs color and weight identification
+	 * then pulls the can into the storage area of the robot
 	 */
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
-		leftMotor.rotate(convertDistance(fetchUS())+20,true);
-		rightMotor.rotate(convertDistance(fetchUS())+20,false);	
+
+		clawMotor.setSpeed(ROTATE_SPEED);
+		clawMotor.rotate(convertAngle(-30),false);
+		//reach to the detected can 
+		leftMotor.rotate(convertDistance(fetchUS()+10),true);
+		rightMotor.rotate(convertDistance(fetchUS()+10),false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();
+		
+		//initialize weight new detection
 		WeightIdentification test = new WeightIdentification();
-		int weight = test.getWeight(clawMotor);
 		
-		leftMotor.rotate(convertDistance(-10),true);
-		rightMotor.rotate(convertDistance(-10),false);
+		//close claw motor instance
+		clawMotor.close();
+		
+		int weight= test.getWeight();
+		
+		//re instantiate the claw motor as a regulated motor
+		clawMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+		//if(weight==1000)
+			//numheavy++;
+		clawMotor.setSpeed(ROTATE_SPEED);
+		clawMotor.rotate(convertAngle(30),false);
+		leftMotor.rotate(convertDistance(-15),true);
+		rightMotor.rotate(convertDistance(-15),false);
 		
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(-50),false);
 		
 			
-		leftMotor.rotate(convertDistance(25),true);
-		rightMotor.rotate(convertDistance(25),false);
+		leftMotor.rotate(convertDistance(23),true);
+		rightMotor.rotate(convertDistance(23),false);
 		
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(50),false);
@@ -303,27 +258,24 @@ public class Search implements  NavigationController{
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(-50),false);
 		
-		cc= new ColorCalibration(sensorMotor);
+		//color identification with weighing result
+		cc = new ColorCalibration(sensorMotor);
 		cc.identifyColor(weight);
+		
+		//Pull can into storage area and increase can number count
 		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(50),false);
-	
+		clawMotor.rotate(convertAngle(50),false);		
 		numcans++;
-		backtopath(rDistance);
-				
-			
-		/*if(cc.identifyColor()==targetcolor) {
-			clawMotor.setSpeed(ROTATE_SPEED);
-			clawMotor.rotate(convertAngle(50),false);		
-			RegularTravelTo((double)SZR_UR_x,
-		(double)SZR_UR_y);
-		}*/
 		
-		
+		//return to searching path
+		backtopath(rDistance);			
 	}
 	
-	
-	
+    /**
+     * method for correction
+     * Ensure position accuracy
+     *
+     */
 	private void correct() {
 
 		boolean rightLineDetected = false;
@@ -367,67 +319,16 @@ public class Search implements  NavigationController{
 		
 
 	}
-	
-	/**
-	 * Corrects robot with light sensors
-	/* 
-	public void lightcorrection() {
-		long correctionStart, correctionEnd;
-
-	    //get the first value of the tile 'brightness' to use a reference
-	    for(int i=0;i<4;i++) {
-	    	leftstop=false;
-	    	rightstop=false;
-	    	leftMotor.setSpeed(70);
-	    	rightMotor.setSpeed(70);
-	    	leftMotor.forward();
-	    	rightMotor.forward();
-	    	
-	    while (true) {
-	      correctionStart = System.currentTimeMillis();
-      
-	      //If the current brightness differs from the reference brightness value by a value greater than the threshold
-	      //the EV3 robot is traveling over a black line. 
-	      if(leftLS.fetch() < color) {
-	    	leftMotor.stop();
-	    	leftstop=true;
-	      }
-	      if(rightLS.fetch() < color) {
-	    	  rightMotor.stop();
-	    	  rightstop=true;
-	    	  
-	      }
-	      if(rightstop==true&&leftstop==true) {
-	    	  leftMotor.rotate(-convertDistance(6.5),true);
-	    	  rightMotor.rotate(-convertDistance(6.5),false);
-	    	  turnLeft(90);
-	    	  break;
-	      }      
-	      // this ensure the odometry correction occurs only once every period
-	      correctionEnd = System.currentTimeMillis();
-	      if (correctionEnd - correctionStart < CORRECTION_PERIOD) {
-	        try {
-	          Thread.sleep(CORRECTION_PERIOD - (correctionEnd - correctionStart));
-	        } catch (InterruptedException e) {
-	          // there is nothing to be done here
-	        }
-	      }
-	    }
-	    }
-	}*/
 
 	/**
-	 * Puts the robot back on track
+	 * Directs the robot back to the search path after classifying and retrieving a can
 	 * @param distance
 	 */
 	void backtopath(double distance) {
 		System.out.println("r  " +distance);
 		leftMotor.rotate(-convertDistance(distance+13),true);
 		rightMotor.rotate(-convertDistance(distance+13),false);
-		
-		
-		
-	}
+		}
 	
 	/**
 	 * Moves robot forward a certain distance
@@ -521,13 +422,8 @@ public class Search implements  NavigationController{
 	    double theta;
 	    double deltaTheta;
 	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
-	    if (deltaY == 0) {
-	        if (deltaX >= 0) {
-	          theta = 90;
-	        } 
-	        else {
-	          theta = -90;
-	        }
+	    if (deltaX == 0) {
+	       theta=180;
 	      }
 	    
 	      //calculate the theta that the robot should travel to 
@@ -535,7 +431,7 @@ public class Search implements  NavigationController{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }    
 	    
-	    deltaTheta = theta - odometer.getXYT()[2];
+	    deltaTheta = theta;
 	    System.out.println("theta  "+theta);
 	    System.out.println("odometer theta "+odometer.getXYT()[2]);
 	    if (deltaTheta > 180) { 
@@ -545,21 +441,19 @@ public class Search implements  NavigationController{
 	      deltaTheta += 360;
 	    }
 	    if(direction==1)
-	    turnRight(deltaTheta);
+	    turnRight(Math.abs(deltaTheta));
 	    if(direction==0)
-		 turnLeft(deltaTheta);
+		 turnLeft(Math.abs(deltaTheta));
 
 	    leftMotor.setSpeed(250);
 	    rightMotor.setSpeed(250);
 	    
 	    RegularGoStraight(distance); 
 	   
-	    odometer.setX(x);
-	    odometer.setY(y);
-	    odometer.setTheta(theta);
+	    odometer.setX(0);
+	    odometer.setY(0);
 	    
-	  isNavigating = false;
-
+	  
 	  }
 
 	/**
@@ -575,8 +469,9 @@ public class Search implements  NavigationController{
 	
 	
 	
-	
-	
+	/** Make robot stop moving
+	 * @param 
+	 */
 	public void stopMoving(boolean stopLeft, boolean stopRight) {
 		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 		leftMotor.startSynchronization();

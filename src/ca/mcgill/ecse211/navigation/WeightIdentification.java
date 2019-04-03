@@ -1,8 +1,6 @@
 package ca.mcgill.ecse211.navigation;
 
 import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.UnregulatedMotor;
 
 public class WeightIdentification {
@@ -19,13 +17,10 @@ public class WeightIdentification {
 
 	/**
 	 * Classifies a can as either heavy or light
-	 * @param clawMotor The motor used to grasp cans
 	 * @return 500mS for a light can, 1000mS for a heavy can
 	 */
-	public int getWeight(EV3LargeRegulatedMotor clawMotor) {
+	public int getWeight() {
 		
-		//close clawMotor instance
-		clawMotor.close();
 		
 		//Re-initialize the claw motor as an unregulated motor
 		UnregulatedMotor weighingMotor=new UnregulatedMotor(LocalEV3.get().getPort("B"));
@@ -58,9 +53,6 @@ public class WeightIdentification {
 		
 		// Close weighing motor instance
 		weighingMotor.close();
-		
-		// Re-instantiate claw motor as a regulated motor
-		clawMotor= new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		
 		// Get difference in tachometer count after pushing can
 		int weight = Math.abs(secondTacho-firstTacho);
