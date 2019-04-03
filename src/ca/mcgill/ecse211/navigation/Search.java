@@ -33,7 +33,6 @@ public class Search implements  NavigationController{
 	private Odometer odometer;
 	private int distance ; // distance between the robot and the obstacle (cm)
 	private SensorModes usSensor; // ultrasonic sensor
-	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] =
 	boolean isAvoiding = false; // variable to track when robot is avoiding an obstacle
 	private double rDistance=0;
 	private double rAngle=0;
@@ -146,7 +145,7 @@ public class Search implements  NavigationController{
 
 	/**
 	 * Searching process
-	 * detect cans by rotating around point
+	 * detects cans by rotating around point
 	 * @param step
 	 */
 	public void searching(int step) {
@@ -213,13 +212,13 @@ public class Search implements  NavigationController{
 	}
 	
 	/**
-	 * Determines color of a can
-	 * Weighing process implement
-	 *@param
+	 * Upon detecting a can in the search region, approaches the can, performs color and weight identification
+	 * then pulls the can into the storage area of the robot
 	 */
 	public void get() {
 		System.out.println(distance);
 		Sound.beep();
+		
 		//reach to the detected can 
 		leftMotor.rotate(convertDistance(fetchUS()+10),true);
 		rightMotor.rotate(convertDistance(fetchUS()+10),false);	
@@ -229,9 +228,13 @@ public class Search implements  NavigationController{
 		
 		//initialize weight new detection
 		WeightIdentification test = new WeightIdentification();
+		
 		//close claw motor instance
 		clawMotor.close();
+		
 		int weight= test.getWeight();
+		
+		//re instantiate the claw motor as a regulated motor
 		clawMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		//if(weight==1000)
 			//numheavy++;
@@ -252,19 +255,21 @@ public class Search implements  NavigationController{
 		clawMotor.rotate(convertAngle(-50),false);
 		
 		//color identification with weighing result
-		cc= new ColorCalibration(sensorMotor);
-		cc.identifyColor(500);
+		cc = new ColorCalibration(sensorMotor);
+		cc.identifyColor(weight);
+		
+		//Pull can into storage area and increase can number count
 		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(50),false);
+		clawMotor.rotate(convertAngle(50),false);		
 		numcans++;
-		backtopath(rDistance);
-				
+		
+		//return to searching path
+		backtopath(rDistance);			
 	}
 	
     /**
      * method for correction
      * Ensure position accuracy
-     * @param
      *
      */
 	private void correct() {
@@ -312,7 +317,7 @@ public class Search implements  NavigationController{
 	}
 
 	/**
-	 * Puts the robot back on track
+	 * Directs the robot back to the search path after classifying and retrieving a can
 	 * @param distance
 	 */
 	void backtopath(double distance) {
