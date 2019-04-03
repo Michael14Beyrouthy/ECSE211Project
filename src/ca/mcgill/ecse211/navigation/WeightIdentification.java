@@ -1,8 +1,6 @@
 package ca.mcgill.ecse211.navigation;
 
 import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.motor.UnregulatedMotor;
 
 public class WeightIdentification {
@@ -22,10 +20,8 @@ public class WeightIdentification {
 	 * @param clawMotor The motor used to grasp cans
 	 * @return 500mS for a light can, 1000mS for a heavy can
 	 */
-	public EV3LargeRegulatedMotor getWeight(EV3LargeRegulatedMotor clawMotor) {
+	public int getWeight() {
 		
-		//close clawMotor instance
-		clawMotor.close();
 		
 		//Re-initialize the claw motor as an unregulated motor
 		UnregulatedMotor weighingMotor=new UnregulatedMotor(LocalEV3.get().getPort("B"));
@@ -67,11 +63,11 @@ public class WeightIdentification {
 		
 		if(weight>=TACHO_THRESHOLD) {
 			System.out.println("LIGHT");
-			return new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+			return 500;
 		}
 		else {
 			System.out.println("HEAVY");
-			return new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
+			return 1000;
 		}
 	}
 }

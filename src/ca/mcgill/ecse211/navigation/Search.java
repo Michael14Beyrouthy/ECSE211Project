@@ -226,9 +226,13 @@ public class Search implements  NavigationController{
 		
 		leftMotor.stop();
 		rightMotor.stop();
-		//initialize weight 
+		
+		//initialize weight new detection
 		WeightIdentification test = new WeightIdentification();
-		clawMotor= test.getWeight(clawMotor);
+		//close claw motor instance
+		clawMotor.close();
+		int weight= test.getWeight();
+		clawMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		//if(weight==1000)
 			//numheavy++;
 		leftMotor.rotate(convertDistance(-15),true);
