@@ -245,17 +245,14 @@ public class Search implements  NavigationController{
 		leftMotor.rotate(convertDistance(-15),true);
 		rightMotor.rotate(convertDistance(-15),false);
 		
-		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(-50),false);
 		
 			
 		leftMotor.rotate(convertDistance(23),true);
 		rightMotor.rotate(convertDistance(23),false);
-		
-		clawMotor.setSpeed(ROTATE_SPEED);
+
 		clawMotor.rotate(convertAngle(50),false);
-		
-		clawMotor.setSpeed(ROTATE_SPEED);
+
 		clawMotor.rotate(convertAngle(-50),false);
 		
 		//color identification with weighing result
