@@ -57,7 +57,7 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static final double TRACK = 14.4; //no cans
+	public static final double TRACK = 14.3; //no cans
 	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 75;
@@ -273,6 +273,12 @@ public class Project2 {
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
 		
+		nav.newTravelTo(2.5, 2.5);
+		nav.localizeBeforeTunnel(2.5*30.48, 2.5*30.48, 90);
+		nav.traverseTunnel();
+		nav.localizeAfterTunnel(5.5*30.48, 2.5*30.48, 90);
+		nav.newTravelTo(7, 5);
+		nav.localizeBeforeSearchZone(7*30.48, 5*30.48);
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
