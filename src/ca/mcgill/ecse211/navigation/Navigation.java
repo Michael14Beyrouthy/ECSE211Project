@@ -82,8 +82,8 @@ public class Navigation extends Thread{
 	 * @param distance
 	 */
 	public void RegularGoStraight(double distance) {
-		//leftMotor.setSpeed(100);
-		//rightMotor.setSpeed(100);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), true);
 	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
 	}
@@ -119,8 +119,8 @@ public class Navigation extends Thread{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }
 		
-		leftMotor.setSpeed(150);
-	    rightMotor.setSpeed(150);
+		leftMotor.setSpeed(200);
+	    rightMotor.setSpeed(200);
 	    
 	    RegularGoStraight(distance); 
 	   
@@ -146,8 +146,8 @@ public class Navigation extends Thread{
 		this.turnTo(90);
 		this.RegularGoStraight(sensorDist);
 		
-		leftMotor.setSpeed(100);
-		rightMotor.setSpeed(100);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveBackward();
 		correct();
 		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
@@ -166,6 +166,8 @@ public class Navigation extends Thread{
 	
 	public void localizeAfterTunnel(double xAfterTunnel, double yAfterTunnel, double leavingTunnelAngle)
 	{
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.RegularGoStraight(sensorDist);
 		this.moveForward();
 		correct();
@@ -176,6 +178,8 @@ public class Navigation extends Thread{
 	
 	public void localizeBeforeSearchZone(double LLx, double LLy)
 	{
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.turnUntil(180);
 		this.moveForward();
 		correct();

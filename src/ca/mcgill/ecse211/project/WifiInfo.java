@@ -35,16 +35,35 @@ public class WifiInfo {
  public static int TNR_UR_x;
  public static int TNR_UR_y;
  
+ public static int TNG_LL_x;
+ public static int TNG_LL_y;
+ public static int TNG_UR_x;
+ public static int TNG_UR_y;
+ 
  public static int SZR_LL_x;
  public static int SZR_LL_y;
  public static int SZR_UR_x;
  public static int SZR_UR_y;
+ 
+ public static int SZG_LL_x;
+ public static int SZG_LL_y;
+ public static int SZG_UR_x;
+ public static int SZG_UR_y;
  
  public static int Red_LL_x;
  public static int Red_LL_y;
  public static int Red_UR_x;
  public static int Red_UR_y; 
  
+ public static int Green_LL_x;
+ public static int Green_LL_y;
+ public static int Green_UR_x;
+ public static int Green_UR_y;
+ 
+ public static int Island_LL_x;
+ public static int Island_LL_y;
+ public static int Island_UR_x;
+ public static int Island_UR_y;
  
  
  
@@ -71,10 +90,10 @@ public class WifiInfo {
        Red_UR_x=((Long) data.get("Red_UR_x")).intValue(); //Upper right x of base region
        Red_UR_y=((Long) data.get("Red_UR_y")).intValue(); //Upper right y of base region
        
-       parameters[6]=((Long) data.get("Island_LL_x")).intValue(); //lower left x of island
-       parameters[7]=((Long) data.get("Island_LL_y")).intValue(); //lower left y of island
-       parameters[8]=((Long) data.get("Island_UR_x")).intValue(); //Upper right x of island
-       parameters[9]=((Long) data.get("Island_UR_y")).intValue(); //Upper right y of island
+       Island_LL_x=((Long) data.get("Island_LL_x")).intValue(); //lower left x of island
+       Island_LL_y=((Long) data.get("Island_LL_y")).intValue(); //lower left y of island
+       Island_UR_x=((Long) data.get("Island_UR_x")).intValue(); //Upper right x of island
+       Island_UR_y=((Long) data.get("Island_UR_y")).intValue(); //Upper right y of island
        
        TNR_LL_x=((Long) data.get("TNR_LL_x")).intValue(); //lower left x of tunnel
        TNR_LL_y=((Long) data.get("TNR_LL_y")).intValue(); //lower left y of tunnel
@@ -88,31 +107,31 @@ public class WifiInfo {
        
        
      }
-     /*else if(((Long) data.get("GreenTeam")).intValue()==TEAM_NUMBER) { //if our team is the green team
+     else if(((Long) data.get("GreenTeam")).intValue()==TEAM_NUMBER) { //if our team is the green team
        parameters[0]=((Long) data.get("GreenCorner")).intValue(); //starting corner
        parameters[1]=((Long) data.get("RedCorner")).intValue(); //can to look for, for the beta demo it is
                                                                 // in the GreenTeam key
        
-       parameters[2]=((Long) data.get("Green_LL_x")).intValue(); //lower left x of base region
-       parameters[3]=((Long) data.get("Green_LL_y")).intValue(); //lower left y of base region
-       parameters[4]=((Long) data.get("Green_UR_x")).intValue(); //Upper right x of base region
-       parameters[5]=((Long) data.get("Green_UR_y")).intValue(); //Upper right y of base region
+       Green_LL_x=((Long) data.get("Green_LL_x")).intValue(); //lower left x of base region
+       Green_LL_y=((Long) data.get("Green_LL_y")).intValue(); //lower left y of base region
+       Green_UR_x=((Long) data.get("Green_UR_x")).intValue(); //Upper right x of base region
+       Green_UR_y=((Long) data.get("Green_UR_y")).intValue(); //Upper right y of base region
        
-       parameters[6]=((Long) data.get("Island_LL_x")).intValue(); //lower left x of island
-       parameters[7]=((Long) data.get("Island_LL_y")).intValue(); //lower left y of island
-       parameters[8]=((Long) data.get("Island_UR_x")).intValue(); //Upper right x of island
-       parameters[9]=((Long) data.get("Island_UR_y")).intValue(); //Upper right y of island
+       Island_LL_x=((Long) data.get("Island_LL_x")).intValue(); //lower left x of island
+       Island_LL_y=((Long) data.get("Island_LL_y")).intValue(); //lower left y of island
+       Island_UR_x=((Long) data.get("Island_UR_x")).intValue(); //Upper right x of island
+       Island_UR_y=((Long) data.get("Island_UR_y")).intValue(); //Upper right y of island
        
-       parameters[10]=((Long) data.get("TNG_LL_x")).intValue(); //lower left x of tunnel
-       parameters[11]=((Long) data.get("TNG_LL_y")).intValue(); //lower left y of tunnel
-       parameters[12]=((Long) data.get("TNG_UR_x")).intValue(); //Upper right x of tunnel
-       parameters[13]=((Long) data.get("TNG_UR_y")).intValue(); //Upper right y of tunnel
+       TNG_LL_x=((Long) data.get("TNG_LL_x")).intValue(); //lower left x of tunnel
+       TNG_LL_y=((Long) data.get("TNG_LL_y")).intValue(); //lower left y of tunnel
+       TNG_UR_x=((Long) data.get("TNG_UR_x")).intValue(); //Upper right x of tunnel
+       TNG_UR_y=((Long) data.get("TNG_UR_y")).intValue(); //Upper right y of tunnel
        
-       parameters[14]=((Long) data.get("SZG_LL_x")).intValue(); //lower left x of search zone
-       parameters[15]=((Long) data.get("SZG_LL_y")).intValue(); //lower left y of search zone
-       parameters[16]=((Long) data.get("SZG_UR_x")).intValue(); //Upper right x of search zone
-       parameters[17]=((Long) data.get("SZG_UR_y")).intValue(); //Upper right y of search zone
-     }*/
+       SZG_LL_x=((Long) data.get("SZG_LL_x")).intValue(); //lower left x of search zone
+       SZG_LL_y=((Long) data.get("SZG_LL_y")).intValue(); //lower left y of search zone
+       SZG_UR_x=((Long) data.get("SZG_UR_x")).intValue(); //Upper right x of search zone
+       SZG_UR_y=((Long) data.get("SZG_UR_y")).intValue(); //Upper right y of search zone
+     }
      else { //if our team is neither green nor red
        throw new Exception("Our team is not represented");
      }

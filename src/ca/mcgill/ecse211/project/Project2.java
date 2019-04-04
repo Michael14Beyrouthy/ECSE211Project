@@ -71,8 +71,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();	
+		/*WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();*/	
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
@@ -124,7 +124,7 @@ public class Project2 {
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		search.searchcans();
+		//search.searchcans();
 	  	
 		//========================================End of testing for search ===========================================================================================
 		
@@ -160,12 +160,20 @@ public class Project2 {
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
 		
-		nav.newTravelTo(2.5, 2.5);
-		nav.localizeBeforeTunnel(2.5*30.48, 2.5*30.48, 90);
+		nav.newTravelTo(1.5, 1.5);
+		nav.localizeBeforeTunnel(1.5*30.48, 1.5*30.48, 0);
 		nav.traverseTunnel();
-		nav.localizeAfterTunnel(5.5*30.48, 2.5*30.48, 90);
-		nav.newTravelTo(7, 5);
+		nav.localizeAfterTunnel(1.5*30.48, 4.5*30.48, 0);
+		nav.newTravelTo(0, 6);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		nav.localizeBeforeSearchZone(7*30.48, 5*30.48);
+		
+		
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
