@@ -8,7 +8,7 @@ public class WeightIdentification {
 	/**
 	 * Power for unregulated weighing motor
 	 */
-	private static final int MOTOR_POWER = 12;
+	private static final int MOTOR_POWER = 15;
 	
 	/**
 	 * Threshold tachomter count difference to classify cans as either heavy or light
