@@ -248,6 +248,7 @@ public class Search implements  NavigationController{
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(40),false);
 		
+
 		leftMotor.rotate(convertDistance(-15),true);
 		rightMotor.rotate(convertDistance(-15),false);
 		
