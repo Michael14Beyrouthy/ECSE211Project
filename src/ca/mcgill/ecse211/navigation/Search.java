@@ -23,7 +23,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
  *
  */
 public class Search implements  NavigationController{
-	public static double TRACK =13.80;
+	public static double TRACK =14.3;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
