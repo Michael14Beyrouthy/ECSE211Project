@@ -130,6 +130,13 @@ public class Navigation extends Thread{
 	    
 	  isNavigating = false;
 	  
+	  try {
+		Thread.sleep(350);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
 	  }
 		
 
@@ -146,13 +153,13 @@ public class Navigation extends Thread{
 		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
 
 		this.turnTo(270);
-		this.RegularGoStraight(sensorDist);
+		/*this.RegularGoStraight(sensorDist);
 		
 		leftMotor.setSpeed(100);
 		rightMotor.setSpeed(100);
 		this.moveBackward();
 		correct();
-		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
+		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);*/
 		
 		odometer.setXYT(xBeforeTunnel, yBeforeTunnel, facingTunnelAngle);
 	}
@@ -165,6 +172,19 @@ public class Navigation extends Thread{
 		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
 		odometer.setXYT(xAfterTunnel, yAfterTunnel, leavingTunnelAngle);
 		
+	}
+	
+	public void localizeBeforeSearchZone(double LLx, double LLy)
+	{
+		this.turnUntil(180);
+		this.moveForward();
+		correct();
+		this.RegularGoStraight(-sensorDist);
+		this.turnTo(270);
+		this.moveForward();
+		correct();
+		this.RegularGoStraight(-sensorDist);
+		odometer.setXYT(LLx, LLy, 90);
 	}
 
 	/**
