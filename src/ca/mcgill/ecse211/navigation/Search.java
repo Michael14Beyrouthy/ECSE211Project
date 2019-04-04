@@ -219,8 +219,6 @@ public class Search implements  NavigationController{
 		System.out.println(distance);
 		Sound.beep();
 
-		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(-30),false);
 		//reach to the detected can 
 		leftMotor.rotate(convertDistance(fetchUS()+10),true);
 		rightMotor.rotate(convertDistance(fetchUS()+10),false);	
@@ -240,8 +238,6 @@ public class Search implements  NavigationController{
 		clawMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("B"));
 		//if(weight==1000)
 			//numheavy++;
-		clawMotor.setSpeed(ROTATE_SPEED);
-		clawMotor.rotate(convertAngle(30),false);
 		leftMotor.rotate(convertDistance(-15),true);
 		rightMotor.rotate(convertDistance(-15),false);
 		
