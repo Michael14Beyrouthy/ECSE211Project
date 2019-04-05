@@ -71,8 +71,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		/*WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();*/	
+		WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
@@ -124,7 +124,7 @@ public class Project2 {
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		//search.searchcans();
+		search.searchcans();
 	  	
 		//========================================End of testing for search ===========================================================================================
 		
