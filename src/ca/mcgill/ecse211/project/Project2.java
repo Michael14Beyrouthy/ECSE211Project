@@ -57,7 +57,7 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static final double TRACK = 14.3; //no cans
+	public static final double TRACK = 14.15; //no cans
 	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 75;
@@ -160,18 +160,18 @@ public class Project2 {
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
 		
-		nav.newTravelTo(1.5, 1.5);
-		nav.localizeBeforeTunnel(1.5*30.48, 1.5*30.48, 0);
+		nav.newTravelTo(1.5, 4.5);
+		nav.localizeBeforeTunnel(1.5*30.48, 4.5*30.48, 90);
 		nav.traverseTunnel();
-		nav.localizeAfterTunnel(1.5*30.48, 4.5*30.48, 0);
-		nav.newTravelTo(0, 6);
+		nav.localizeAfterTunnel(4.5*30.48, 4.5*30.48, 90);
+		nav.newTravelTo(6, 6);
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		nav.localizeBeforeSearchZone(7*30.48, 5*30.48);
+		nav.localizeBeforeSearchZone(6*30.48, 6*30.48);
 		
 		
 		//End process

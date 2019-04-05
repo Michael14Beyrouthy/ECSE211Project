@@ -146,8 +146,8 @@ public class Navigation extends Thread{
 		this.turnTo(90);
 		this.RegularGoStraight(sensorDist);
 		
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
+		leftMotor.setSpeed(100);
+		rightMotor.setSpeed(100);
 		this.moveBackward();
 		correct();
 		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
@@ -166,8 +166,8 @@ public class Navigation extends Thread{
 	
 	public void localizeAfterTunnel(double xAfterTunnel, double yAfterTunnel, double leavingTunnelAngle)
 	{
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
+		leftMotor.setSpeed(100);
+		rightMotor.setSpeed(100);
 		this.RegularGoStraight(sensorDist);
 		this.moveForward();
 		correct();
@@ -181,6 +181,7 @@ public class Navigation extends Thread{
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
 		this.turnUntil(180);
+		this.RegularGoStraight(-sensorDist);
 		this.moveForward();
 		correct();
 		this.RegularGoStraight(-sensorDist);
@@ -229,7 +230,8 @@ public class Navigation extends Thread{
 				isTurning=false;
 			}
 			setSpeeds(50, -50);
-		}
+		}		
+		this.stopMoving();
 	}
 	
 	/**
@@ -272,7 +274,9 @@ public class Navigation extends Thread{
 	 * Traverses the tunnel once robot is facing it
 	 */
 	public void traverseTunnel() {
-		RegularGoStraight(3*Project2.TILE_SIZE);
+		this.moveForward();
+		correct();
+		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist);
 	}
 	
 	
