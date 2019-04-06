@@ -23,7 +23,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
  *
  */
 public class Search implements  NavigationController{
-	public static double TRACK =13.80;
+	public static double TRACK =14.3;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
@@ -148,6 +148,17 @@ public class Search implements  NavigationController{
 	 * detects cans by rotating around point
 	 * @param step
 	 */
+	public void searchinitial() {
+		rDistance=0;
+		rAngle=0;
+		color = 0.30;
+		numcans = 0;
+		numheavy=0;
+	    xcoor=0;
+		ycoor=0;
+		TRACK=14.3;
+		odometer.setTheta(0);
+	}
 	public void searching(int step) {
 		correct();
 		if(step%2==0) {
