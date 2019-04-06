@@ -19,10 +19,8 @@ import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
-import ca.mcgill.ecse211.navigation.Navigation;
-import ca.mcgill.ecse211.navigation.Search;
-import ca.mcgill.ecse211.navigation.WeightIdentification;
 //import ca.mcgill.ecse211.weighing.*;
+import ca.mcgill.ecse211.navigation.*;
 
 /**
  * Project class, instantiates the motors and sets some constants
@@ -56,7 +54,7 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static double TRACK = 14.15; // begin motion with default track (zero cans in storage area)
+	public static double TRACK = 14.16; // begin motion with default track (zero cans in storage area)
 	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
@@ -69,8 +67,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		/*WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();*/
+		WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
@@ -92,49 +90,53 @@ public class Project2 {
 		//Start display thread
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
-		
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
 
 		// Create ultrasonicsensor light localizer and navigation objects
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
-		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
+		
+		
 		// start the ultrasonic localization
-//	    USLocalizer.localize();
-	    // run the light localization
-		//lightLocalizer.initialLocalize(4);
 		
-	    /*	try {
-			odoThread.wait();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-	
-		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
-		
-		
-		//================================== Used for testing tunnel traversal =========================================================
-		
-		nav.newTravelTo(1.5, 3.5);
-		nav.localizeBeforeTunnel(1.5*30.48, 3.5*30.48, 90);
-		nav.traverseTunnel();
-		nav.localizeAfterTunnel(4.5*30.48, 3.5*30.48, 90);
-		nav.newTravelTo(5, 0);
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//nav.localizeBeforeSearchZone(7*30.48, 2*30.48);
+	    USLocalizer.localize();
+	    
+	    
+		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
+
+	    // run the light localization
+	   lightLocalizer.initialLocalize(4);
+		
+		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
+		
+		
+		//================================== Used for testing tunnel traversal =========================================================
+		
+		nav.newTravelTo(wifi.TNR_LL_x-0.5, wifi.TNR_LL_y+0.5);
+		nav.localizeBeforeTunnel((wifi.TNR_LL_x-0.5)*30.48, (wifi.TNR_LL_y+0.5)*30.48, 90);
+		nav.traverseTunnel();
+		nav.localizeAfterTunnel((wifi.TNR_UR_x+0.5)*30.48, (wifi.TNR_UR_y-0.5)*30.48, 90);
+		nav.newTravelTo(wifi.SZR_LL_x, wifi.SZR_LL_y);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		nav.localizeBeforeSearchZone(wifi.SZR_LL_x*30.48, wifi.SZR_LL_y*30.48);
 		
 		//===============================================End of area for testing tunnel traversal ====================================================================
         
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		//search.searchcans();
+		search.searchcans();
 	  	
 		//========================================End of testing for search ===========================================================================================
 		

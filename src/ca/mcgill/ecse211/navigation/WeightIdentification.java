@@ -38,9 +38,6 @@ public class WeightIdentification {
 		weighingMotor.stop();
 		int secondTacho = weighingMotor.getTachoCount();
 		
-		System.out.println("first: " + firstTacho);
-		System.out.println("second: " + secondTacho);
-		
 		// Close weighing motor instance
 		weighingMotor.close();
 		

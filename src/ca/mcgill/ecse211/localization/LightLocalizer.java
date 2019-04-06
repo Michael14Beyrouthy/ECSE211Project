@@ -66,7 +66,7 @@ public class LightLocalizer {
 
 		correct();
 
-		this.travelDist(-SENSOR_LENGTH,100);
+		this.travelDist(-SENSOR_LENGTH,175);
 		this.turnBy(90,true);
 
 		this.setSpeeds(150,150);
@@ -74,7 +74,7 @@ public class LightLocalizer {
 
 		correct();
 
-		this.travelDist(-SENSOR_LENGTH,100);
+		this.travelDist(-SENSOR_LENGTH,175);
 
 		this.turnBy(90, false); 
 

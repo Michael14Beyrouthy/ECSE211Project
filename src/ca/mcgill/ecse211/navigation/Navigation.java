@@ -178,7 +178,7 @@ public class Navigation extends Thread{
 		this.RegularGoStraight(sensorDist);
 		this.moveForward();
 		correct();
-//		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
+		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
 		odometer.setXYT(xAfterTunnel+sensorDist, yAfterTunnel+sensorDist, leavingTunnelAngle);
 		
 	}
