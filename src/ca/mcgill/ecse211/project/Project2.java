@@ -111,7 +111,7 @@ public class Project2 {
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 
 	    // run the light localization
-	   lightLocalizer.initialLocalize(4);
+	   lightLocalizer.initialLocalize(3);
 		
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		

@@ -258,13 +258,13 @@ public class Search implements NavigationController {
 		
 		// rotate the claw motor slightly, and drive towards the can
 		clawMotor.rotate(convertAngle(-20), false);
-		int distanceToTravel;
-		if(i<3 || i>6) {
+		int distanceToTravel=20;
+		/*if(i<3 || i>6) {
 			distanceToTravel = 21;
 		}
 		else{
 			distanceToTravel = 31;
-		}
+		}*/
 		
 		RegularGoStraight(distanceToTravel);
 		leftMotor.stop();
@@ -300,7 +300,7 @@ public class Search implements NavigationController {
 		clawMotor.rotate(convertAngle(-60), false);
 
 		// drive towards the can
-		RegularGoStraight(distanceToTravel+10);
+		RegularGoStraight(distanceToTravel+5);
 
 		// pull the can into the storage area, and open claw to make room for color sensor
 		clawMotor.rotate(convertAngle(60), false);
