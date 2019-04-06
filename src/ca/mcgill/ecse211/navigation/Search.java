@@ -484,8 +484,8 @@ public class Search implements NavigationController {
 	
 	public void RegularTravelTo(double x, double y, int direction) {
 
-		double deltaX = xcoor - x * 30.48;
-		double deltaY = ycoor - y * 30.48;
+		double deltaX = xcoor ;
+		double deltaY = ycoor ;
 		double theta;
 		double deltaTheta;
 		double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
