@@ -38,16 +38,6 @@ public class WeightIdentification {
 		weighingMotor.stop();
 		int secondTacho = weighingMotor.getTachoCount();
 		
-		//Move claw back to it's original position
-		weighingMotor.forward();
-		try {
-			Thread.sleep(1000);
-	    	} catch (InterruptedException e) {
-	      // There is nothing to be done here
-	    	}
-		weighingMotor.stop();
-		
-		
 		System.out.println("first: " + firstTacho);
 		System.out.println("second: " + secondTacho);
 		

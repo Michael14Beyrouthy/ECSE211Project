@@ -56,7 +56,7 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static final double TRACK = 14.15; //no cans
+	public static double TRACK = 14.15; // begin motion with default track (zero cans in storage area)
 	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
@@ -94,7 +94,7 @@ public class Project2 {
 		odoDisplayThread.start();
 		
 		Search search = new Search(rightMotor, leftMotor,
-				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor);
+				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
 
 		// Create ultrasonicsensor light localizer and navigation objects
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
