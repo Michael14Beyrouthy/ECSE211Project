@@ -25,7 +25,7 @@ public class LightLocalizer {
 	private final static double TILE_SIZE = 30.48;
 	private final static double SENSOR_LENGTH = 6.5;
 	public final double WHEEL_RAD = 2.09;
-	public final double TRACK = 13.75;
+	public final double TRACK = 14.15;
 	private Odometer odometer;
 
 	//private static RobotController robot;
@@ -60,21 +60,21 @@ public class LightLocalizer {
 	public void initialLocalize(int startingCorner) {
 
 		// Start moving the robot forward
-		leftMotor.setSpeed(200);
-		rightMotor.setSpeed(200);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveForward();
 
 		correct();
 
-		this.travelDist(-SENSOR_LENGTH,200);
+		this.travelDist(-SENSOR_LENGTH,100);
 		this.turnBy(90,true);
 
-		this.setSpeeds(200,200);
+		this.setSpeeds(150,150);
 		this.moveForward();
 
 		correct();
 
-		this.travelDist(-SENSOR_LENGTH,200);
+		this.travelDist(-SENSOR_LENGTH,100);
 
 		this.turnBy(90, false); 
 

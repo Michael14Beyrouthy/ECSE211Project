@@ -23,7 +23,7 @@ import ca.mcgill.ecse211.controller.UltrasonicPoller;
  *
  */
 public class Search implements  NavigationController{
-	public static double TRACK =14.3;
+	public static double TRACK =14.15;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
@@ -45,10 +45,10 @@ public class Search implements  NavigationController{
 	private double xcoor=0;
 	private double ycoor=0;					
 
-	private int SZR_UR_x=WifiInfo.SZR_UR_x;
+	/*private int SZR_UR_x=WifiInfo.SZR_UR_x;
 	private int SZR_UR_y=WifiInfo.SZR_UR_y;
 	private int SZR_LL_x=WifiInfo.SZR_LL_x;
-	private int SZR_LL_y=WifiInfo.SZR_LL_y;
+	private int SZR_LL_y=WifiInfo.SZR_LL_y;*/
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
 
@@ -86,8 +86,8 @@ public class Search implements  NavigationController{
 		// Travel to each of the way-points
 		
 		//calculate search area size
-		int column=SZR_UR_x-SZR_LL_x;
-		int row=SZR_UR_y-SZR_LL_y;
+		int column=9-7;
+		int row=9-7;
 
 		//travel to points throught the map
 		for(int i=0;i<column;i++){
@@ -183,7 +183,7 @@ public class Search implements  NavigationController{
 				TRACK=14.24;
 			if(numheavy==2)
 				TRACK=14.44;
-			RegularTravelTo(SZR_LL_x,SZR_LL_y,0);
+			RegularTravelTo(7, 7, 0);
 			turnTo(0);
 			stopMoving();
 			Sound.beepSequence();
@@ -213,7 +213,7 @@ public class Search implements  NavigationController{
 				TRACK=14.24;
 			if(numheavy==2)
 				TRACK=14.44;
-			RegularTravelTo(SZR_LL_x,SZR_LL_y,1);
+			RegularTravelTo(7, 7, 1);
 			turnTo(0);
 			Sound.beepSequence();
 			return;
@@ -233,8 +233,8 @@ public class Search implements  NavigationController{
 		clawMotor.setSpeed(ROTATE_SPEED);
 		clawMotor.rotate(convertAngle(-20),false);
 		//reach to the detected can 
-		leftMotor.rotate(convertDistance(fetchUS()-15),true);
-		rightMotor.rotate(convertDistance(fetchUS()-15),false);	
+		leftMotor.rotate(convertDistance(fetchUS())-15,true);
+		rightMotor.rotate(convertDistance(fetchUS())-15,false);	
 		
 		leftMotor.stop();
 		rightMotor.stop();

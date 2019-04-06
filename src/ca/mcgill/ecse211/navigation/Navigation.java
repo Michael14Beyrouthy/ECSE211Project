@@ -82,8 +82,15 @@ public class Navigation extends Thread{
 	 * @param distance
 	 */
 	public void RegularGoStraight(double distance) {
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
+		leftMotor.setSpeed(200);
+		rightMotor.setSpeed(200);
+		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), true);
+	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
+	}
+	
+	public void RegularGoStraight(double distance, int speed) {
+		leftMotor.setSpeed(speed);
+		rightMotor.setSpeed(speed);
 		leftMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), true);
 	    rightMotor.rotate(convertDistance(Project2.WHEEL_RAD, distance), false);
 	}
@@ -119,10 +126,10 @@ public class Navigation extends Thread{
 	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
 	    }
 		
-		leftMotor.setSpeed(200);
-	    rightMotor.setSpeed(200);
+//		leftMotor.setSpeed(300);
+//	    rightMotor.setSpeed(300);
 	    
-	    RegularGoStraight(distance); 
+	    RegularGoStraight(distance, 255); 
 	   
 	    odometer.setX(targetx*30.48);
 	    odometer.setY(targety*30.48);
@@ -146,8 +153,8 @@ public class Navigation extends Thread{
 		this.turnTo(90);
 		this.RegularGoStraight(sensorDist);
 		
-		leftMotor.setSpeed(100);
-		rightMotor.setSpeed(100);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveBackward();
 		correct();
 		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
@@ -166,13 +173,13 @@ public class Navigation extends Thread{
 	
 	public void localizeAfterTunnel(double xAfterTunnel, double yAfterTunnel, double leavingTunnelAngle)
 	{
-		leftMotor.setSpeed(100);
-		rightMotor.setSpeed(100);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.RegularGoStraight(sensorDist);
 		this.moveForward();
 		correct();
-		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
-		odometer.setXYT(xAfterTunnel, yAfterTunnel, leavingTunnelAngle);
+//		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
+		odometer.setXYT(xAfterTunnel+sensorDist, yAfterTunnel+sensorDist, leavingTunnelAngle);
 		
 	}
 	
@@ -219,7 +226,7 @@ public class Navigation extends Thread{
 	    
 	}
 	
-	public void turnUntil(double ang)
+	public void turnUntil (double ang)
 	{
 		boolean isTurning = true;
 		while(isTurning)
@@ -229,7 +236,7 @@ public class Navigation extends Thread{
 				this.stopMoving();
 				isTurning=false;
 			}
-			setSpeeds(50, -50);
+			setSpeeds(200, -200);
 		}		
 		this.stopMoving();
 	}

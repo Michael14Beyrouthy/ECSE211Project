@@ -24,7 +24,6 @@ import ca.mcgill.ecse211.navigation.Search;
 import ca.mcgill.ecse211.navigation.WeightIdentification;
 //import ca.mcgill.ecse211.weighing.*;
 
-
 /**
  * Project class, instantiates the motors and sets some constants
  * Instantiates all threads and objects of other classes and runs them accordingly
@@ -60,9 +59,8 @@ public class Project2 {
 	public static final double TRACK = 14.15; //no cans
 	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
-	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 75;
+	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
 	
-
 	/**
 	 * main() method of class 
 	 * This is the method that runs when the whole project is run
@@ -71,8 +69,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();
+		/*WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();*/
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
@@ -102,11 +100,11 @@ public class Project2 {
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		// start the ultrasonic localization
-	 //   USLocalizer.localize();
+//	    USLocalizer.localize();
 	    // run the light localization
-	//	lightLocalizer.initialLocalize();
+		//lightLocalizer.initialLocalize(4);
 		
-	/*	try {
+	    /*	try {
 			odoThread.wait();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -118,13 +116,25 @@ public class Project2 {
 		
 		//================================== Used for testing tunnel traversal =========================================================
 		
+		nav.newTravelTo(1.5, 3.5);
+		nav.localizeBeforeTunnel(1.5*30.48, 3.5*30.48, 90);
+		nav.traverseTunnel();
+		nav.localizeAfterTunnel(4.5*30.48, 3.5*30.48, 90);
+		nav.newTravelTo(5, 0);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//nav.localizeBeforeSearchZone(7*30.48, 2*30.48);
 		
 		//===============================================End of area for testing tunnel traversal ====================================================================
         
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		search.searchcans();
+		//search.searchcans();
 	  	
 		//========================================End of testing for search ===========================================================================================
 		
@@ -159,19 +169,6 @@ public class Project2 {
 		//odometer.setXYT(0, 0, 0.0);
 	    
 	    //baby nav.TravelToLXYdown(0.5, 0.5);
-		
-		nav.newTravelTo(1.5, 4.5);
-		nav.localizeBeforeTunnel(1.5*30.48, 4.5*30.48, 90);
-		nav.traverseTunnel();
-		nav.localizeAfterTunnel(4.5*30.48, 4.5*30.48, 90);
-		nav.newTravelTo(6, 6);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		nav.localizeBeforeSearchZone(6*30.48, 6*30.48);
 		
 		
 		//End process
