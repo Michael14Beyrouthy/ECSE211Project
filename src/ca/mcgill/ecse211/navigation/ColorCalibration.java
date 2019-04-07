@@ -125,13 +125,16 @@ public class ColorCalibration {
 		if(sortColors[0]== eGreen) {
 			System.out.println("GREEN");
 			Sound.playTone(100, weight);
-			return 1;
+			Sound.playTone(100, weight);
+			return 2;
 		}
 		if(sortColors[0]==eRed) {
 			System.out.println("RED");
 			Sound.playTone(100, weight);
 			Sound.playTone(100, weight);
-			return 2;
+			Sound.playTone(100, weight);
+			Sound.playTone(100, weight);
+			return 4;
 		}
 		if(sortColors[0]==eYellow) {
 			System.out.println("YELLOW");
@@ -143,10 +146,7 @@ public class ColorCalibration {
 		else {
 			System.out.println("BLUE");
 			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
-			return 4;
+			return 1;
 		}
 	
 	}
