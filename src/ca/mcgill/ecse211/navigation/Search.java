@@ -52,10 +52,10 @@ public class Search implements NavigationController {
 	private double ycoor = 0;
 
 	
-	  private int SZR_UR_x=WifiInfo.SZR_UR_x; 
-	  private int SZR_UR_y=WifiInfo.SZR_UR_y; 
-	  private int SZR_LL_x=WifiInfo.SZR_LL_x; 
-	  private int SZR_LL_y=WifiInfo.SZR_LL_y;
+	  private int SZR_UR_x=WifiInfo.Search_UR_x; 
+	  private int SZR_UR_y=WifiInfo.Search_UR_y; 
+	  private int SZR_LL_x=WifiInfo.Search_LL_x; 
+	  private int SZR_LL_y=WifiInfo.Search_LL_y;
 	 
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;

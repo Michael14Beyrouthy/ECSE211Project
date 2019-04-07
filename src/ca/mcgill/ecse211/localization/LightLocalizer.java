@@ -57,7 +57,7 @@ public class LightLocalizer {
 	/**
 	 * Localizes the robot to the starting point using the two light sensors
 	 */
-	public void initialLocalize(int startingCorner) {
+	public void initialLocalize(long corner) {
 
 		// Start moving the robot forward
 		leftMotor.setSpeed(150);
@@ -78,19 +78,19 @@ public class LightLocalizer {
 
 		this.turnBy(90, false); 
 
-		if (startingCorner == 1)
+		if (corner == 1)
 		{
 			odometer.setXYT(14*30.48, 30.48, 270.0);
 		}
-		if (startingCorner == 2)
+		if (corner == 2)
 		{
 			odometer.setXYT(14*30.48, 8*30.48, 180.0);
 		}
-		if (startingCorner == 3)
+		if (corner == 3)
 		{
 			odometer.setXYT(30.48, 8*30.48, 90.0);
 		}
-		if (startingCorner == 4)
+		if (corner == 0)
 		{
 			odometer.setXYT(30.48, 30.48, 0.0);
 		}
