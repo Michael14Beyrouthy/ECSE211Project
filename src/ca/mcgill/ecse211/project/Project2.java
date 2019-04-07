@@ -19,7 +19,6 @@ import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
-//import ca.mcgill.ecse211.weighing.*;
 import ca.mcgill.ecse211.navigation.*;
 
 /**

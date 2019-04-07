@@ -52,10 +52,10 @@ public class Search implements NavigationController {
 	private double ycoor = 0;
 
 	
-	  private int search_SZR_UR_x=WifiInfo.Search_UR_x; 
-	  private int search_SZR_UR_y=WifiInfo.Search_UR_y; 
-	  private int search_SZR_LL_x=WifiInfo.Search_LL_x; 
-	  private int search_SZR_LL_y=WifiInfo.Search_LL_y;
+	  private int SZR_UR_x=WifiInfo.Search_UR_x; 
+	  private int SZR_UR_y=WifiInfo.Search_UR_y; 
+	  private int SZR_LL_x=WifiInfo.Search_LL_x; 
+	  private int SZR_LL_y=WifiInfo.Search_LL_y;
 	 
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
@@ -90,15 +90,10 @@ public class Search implements NavigationController {
 	 * 
 	 */
 	public void searchcans() {
-		if(search_SZR_UR_x == 15) {
-			search_SZR_UR_x--;
-		}
-		if(search_SZR_UR_y == 9 ) {
-			search_SZR_UR_y--;
-		}
+
 		// calculate search area size
-		int column = search_SZR_UR_x - search_SZR_LL_x;
-		int row = search_SZR_UR_y - search_SZR_LL_y;
+		int column = SZR_UR_x - SZR_LL_x;
+		int row = SZR_UR_y - SZR_LL_y;
 		anglebeforesearch=odometer.getTheta();
 		odometer.setTheta(0);
 		// travel along the length of the search field, tile by tile
@@ -192,7 +187,7 @@ public class Search implements NavigationController {
 			if (numcans == 2) {
 				correctPosition();
 				correctTrack();
-				RegularTravelTo(search_SZR_UR_x-search_SZR_LL_x,search_SZR_UR_y-search_SZR_LL_y, 0);
+				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 0);
 				turnTo(0);
 				stopMoving();
 				return;
@@ -223,15 +218,9 @@ public class Search implements NavigationController {
 			
 			// if we have retrieved two cans, correct the track and return to starting position
 			if (numcans == 2) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				correctPosition();
 				correctTrack();
-				RegularTravelTo(search_SZR_UR_x-search_SZR_LL_x,search_SZR_UR_y-search_SZR_LL_y, 1);
+				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 1);
 				turnTo(0);
 				return;
 			}
@@ -269,13 +258,13 @@ public class Search implements NavigationController {
 		
 		// rotate the claw motor slightly, and drive towards the can
 		clawMotor.rotate(convertAngle(-20), false);
-		int distanceToTravel;
-		if(i<3 || i>6) {
+		int distanceToTravel=20;
+		/*if(i<3 || i>6) {
 			distanceToTravel = 21;
 		}
 		else{
 			distanceToTravel = 31;
-		}
+		}*/
 		
 		RegularGoStraight(distanceToTravel);
 		leftMotor.stop();
@@ -326,7 +315,7 @@ public class Search implements NavigationController {
 		numcans++;
 
 		// return to searching path
-		backtopath(distanceToTravel+5);
+		backtopath(distanceToTravel);
 	}
 
 	/**
