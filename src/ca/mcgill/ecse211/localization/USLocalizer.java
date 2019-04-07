@@ -109,8 +109,8 @@ public class USLocalizer {
 
 		//rotate robot to theta = 0.0 using turning angle
 		//introduce a fix error correction
-		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR), true);
-		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR), false);
+		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-10), true);
+		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-10), false);
 
 		// set theta = 0.0
 		odometer.setTheta(0.0);
@@ -166,8 +166,8 @@ public class USLocalizer {
 
 		// rotate robot to the theta = 0.0 
         //introduce a fix error correction
-		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-20), true);
-		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-20), false);
+		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-12), true);
+		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-12), false);
 
 		// set odometer to theta = 0
 		odometer.setTheta(0.0);

@@ -17,8 +17,6 @@ import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
 import ca.mcgill.ecse211.controller.UltrasonicPoller;
 
-//change searchcans method 
-
 /**
  * Search class, searches for cans in the search zone
  * 
@@ -34,14 +32,15 @@ public class Search implements NavigationController {
 	private EV3LargeRegulatedMotor clawMotor;
 	private EV3MediumRegulatedMotor sensorMotor;
 	private Odometer odometer;
+	private boolean isNavigating = false;
 	
+	private double anglebeforesearch=0;
 	// distance between two front wheels 
 	public double TRACK;
 	
 	// Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] = theta (deg)
 	private static double currentPosition[] = new double[3];
 	private SensorModes usSensor; // ultrasonic sensor
-	private double rDistance = 0;
 	
 	private int numcans = 0; // keeps track of number of cans in storage area
 	private int numheavy = 0; //keeps track of number of heavy cans
@@ -52,11 +51,12 @@ public class Search implements NavigationController {
 	private double xcoor = 0;
 	private double ycoor = 0;
 
-	/*
-	 * private int SZR_UR_x=WifiInfo.SZR_UR_x; private int
-	 * SZR_UR_y=WifiInfo.SZR_UR_y; private int SZR_LL_x=WifiInfo.SZR_LL_x; private
-	 * int SZR_LL_y=WifiInfo.SZR_LL_y;
-	 */
+	
+	  private int search_SZR_UR_x=WifiInfo.Search_UR_x; 
+	  private int search_SZR_UR_y=WifiInfo.Search_UR_y; 
+	  private int search_SZR_LL_x=WifiInfo.Search_LL_x; 
+	  private int search_SZR_LL_y=WifiInfo.Search_LL_y;
+	 
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
 
@@ -90,11 +90,17 @@ public class Search implements NavigationController {
 	 * 
 	 */
 	public void searchcans() {
-
+		if(search_SZR_UR_x == 15) {
+			search_SZR_UR_x--;
+		}
+		if(search_SZR_UR_y == 9 ) {
+			search_SZR_UR_y--;
+		}
 		// calculate search area size
-		int column = 9 - 7;
-		int row = 9 - 7;
-
+		int column = search_SZR_UR_x - search_SZR_LL_x;
+		int row = search_SZR_UR_y - search_SZR_LL_y;
+		anglebeforesearch=odometer.getTheta();
+		odometer.setTheta(0);
 		// travel along the length of the search field, tile by tile
 		for (int i = 0; i < column; i++) {
 			
@@ -165,12 +171,16 @@ public class Search implements NavigationController {
 			// perform 10 rotations of 90 degrees to scan the current tile
 			for (int i = 0; i < 10; i++) {
 				turnRight(10);
+				if(numcans == 2) {
+					turnTo(90);
+					break;
+				}
 				// if the sampled distance is less than the threshold, stop rotation and retrieve the can
 				if (fetchUS() < CAN_DIST) {
 					leftMotor.stop();
 					rightMotor.stop();
-					rDistance = fetchUS();
-					getCan();
+					getCan(i);
+					
 				}
 			}
 			
@@ -182,7 +192,7 @@ public class Search implements NavigationController {
 			if (numcans == 2) {
 				correctPosition();
 				correctTrack();
-				RegularTravelTo(7, 7, 0);
+				RegularTravelTo(search_SZR_UR_x-search_SZR_LL_x,search_SZR_UR_y-search_SZR_LL_y, 0);
 				turnTo(0);
 				stopMoving();
 				return;
@@ -195,12 +205,15 @@ public class Search implements NavigationController {
 			for (int i = 0; i < 10; i++) {
 				turnLeft(10);
 				// if the sampled distance is less than the threshold, stop rotation and retrieve the can
+				if(numcans==2) {
+					turnTo(90);
+					break;
+				}
 				if (fetchUS() < CAN_DIST) {
 					turnLeft(5);
 					leftMotor.stop();
 					rightMotor.stop();
-					rDistance = fetchUS();
-					getCan();
+					getCan(i);
 				}
 			}
 			
@@ -210,9 +223,15 @@ public class Search implements NavigationController {
 			
 			// if we have retrieved two cans, correct the track and return to starting position
 			if (numcans == 2) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				correctPosition();
 				correctTrack();
-				RegularTravelTo(7, 7, 1);
+				RegularTravelTo(search_SZR_UR_x-search_SZR_LL_x,search_SZR_UR_y-search_SZR_LL_y, 1);
 				turnTo(0);
 				return;
 			}
@@ -243,15 +262,22 @@ public class Search implements NavigationController {
 	 * and weight identification then pulls the can into the storage area of the
 	 * robot
 	 */
-	public void getCan() {
+	public void getCan(int i) {
 
 		Sound.beep();
 		clawMotor.setSpeed(CLAW_SPEED);
 		
 		// rotate the claw motor slightly, and drive towards the can
 		clawMotor.rotate(convertAngle(-20), false);
-		leftMotor.rotate(convertDistance(fetchUS()) - 15, true);
-		rightMotor.rotate(convertDistance(fetchUS()) - 15, false);
+		int distanceToTravel;
+		if(i<3 || i>6) {
+			distanceToTravel = 21;
+		}
+		else{
+			distanceToTravel = 31;
+		}
+		
+		RegularGoStraight(distanceToTravel);
 		leftMotor.stop();
 		rightMotor.stop();
 
@@ -278,30 +304,29 @@ public class Search implements NavigationController {
 		clawMotor.rotate(convertAngle(40), false);
 
 		//drive away from the can
-		leftMotor.rotate(convertDistance(-15), true);
-		rightMotor.rotate(convertDistance(-15), false);
+		leftMotor.rotate(convertDistance(-10), true);
+		rightMotor.rotate(convertDistance(-10), false);
 
 		// open the claw motor
-		clawMotor.rotate(convertAngle(-50), false);
+		clawMotor.rotate(convertAngle(-60), false);
 
 		// drive towards the can
-		leftMotor.rotate(convertDistance(27), true);
-		rightMotor.rotate(convertDistance(27), false);
+		RegularGoStraight(distanceToTravel+5);
 
 		// pull the can into the storage area, and open claw to make room for color sensor
-		clawMotor.rotate(convertAngle(50), false);
-		clawMotor.rotate(convertAngle(-50), false);
+		clawMotor.rotate(convertAngle(60), false);
+		clawMotor.rotate(convertAngle(-60), false);
 
 		// begin color identification with weighing result
 		cc = new ColorCalibration(sensorMotor);
 		cc.identifyColor(weight);
 
 		// secure can in storage area and increase can number count
-		clawMotor.rotate(convertAngle(50), false);
+		clawMotor.rotate(convertAngle(60), false);
 		numcans++;
 
 		// return to searching path
-		backtopath(rDistance);
+		backtopath(distanceToTravel+5);
 	}
 
 	/**
@@ -363,8 +388,8 @@ public class Search implements NavigationController {
 	 * @param distance
 	 */
 	void backtopath(double distance) {
-		leftMotor.rotate(-convertDistance(distance + 13), true);
-		rightMotor.rotate(-convertDistance(distance + 13), false);
+		leftMotor.rotate(-convertDistance(distance + 15), true);
+		rightMotor.rotate(-convertDistance(distance + 15), false);
 	}
 
 	/**
@@ -424,10 +449,54 @@ public class Search implements NavigationController {
 	 * @param x (cm)
 	 * @param y (cm)
 	 */
+	public void RegularTravelTo(double targetx, double targety/*, int direction*/) {
+		isNavigating = true;
+		double minAng = computeAngle(targetx, targety);
+		this.turnTo(minAng);
+		
+		double deltaX = targetx*30.48 - odometer.getXYT()[0];
+	    double deltaY = targety*30.48 - odometer.getXYT()[1];
+	    double theta;
+	    double deltaTheta;
+	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+		
+		if (deltaY == 0) {
+	        if (deltaX >= 0) {
+	          theta = 90;
+	        } 
+	        else {
+	          theta = -90;
+	        }
+	      }
+	    
+	      //calculate the theta that the robot should travel to 
+	    else {
+	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
+	    }
+		
+//		leftMotor.setSpeed(300);
+//	    rightMotor.setSpeed(300);
+	    
+	    RegularGoStraight(distance); 
+	   
+	    odometer.setX(targetx*30.48);
+	    odometer.setY(targety*30.48);
+	    odometer.setTheta(theta);
+	    
+	  isNavigating = false;
+	  
+	  try {
+		Thread.sleep(350);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}	
+	  }
+	
 	public void RegularTravelTo(double x, double y, int direction) {
 
-		double deltaX = xcoor - x * 30.48;
-		double deltaY = ycoor - y * 30.48;
+		double deltaX = xcoor ;
+		double deltaY = ycoor ;
 		double theta;
 		double deltaTheta;
 		double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
@@ -456,9 +525,28 @@ public class Search implements NavigationController {
 		}
 		
 		RegularGoStraight(distance);
+		odometer.setTheta(anglebeforesearch);
 
 	}
 
+	public double computeAngle(double targetx , double targety) {
+
+		//get current position and compute variation in x and y coords
+	double position[] = odometer.getXYT();
+	double xvar = targetx*Project2.TILE_SIZE - position[0];
+	double yvar = targety*Project2.TILE_SIZE - position[1];
+
+		//calculate angle which robot needs to turn to in order to reach destination
+	double ang = Math.atan2(xvar, yvar);
+	double trajectoryAngle = ang*180/(3.14159)-position[2];
+	
+	if (trajectoryAngle < 0.5)
+		trajectoryAngle += 360.0;
+	
+		//return
+	return trajectoryAngle;
+}
+	
 	/**
 	 * Moves robot straight by a certain distance
 	 * 

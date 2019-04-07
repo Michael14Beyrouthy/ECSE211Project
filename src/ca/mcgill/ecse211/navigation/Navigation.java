@@ -150,23 +150,37 @@ public class Navigation extends Thread{
 	public void localizeBeforeTunnel(double xBeforeTunnel, double yBeforeTunnel, double facingTunnelAngle)
 	{
 		this.turnUntil(facingTunnelAngle);
-		this.turnTo(90);
-		this.RegularGoStraight(sensorDist);
+//		this.moveBackward();
+//		correct();
+//		this.RegularGoStraight(Project2.TILE_SIZE/2);
 		
-		leftMotor.setSpeed(150);
-		rightMotor.setSpeed(150);
-		this.moveBackward();
-		correct();
-		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
+		if ((xBeforeTunnel==0.5*30.48 && facingTunnelAngle==0) || (xBeforeTunnel==14.5*30.48 && facingTunnelAngle==180) || (yBeforeTunnel==0.5*30.48 && facingTunnelAngle==270) || (yBeforeTunnel==8.5*30.48 && facingTunnelAngle==0))
+		{
+			this.turnTo(270);
+			this.RegularGoStraight(sensorDist-3);
+			
+			leftMotor.setSpeed(150);
+			rightMotor.setSpeed(150);
+			this.moveBackward();
+			correct();
+			this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
 
-		this.turnTo(270);
-		/*this.RegularGoStraight(sensorDist);
+			this.turnTo(90);
+		}
 		
-		leftMotor.setSpeed(100);
-		rightMotor.setSpeed(100);
-		this.moveBackward();
-		correct();
-		this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);*/
+		else 
+		{
+			this.turnTo(90);
+			this.RegularGoStraight(sensorDist-3);
+		
+			leftMotor.setSpeed(150);
+			rightMotor.setSpeed(150);
+			this.moveBackward();
+			correct();
+			this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
+			
+			this.turnTo(270);
+		}
 		
 		odometer.setXYT(xBeforeTunnel, yBeforeTunnel, facingTunnelAngle);
 	}
@@ -178,16 +192,16 @@ public class Navigation extends Thread{
 		this.RegularGoStraight(sensorDist);
 		this.moveForward();
 		correct();
-//		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
-		odometer.setXYT(xAfterTunnel+sensorDist, yAfterTunnel+sensorDist, leavingTunnelAngle);
+		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
+		odometer.setXYT(xAfterTunnel, yAfterTunnel, leavingTunnelAngle);
 		
 	}
 	
-	public void localizeBeforeSearchZone(double LLx, double LLy)
+	public void localizeBeforeSearchZone(double LLx, double LLy, double angle)
 	{
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
-		this.turnUntil(180);
+		this.turnUntil(angle+90);
 		this.RegularGoStraight(-sensorDist);
 		this.moveForward();
 		correct();
@@ -196,7 +210,23 @@ public class Navigation extends Thread{
 		this.moveForward();
 		correct();
 		this.RegularGoStraight(-sensorDist);
-		odometer.setXYT(LLx, LLy, 90);
+		odometer.setXYT(LLx, LLy, angle);
+	}
+	
+	public void localizeAfterSearching(double LLx, double LLy)
+	{
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
+		this.turnUntil(90);
+		this.RegularGoStraight(-sensorDist);
+		this.moveForward();
+		correct();
+		this.RegularGoStraight(-sensorDist);
+		this.turnTo(270);
+		this.moveForward();
+		correct();
+		this.RegularGoStraight(-sensorDist);
+		odometer.setXYT(LLx, LLy, 0);
 	}
 
 	/**
@@ -228,13 +258,21 @@ public class Navigation extends Thread{
 	
 	public void turnUntil (double ang)
 	{
-		boolean isTurning = true;
-		while(isTurning)
+		boolean isTurningRight = false;
+//		boolean isTurningLeft = false;
+		double angleToTurnTo = ang;
+		
+		if (ang>=360)
 		{
-			if (Math.abs(odometer.getXYT()[2]-ang) < 2)
+			angleToTurnTo = ang-360;
+		}
+		
+		while(isTurningRight)
+		{
+			if (Math.abs(odometer.getXYT()[2]-angleToTurnTo) < 2)
 			{
 				this.stopMoving();
-				isTurning=false;
+				isTurningRight=false;
 			}
 			setSpeeds(200, -200);
 		}		
@@ -281,9 +319,11 @@ public class Navigation extends Thread{
 	 * Traverses the tunnel once robot is facing it
 	 */
 	public void traverseTunnel() {
+		leftMotor.setSpeed(100);
+		rightMotor.setSpeed(100);
 		this.moveForward();
 		correct();
-		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist);
+		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist, 175 );
 	}
 	
 	

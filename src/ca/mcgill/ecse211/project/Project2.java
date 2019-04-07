@@ -19,10 +19,8 @@ import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.controller.UltrasonicPoller;
 import ca.mcgill.ecse211.localization.*;
-import ca.mcgill.ecse211.navigation.Navigation;
-import ca.mcgill.ecse211.navigation.Search;
-import ca.mcgill.ecse211.navigation.WeightIdentification;
 //import ca.mcgill.ecse211.weighing.*;
+import ca.mcgill.ecse211.navigation.*;
 
 /**
  * Project class, instantiates the motors and sets some constants
@@ -56,10 +54,13 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static double TRACK = 14.15; // begin motion with default track (zero cans in storage area)
+	public static double TRACK = 14.1; // begin motion with default track (zero cans in storage area)
 	//public static final double TRACK2= 14.13; //14.4 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
+	
+	public static double startingX;
+	public static double startingY;
 	
 	/**
 	 * main() method of class 
@@ -69,8 +70,8 @@ public class Project2 {
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
 
-		/*WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();*/
+		WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
@@ -100,76 +101,215 @@ public class Project2 {
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		// start the ultrasonic localization
-//	    USLocalizer.localize();
+	    USLocalizer.localize();
 	    // run the light localization
-		//lightLocalizer.initialLocalize(4);
-		
-	    /*	try {
-			odoThread.wait();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+	    lightLocalizer.initialLocalize(wifi.Corner);
+	    
+	    startingX = odometer.getXYT()[0];
+	    startingY = odometer.getXYT()[1];
 	
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		
+		//Tunnel facing X direction
+		if ((wifi.Tunnel_UR_y-wifi.Tunnel_LL_y) == 1 && (wifi.Tunnel_UR_x-wifi.Tunnel_LL_x) == 2)
+		{
+			//Tunnel LL is in our start zone	
+			if (wifi.Start_UR_x >= wifi.Tunnel_LL_x && wifi.Start_UR_y >= wifi.Tunnel_LL_y && wifi.Start_LL_x <= wifi.Tunnel_LL_x && wifi.Start_LL_y <= wifi.Tunnel_LL_y)
+			{
+				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
+				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				search.searchcans();
+				
+				try {
+					Thread.sleep(3500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.newTravelTo(wifi.Tunnel_UR_x+0.5, wifi.Tunnel_UR_y-0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
+				nav.newTravelTo(startingX, startingY);
+				
+			}
+			
+			//Tunnel UR is in our start zone	
+			else if (wifi.Start_UR_x >= wifi.Tunnel_UR_x && wifi.Start_UR_y >= wifi.Tunnel_UR_y && wifi.Start_LL_x <= wifi.Tunnel_UR_x && wifi.Start_LL_y <= wifi.Tunnel_UR_y)
+			{
+				nav.newTravelTo(wifi.Tunnel_UR_x+0.5, wifi.Tunnel_UR_y-0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
+				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				search.searchcans();
+				
+				try {
+					Thread.sleep(3500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
+				nav.newTravelTo(startingX, startingY);
+			}
+		}
 		
+		//Tunnel facing Y direction
+		else if ((wifi.Tunnel_UR_x-wifi.Tunnel_LL_x) == 1 && (wifi.Tunnel_UR_y-wifi.Tunnel_LL_y) == 2)
+		{
+			//Tunnel LL is in our start zone	
+			if (wifi.Start_UR_x >= wifi.Tunnel_LL_x && wifi.Start_UR_y >= wifi.Tunnel_LL_y && wifi.Start_LL_x <= wifi.Tunnel_LL_x && wifi.Start_LL_y <= wifi.Tunnel_LL_y)
+			{
+				nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
+				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				search.searchcans();
+				
+				try {
+					Thread.sleep(3500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.newTravelTo(wifi.Tunnel_UR_x-0.5, wifi.Tunnel_UR_y+0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
+				nav.newTravelTo(startingX, startingY);
+			}
+			
+			//Tunnel UR is in our start zone	
+			else if (wifi.Start_UR_x >= wifi.Tunnel_UR_x && wifi.Start_UR_y >= wifi.Tunnel_UR_y && wifi.Start_LL_x <= wifi.Tunnel_UR_x && wifi.Start_LL_y <= wifi.Tunnel_UR_y)
+			{
+				nav.newTravelTo(wifi.Tunnel_UR_x-0.5, wifi.Tunnel_UR_y+0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
+				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				search.searchcans();
+				
+				try {
+					Thread.sleep(3500);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
+				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
+				nav.traverseTunnel();
+				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
+				nav.newTravelTo(startingX, startingY);
+			}
+		}
 		//================================== Used for testing tunnel traversal =========================================================
 		
-		nav.newTravelTo(1.5, 3.5);
-		nav.localizeBeforeTunnel(1.5*30.48, 3.5*30.48, 90);
+		nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
+		nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
 		nav.traverseTunnel();
-		nav.localizeAfterTunnel(4.5*30.48, 3.5*30.48, 90);
-		nav.newTravelTo(5, 0);
+		nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
+		nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//nav.localizeBeforeSearchZone(7*30.48, 2*30.48);
+		nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 90);
+
+
+		
+//		nav.newTravelTo(3-0.5, 3+0.5);
+//		nav.localizeBeforeTunnel((3-0.5)*30.48, (3+0.5)*30.48, 90);
+//		nav.traverseTunnel();
+//		nav.localizeAfterTunnel((5+0.5)*30.48, (4-0.5)*30.48, 90);
+//		nav.newTravelTo(6, 6);
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		nav.localizeBeforeSearchZone(6*30.48, 6*30.48);
 		
 		//===============================================End of area for testing tunnel traversal ====================================================================
         
 		
 		//===============================================Used for testing search =====================================================================================
 		//call the search cans method, search start
-		//search.searchcans();
+		search.searchcans();
 	  	
 		//========================================End of testing for search ===========================================================================================
 		
 	    
-//=========================================Start this code facing 0.0 at beginning of search zone===========================	    
-
-	    
-/*	    odometer.setXYT(WifiInfo.SZR_LL_x, WifiInfo.SZR_LL_y, 0.0);
-	    
-	    nav.travelTo(WifiInfo.SZR_LL_x-0.5, WifiInfo.SZR_LL_y+0.5);
-	    nav.TravelToLXdown(WifiInfo.TNR_UR_x+0.5, WifiInfo.SZR_UR_y-0.5);
-
-	    nav.turnTo(270);
-	    nav.traverseTunnel();
-	    
-
-	    nav.TravelToLXYdown(WifiInfo.Red_UR_x-0.5, WifiInfo.Red_UR_y-0.5);*/
-	    
-	    /*odometer.setXYT(6*TILE_SIZE, TILE_SIZE, 0.0);
-	    
-	    nav.newTravelTo(4, 2);
-	    nav.localizeBeforeTunnel(3.5, 2.5);
-	    nav.RegularGoStraight(TILE_SIZE*3);
-	    nav.localizeAfterTunnel(0, 0);*/
-	    
-	    /*nav.travelTo(5.5, 1.5);
-	    nav.TravelToLYupXdown(4.5, 4.5);
-
-	    nav.turnTo(270);
-	    nav.traverseTunnel();*/
-		
-		//odometer.setXYT(0, 0, 0.0);
-	    
-	    //baby nav.TravelToLXYdown(0.5, 0.5);
-		
+//=========================================Start this code facing 0.0 at beginning of search zone===========================	    		
 		
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
