@@ -130,7 +130,16 @@ public class Search implements NavigationController {
 		//Sequence of three beeps 
 		Sound.twoBeeps();
 		Sound.beep();
-		// calculate search area size
+
+		if(SZR_UR_x == 15) {
+			SZR_UR_x--;
+			SZR_UR_x--;
+		}
+		if(SZR_UR_y == 9) {
+			SZR_UR_y--;
+			SZR_UR_y--;
+		}
+
 		int column = SZR_UR_x - SZR_LL_x;
 		int row = SZR_UR_y - SZR_LL_y;
 		//record theta when robot starts 
@@ -264,6 +273,7 @@ public class Search implements NavigationController {
 			
 			// if we have retrieved two cans, correct the track and return to starting position
 			if (numcans == MAXNUMBERCANS) {
+				clawMotor.rotate(convertAngle(50), false);
 				correctPosition();
 				correctTrack();
 				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 1);
@@ -354,7 +364,7 @@ public class Search implements NavigationController {
 		cc.identifyColor(weight);
 
 		// secure can in storage area and increase can number count
-		clawMotor.rotate(convertAngle(60), false);
+		clawMotor.rotate(convertAngle(50), false);
 		numcans++;
 
 		// return to searching path
@@ -680,6 +690,10 @@ public class Search implements NavigationController {
 	private int fetchUS() {
 		usDistance.fetchSample(usData, 0);
 		return (int) (usData[0] * 100);
+	}
+
+	public void openClaw() {
+		clawMotor.rotate(convertAngle(-60), false);
 	}
 
 }

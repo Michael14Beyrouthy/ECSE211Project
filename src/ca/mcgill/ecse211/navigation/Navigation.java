@@ -462,7 +462,10 @@ public class Navigation extends Thread{
 	  }
 
 	
+	  /**
+	   * Drop the cans
+	   */
 	  public void dropCans() {
-		  RegularGoStraight(sensorDist, 250);
+		  RegularGoStraight(sensorDist+3, 250);
 	}
 }

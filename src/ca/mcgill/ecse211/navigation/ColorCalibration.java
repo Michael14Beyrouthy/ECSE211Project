@@ -124,28 +124,28 @@ public class ColorCalibration {
 	
 		if(sortColors[0]== eGreen) {
 			System.out.println("GREEN");
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
+			Sound.playTone(1000, weight);
+			Sound.playTone(1000, weight);
 			return 2;
 		}
 		if(sortColors[0]==eRed) {
 			System.out.println("RED");
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
+			Sound.playTone(1000, weight);
+			Sound.playTone(1000, weight);
+			Sound.playTone(1000, weight);
+			Sound.playTone(1000, weight);
 			return 4;
 		}
 		if(sortColors[0]==eYellow) {
 			System.out.println("YELLOW");
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
-			Sound.playTone(100, weight);
+			Sound.playTone(1000, weight);
+			Sound.playTone(1000, weight);
+			Sound.playTone(1000, weight);
 			return 3;
 		}
 		else {
 			System.out.println("BLUE");
-			Sound.playTone(100, weight);
+			Sound.playTone(1000, weight);
 			return 1;
 		}
 	

@@ -183,6 +183,7 @@ public class Project2 {
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
 				nav.newTravelTo(startingX, startingY);
 				nav.dropCans();
+				search.openClaw();
 				
 			}
 			
