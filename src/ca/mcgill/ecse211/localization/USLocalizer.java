@@ -1,4 +1,4 @@
-	package ca.mcgill.ecse211.localization;
+package ca.mcgill.ecse211.localization;
 
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
@@ -13,18 +13,28 @@ import ca.mcgill.ecse211.project.*;
  */
 public class USLocalizer {
 
-  // robot constants
+
+ /**
+  * Localizization speed
+  * Changes in Theta
+  *    
+  */
   public static int ROTATION_SPEED = 200;
   private double deltaTheta;
   private static final double TURNING_ERROR = 3.5 ;
-     
+  
+  /**
+   * Required instances for localization
+   */
   private Odometer odometer;
   private float[] usData;
   private EV3LargeRegulatedMotor leftMotor, rightMotor;
   private boolean Risingorfalling;
   private SampleProvider usDistance;
 
-  //required ultrasonic constant
+  /**
+   * required ultrasonic constant
+   */
   private double d = 18.00;
   private double k = 2;
 
@@ -77,7 +87,6 @@ public class USLocalizer {
 			leftMotor.backward();
 			rightMotor.forward();
 		}
-		Sound.beep();
 		// record angle
 		angleA = odometer.getXYT()[2];
 
@@ -92,7 +101,6 @@ public class USLocalizer {
 			leftMotor.forward();
 			rightMotor.backward();
 		}
-		Sound.beep();
 		angleB = odometer.getXYT()[2];
 
 		leftMotor.stop(true);
@@ -109,8 +117,8 @@ public class USLocalizer {
 
 		//rotate robot to theta = 0.0 using turning angle
 		//introduce a fix error correction
-		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-10), true);
-		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-10), false);
+		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR), true);
+		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR), false);
 
 		// set theta = 0.0
 		odometer.setTheta(0.0);
@@ -133,7 +141,6 @@ public class USLocalizer {
 			leftMotor.backward();
 			rightMotor.forward();
 		}
-		Sound.buzz();
 		// record angle
 		angleA = odometer.getXYT()[2];
 
@@ -148,7 +155,6 @@ public class USLocalizer {
 			leftMotor.forward();
 			rightMotor.backward();
 		}
-		Sound.buzz();
 		angleB = odometer.getXYT()[2];
 
 		leftMotor.stop(true);
@@ -166,8 +172,8 @@ public class USLocalizer {
 
 		// rotate robot to the theta = 0.0 
         //introduce a fix error correction
-		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-12), true);
-		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR-12), false);
+		leftMotor.rotate(-convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR), true);
+		rightMotor.rotate(convertAngle(Project2.WHEEL_RAD, Project2.TRACK, turningAngle-TURNING_ERROR), false);
 
 		// set odometer to theta = 0
 		odometer.setTheta(0.0);

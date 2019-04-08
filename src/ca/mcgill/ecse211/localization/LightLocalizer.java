@@ -22,7 +22,6 @@ public class LightLocalizer {
 	//Constants
 	private final int FORWARD_SPEED;
 	private final int ROTATE_SPEED;
-	private final static double TILE_SIZE = 30.48;
 	private final static double SENSOR_LENGTH = 6.5;
 	public final double WHEEL_RAD = 2.09;
 	public final double TRACK = 14.15;
@@ -48,10 +47,10 @@ public class LightLocalizer {
 		//this.robot = robot;
 		this.FORWARD_SPEED = 250;
 		this.ROTATE_SPEED = 150;		
-		this.leftLS = leftLS;
-		this.rightLS = rightLS;
-		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
+		LightLocalizer.leftLS = leftLS;
+		LightLocalizer.rightLS = rightLS;
+		LightLocalizer.leftMotor = leftMotor;
+		LightLocalizer.rightMotor = rightMotor;
 	}
 
 	/**
@@ -78,6 +77,10 @@ public class LightLocalizer {
 
 		this.turnBy(90, false); 
 
+		//Sequence of three beeps 
+		Sound.twoBeeps();
+		Sound.beep();
+		//Set position for robot determine by corresponding start angle
 		if (corner == 1)
 		{
 			odometer.setXYT(14*30.48, 30.48, 270.0);
@@ -98,7 +101,7 @@ public class LightLocalizer {
 	}
 	
 	/**
-	 * Moves robot forward 
+	 * This method moves robot forward 
 	 */
 	public void moveForward() {
 		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
@@ -109,7 +112,7 @@ public class LightLocalizer {
 	}
 
 	/**
-	 * Makes the robot travel a certain distance with a certain speed
+	 * This method makes the robot travel a certain distance with a certain speed
 	 * @param distance
 	 * @param speed
 	 */
