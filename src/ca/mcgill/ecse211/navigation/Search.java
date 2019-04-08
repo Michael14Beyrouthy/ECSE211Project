@@ -232,6 +232,7 @@ public class Search implements NavigationController {
 				correctTrack();
 				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 0);
 				turnTo(0);
+				odometer.setTheta(anglebeforesearch);
 				stopMoving();
 				return;
 			}
@@ -265,6 +266,8 @@ public class Search implements NavigationController {
 				correctTrack();
 				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 1);
 				turnTo(0);
+				odometer.setTheta(anglebeforesearch);
+				stopMoving();
 				return;
 			}
 
