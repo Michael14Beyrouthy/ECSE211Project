@@ -47,11 +47,10 @@ public class USLocalizer {
    * @param usDistance
    */
   public USLocalizer(Odometer odo, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,
-			boolean localizationType, SampleProvider usDistance) {
+			 SampleProvider usDistance) {
 		this.odometer = odo;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		this.Risingorfalling = localizationType;
 		this.usDistance = usDistance;
 		this.usData = new float[usDistance.sampleSize()];
 
@@ -63,6 +62,14 @@ public class USLocalizer {
 	 * determines which localization to use
 	 */
 	public void localize() {
+		if (fetchUS()>d)
+		{
+			Risingorfalling = false;
+		}
+		else
+		{
+			Risingorfalling = false;
+		}
 		if (Risingorfalling) {
 			localizeRisingEdge();
 		} else {

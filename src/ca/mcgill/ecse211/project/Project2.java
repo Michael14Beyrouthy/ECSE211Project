@@ -107,7 +107,7 @@ public class Project2 {
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
 
 		// Create ultrasonicsensor light localizer and navigation objects
-		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, false, usDistance);
+		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		// start the ultrasonic localization
 	    USLocalizer.localize();
@@ -116,8 +116,8 @@ public class Project2 {
 		
 	    if (wifi.Corner == 0)
 	    {
-	    	startingX = 0.5;
-			startingY = 0.5;
+	    	startingX = 1;
+			startingY = 1;
 	    }
 	    
 	    if (wifi.Corner == 1)
@@ -182,6 +182,7 @@ public class Project2 {
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
 				nav.newTravelTo(startingX, startingY);
+				nav.dropCans();
 				
 			}
 			

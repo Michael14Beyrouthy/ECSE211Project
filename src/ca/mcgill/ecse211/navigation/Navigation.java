@@ -348,9 +348,10 @@ public class Navigation extends Thread{
 	public void traverseTunnel() {
 		leftMotor.setSpeed(100);
 		rightMotor.setSpeed(100);
+		RegularGoStraight(sensorDist+2, 175);
 		this.moveForward();
 		correct();
-		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist, 175 );
+		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist, 175);
 	}
 	
 	
@@ -459,4 +460,9 @@ public class Navigation extends Thread{
 		  leftMotor.stop(true);
 		  rightMotor.stop(false);
 	  }
+
+	
+	  public void dropCans() {
+		  RegularGoStraight(sensorDist, 250);
+	}
 }
