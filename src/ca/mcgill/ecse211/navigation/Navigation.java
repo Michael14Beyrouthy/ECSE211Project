@@ -146,7 +146,12 @@ public class Navigation extends Thread{
 	  
 	  }
 		
-
+	/**
+	 * Localizes robot before entering the tunnel
+	 * @param xBeforeTunnel
+	 * @param yBeforeTunnel
+	 * @param facingTunnelAngle
+	 */
 	public void localizeBeforeTunnel(double xBeforeTunnel, double yBeforeTunnel, double facingTunnelAngle)
 	{
 		this.turnUntil(facingTunnelAngle);
@@ -186,6 +191,12 @@ public class Navigation extends Thread{
 		odometer.setXYT(xBeforeTunnel, yBeforeTunnel, facingTunnelAngle);
 	}
 	
+	/**
+	 * Localizes the robot after exiting the tunnel
+	 * @param xAfterTunnel
+	 * @param yAfterTunnel
+	 * @param leavingTunnelAngle
+	 */
 	public void localizeAfterTunnel(double xAfterTunnel, double yAfterTunnel, double leavingTunnelAngle)
 	{
 		leftMotor.setSpeed(150);
@@ -198,6 +209,12 @@ public class Navigation extends Thread{
 		
 	}
 	
+	/**
+	 * Localizes the robot before beginning the search
+	 * @param LLx
+	 * @param LLy
+	 * @param angle
+	 */
 	public void localizeBeforeSearchZone(double LLx, double LLy, double angle)
 	{
 		leftMotor.setSpeed(150);
@@ -214,6 +231,11 @@ public class Navigation extends Thread{
 		odometer.setXYT(LLx, LLy, angle);
 	}
 	
+	/**
+	 * Localizes the robot after the search is over
+	 * @param LLx
+	 * @param LLy
+	 */
 	public void localizeAfterSearching(double LLx, double LLy)
 	{
 		leftMotor.setSpeed(150);
@@ -257,6 +279,10 @@ public class Navigation extends Thread{
 	    
 	}
 	
+	/**
+	 * Makes the robot turn until it is facing a certain angle
+	 * @param ang
+	 */
 	public void turnUntil (double ang)
 	{
 		boolean isTurningRight = true;

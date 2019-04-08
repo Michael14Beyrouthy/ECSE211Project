@@ -72,6 +72,7 @@ public class Project2 {
 		WifiInfo wifi = new WifiInfo();
 		wifi.getInfo();
 
+		//Removes the wifi class messages so we can see the odometer readings
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
@@ -112,35 +113,38 @@ public class Project2 {
 	    USLocalizer.localize();
 	    // run the light localization
 	    lightLocalizer.initialLocalize(wifi.Corner);
-	    
-	    //startingX = odometer.getXYT()[0];
-	    //startingY = odometer.getXYT()[1];
 		
 	    if (wifi.Corner == 0)
 	    {
-	    	startingX = 1;
-			startingY = 1;
+	    	startingX = 0.5;
+			startingY = 0.5;
 	    }
 	    
 	    if (wifi.Corner == 1)
 	    {
-	    	startingX = 14;
-			startingY = 1;
+	    	startingX = 14.5;
+			startingY = 0.5;
 	    }
 	    
 	    if (wifi.Corner == 2)
 	    {
-	    	startingX = 14;
-			startingY = 8;
+	    	startingX = 14.5;
+			startingY = 8.5;
 	    }
 	    
 	    if (wifi.Corner == 3)
 	    {
-	    	startingX = 1;
-			startingY = 8;
+	    	startingX = 0.5;
+			startingY = 8.5;
 	    }
 	
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
+		
+		/*
+		 * The following is 4 possible conditions for our navigation, each being a combination 
+		 * of one of two tunnel orientations and one of two tunnel coordinate being in our search zone 
+		 * 
+		 */
 		
 		//Tunnel facing X direction
 		if ((wifi.Tunnel_UR_y-wifi.Tunnel_LL_y) == 1 && (wifi.Tunnel_UR_x-wifi.Tunnel_LL_x) == 2)
@@ -156,7 +160,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
@@ -164,7 +167,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				search.searchcans();
@@ -172,7 +174,6 @@ public class Project2 {
 				try {
 					Thread.sleep(3500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
@@ -195,7 +196,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
@@ -203,7 +203,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				search.searchcans();
@@ -211,7 +210,6 @@ public class Project2 {
 				try {
 					Thread.sleep(3500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
@@ -236,7 +234,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
@@ -244,7 +241,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				search.searchcans();
@@ -252,7 +248,6 @@ public class Project2 {
 				try {
 					Thread.sleep(3500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 												
@@ -275,7 +270,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
@@ -283,7 +277,6 @@ public class Project2 {
 				try {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				search.searchcans();
@@ -291,7 +284,6 @@ public class Project2 {
 				try {
 					Thread.sleep(3500);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
@@ -302,53 +294,20 @@ public class Project2 {
 				nav.newTravelTo(startingX, startingY);
 			}
 		}
-		//================================== Used for testing tunnel traversal =========================================================
 		
-		nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
-		nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
-		nav.traverseTunnel();
-		nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
-		nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 90);
+		
 
-
-		
-//		nav.newTravelTo(3-0.5, 3+0.5);
-//		nav.localizeBeforeTunnel((3-0.5)*30.48, (3+0.5)*30.48, 90);
-//		nav.traverseTunnel();
-//		nav.localizeAfterTunnel((5+0.5)*30.48, (4-0.5)*30.48, 90);
-//		nav.newTravelTo(6, 6);
-//		try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		nav.localizeBeforeSearchZone(6*30.48, 6*30.48);
-		
-		//===============================================End of area for testing tunnel traversal ====================================================================
-        
-		
-		//===============================================Used for testing search =====================================================================================
-		//call the search cans method, search start
-		search.searchcans();
-	  	
-		//========================================End of testing for search ===========================================================================================
-		
-	    
-//=========================================Start this code facing 0.0 at beginning of search zone===========================	    		
-		
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;
 		System.exit(0);
 	}
+	
+	/**
+	 * Converts a distance in cm to the corresponding wheel rotations required
+	 * @param distance
+	 * @return
+	 */
 	static int convertDistance(double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * WHEEL_RAD));
 	}
