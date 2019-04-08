@@ -54,7 +54,7 @@ public class Project2 {
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
 	public static double TRACK = 14.1; // begin motion with default track (zero cans in storage area)
-	//public static final double TRACK2= 14.13; //14.4 one heavy one light
+	//public static final double TRACK2= 14.1; //14.3 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
 	
@@ -72,6 +72,15 @@ public class Project2 {
 		WifiInfo wifi = new WifiInfo();
 		wifi.getInfo();
 
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		
+		
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
 		Display odometryDisplay = new Display(lcd, odometer); 
@@ -104,8 +113,32 @@ public class Project2 {
 	    // run the light localization
 	    lightLocalizer.initialLocalize(wifi.Corner);
 	    
-	    startingX = odometer.getXYT()[0];
-	    startingY = odometer.getXYT()[1];
+	    //startingX = odometer.getXYT()[0];
+	    //startingY = odometer.getXYT()[1];
+		
+	    if (wifi.Corner == 0)
+	    {
+	    	startingX = 1;
+			startingY = 1;
+	    }
+	    
+	    if (wifi.Corner == 1)
+	    {
+	    	startingX = 14;
+			startingY = 1;
+	    }
+	    
+	    if (wifi.Corner == 2)
+	    {
+	    	startingX = 14;
+			startingY = 8;
+	    }
+	    
+	    if (wifi.Corner == 3)
+	    {
+	    	startingX = 1;
+			startingY = 8;
+	    }
 	
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		
@@ -222,6 +255,7 @@ public class Project2 {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+												
 				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
 				nav.newTravelTo(wifi.Tunnel_UR_x-0.5, wifi.Tunnel_UR_y+0.5);
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);

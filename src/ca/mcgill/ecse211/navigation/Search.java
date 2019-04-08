@@ -188,7 +188,7 @@ public class Search implements NavigationController {
 				correctPosition();
 				correctTrack();
 				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 0);
-				turnTo(0);
+				//turnTo(0);
 				stopMoving();
 				return;
 			}
@@ -221,7 +221,8 @@ public class Search implements NavigationController {
 				correctPosition();
 				correctTrack();
 				RegularTravelTo(SZR_UR_x-SZR_LL_x,SZR_UR_y-SZR_LL_y, 1);
-				turnTo(0);
+				//turnTo(0);
+				stopMoving();
 				return;
 			}
 
@@ -377,8 +378,8 @@ public class Search implements NavigationController {
 	 * @param distance
 	 */
 	void backtopath(double distance) {
-		leftMotor.rotate(-convertDistance(distance + 15), true);
-		rightMotor.rotate(-convertDistance(distance + 15), false);
+		leftMotor.rotate(-convertDistance(distance + 10), true);
+		rightMotor.rotate(-convertDistance(distance + 10), false);
 	}
 
 	/**
@@ -409,6 +410,29 @@ public class Search implements NavigationController {
 		} else {
 			turnRight(error);
 		}
+	}
+	
+	public void turnUntil (double ang)
+	{
+		boolean isTurningRight = true;
+//		boolean isTurningLeft = false;
+		double angleToTurnTo = ang;
+		
+		if (ang>=360)
+		{
+			angleToTurnTo = ang-360;
+		}
+		
+		while(isTurningRight)
+		{
+			if (Math.abs(odometer.getXYT()[2]-angleToTurnTo) < 2)
+			{
+				this.stopMoving();
+				isTurningRight=false;
+			}
+			setSpeeds(200, -200);
+		}		
+		this.stopMoving();
 	}
 
 	/**
@@ -514,6 +538,7 @@ public class Search implements NavigationController {
 		}
 		
 		RegularGoStraight(distance);
+		this.turnUntil(anglebeforesearch);
 		odometer.setTheta(anglebeforesearch);
 
 	}
@@ -565,6 +590,19 @@ public class Search implements NavigationController {
 	public void stopMoving() {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
+	}
+	
+	public void setSpeeds(int lSpd, int rSpd) {
+		this.leftMotor.setSpeed(lSpd);
+		this.rightMotor.setSpeed(rSpd);
+		if (lSpd < 0)
+			this.leftMotor.backward();
+		else
+			this.leftMotor.forward();
+		if (rSpd < 0)
+			this.rightMotor.backward();
+		else
+			this.rightMotor.forward();
 	}
 	
 	/**

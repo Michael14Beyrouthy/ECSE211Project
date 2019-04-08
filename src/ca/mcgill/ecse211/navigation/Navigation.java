@@ -150,6 +150,7 @@ public class Navigation extends Thread{
 	public void localizeBeforeTunnel(double xBeforeTunnel, double yBeforeTunnel, double facingTunnelAngle)
 	{
 		this.turnUntil(facingTunnelAngle);
+		Sound.beep();
 //		this.moveBackward();
 //		correct();
 //		this.RegularGoStraight(Project2.TILE_SIZE/2);
@@ -258,7 +259,7 @@ public class Navigation extends Thread{
 	
 	public void turnUntil (double ang)
 	{
-		boolean isTurningRight = false;
+		boolean isTurningRight = true;
 //		boolean isTurningLeft = false;
 		double angleToTurnTo = ang;
 		
