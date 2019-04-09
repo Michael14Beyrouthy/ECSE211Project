@@ -13,7 +13,7 @@ public class WeightIdentification {
 	/**
 	 * Threshold tachomter count difference to classify cans as either heavy or light
 	 */
-	private static final int TACHO_THRESHOLD = 20;
+	private static final int TACHO_THRESHOLD = 19;
 
 	/**
 	 * Classifies a can as either heavy or light
@@ -43,13 +43,13 @@ public class WeightIdentification {
 		
 		// Get difference in tachometer count after pushing can
 		int weight = Math.abs(secondTacho-firstTacho);
+		System.out.println("first" + firstTacho);
+		System.out.println("second" + secondTacho);
 		
 		if(weight>=TACHO_THRESHOLD) {
-			System.out.println("LIGHT");
 			return 500;
 		}
 		else {
-			System.out.println("HEAVY");
 			return 1000;
 		}
 	}

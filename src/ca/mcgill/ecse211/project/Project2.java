@@ -68,7 +68,8 @@ public class Project2 {
 	 * @throws OdometerExceptions
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
-
+		
+	
 		WifiInfo wifi = new WifiInfo();
 		wifi.getInfo();
 
@@ -144,7 +145,7 @@ public class Project2 {
 		 * The following is 4 possible conditions for our navigation, each being a combination 
 		 * of one of two tunnel orientations and one of two tunnel coordinate being in our search zone 
 		 * 
-		 */
+		*/
 		
 		//Tunnel facing X direction
 		if ((wifi.Tunnel_UR_y-wifi.Tunnel_LL_y) == 1 && (wifi.Tunnel_UR_x-wifi.Tunnel_LL_x) == 2)
@@ -297,8 +298,21 @@ public class Project2 {
 			}
 		}
 		
+		// Opens the claw motor to deposit the cans
+		search.openClaw();
 		
-
+		//drive away from cans 
+		leftMotor.setSpeed(300);
+		rightMotor.setSpeed(300);
+		leftMotor.rotate(-10);
+		rightMotor.rotate(-10);
+		
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
 			;

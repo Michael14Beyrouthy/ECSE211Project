@@ -25,11 +25,8 @@ public class ColorCalibration {
 	/*
 	 * Target RBG Mean values for a GREEN can
 	 */
-	//final private static double GREEN_TR = 0.302959415;
-	//final private static double GREEN_TB = 0.263884275;
-	//final private static double GREEN_TG = 0.667320124;
-	final private static double GREEN_TR = 0.272959415;
-	final private static double GREEN_TB = 0.173884275;
+	final private static double GREEN_TR = 0.302959415;
+	final private static double GREEN_TB = 0.263884275;
 	final private static double GREEN_TG = 0.947320124;
 	
 	/*
@@ -49,12 +46,10 @@ public class ColorCalibration {
 	/*
 	 * Target RBG Mean values for a YELLOW can
 	 */
-	//final private static double YELLOW_TR = 0.66308114;
-	//final private static double YELLOW_TB = 0.298730941;
-	//final private static double YELLOW_TG = 0.518506479;
-	final private static double YELLOW_TR = 0.8308114;
-	final private static double YELLOW_TB = 0.198730941;
+	final private static double YELLOW_TR = 0.66308114;
+	final private static double YELLOW_TB = 0.298730941;
 	final private static double YELLOW_TG = 0.518506479;
+
 	
 	private EV3MediumRegulatedMotor sensorMotor;
 	
@@ -71,7 +66,7 @@ public class ColorCalibration {
 	public ColorCalibration(EV3MediumRegulatedMotor sensorMotor) {
 		this.sensorMotor = sensorMotor;
 		onLeftSide = false;
-		sensorMotor.setSpeed(100);
+		sensorMotor.setSpeed(120);
 	}
 	
 	
@@ -86,7 +81,7 @@ public class ColorCalibration {
 		if (!onLeftSide) {
 			while (i < 10) {
 				// rotate the sensor around the can, take a sample of the can color each 9 degrees
-				sensorMotor.rotate(-10, false);// rotate the sensor motor 9 degrees
+				sensorMotor.rotate(-14, false);// rotate the sensor motor 9 degrees
 				colorSensor.getRGBMode().fetchSample(RGBValues, 0); // acquire data from color sensor
 				// Store the RGB Values in an array
 				redArray[i] = RGBValues[0];
@@ -94,13 +89,13 @@ public class ColorCalibration {
 				blueArray[i] = RGBValues[2];
 				i++;
 			}
-			sensorMotor.rotate(105,false);
+			sensorMotor.rotate(160,false);
 			onLeftSide = true;
 		}
 		else {
 			while (i < 10) {
 				// rotate the sensor around the can, take a sample of the can color each 9 degrees
-				sensorMotor.rotate(10, false);// rotate the sensor motor 9 degrees
+				sensorMotor.rotate(11, false);// rotate the sensor motor 9 degrees
 				colorSensor.getRGBMode().fetchSample(RGBValues, 0); // acquire data from color sensor
 				// Store the RGB Values in an array
 				redArray[i] = RGBValues[0];
@@ -125,6 +120,7 @@ public class ColorCalibration {
 		if(sortColors[0]== eGreen) {
 			System.out.println("GREEN");
 			Sound.playTone(1000, weight);
+			
 			Sound.playTone(1000, weight);
 			return 2;
 		}
