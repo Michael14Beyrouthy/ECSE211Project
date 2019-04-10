@@ -126,7 +126,24 @@ public class Search implements NavigationController {
 	 * 
 	 */
 	public void searchcans() {
-
+		
+		if (SZR_LL_y == 0)
+		{
+			SZR_LL_y++;
+		}
+		if (SZR_UR_y == 9)
+		{
+			SZR_UR_y--;
+		}
+		if (SZR_LL_x == 0)
+		{
+			SZR_LL_x++;
+		}
+		if (SZR_UR_x == 15)
+		{
+			SZR_UR_x--;
+		}
+		
 		//Sequence of three beeps 
 		Sound.twoBeeps();
 		Sound.beep();

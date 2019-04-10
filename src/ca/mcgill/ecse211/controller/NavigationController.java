@@ -12,7 +12,7 @@ public interface NavigationController {
 		public static final double TILE_LENGTH = 30.48;	//(cm)
 		// motor parameters
 		public static final int FORWARD_SPEED = 250;
-		public static final int CLAW_SPEED = 175;
+		public static final int CLAW_SPEED = 150;
 		public static final int CORRECTION_SPEED = 150;
 		
 		//parameters for search

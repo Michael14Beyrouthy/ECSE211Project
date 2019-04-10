@@ -234,6 +234,32 @@ public class Navigation extends Thread{
 	}
 	
 	/**
+	 * Localizes robot before entering the tunnel
+	 * @param xBeforeTunnel
+	 * @param yBeforeTunnel
+	 * @param facingTunnelAngle
+	 */
+	public void localizeBeforeTunnel2(double xBeforeTunnel, double yBeforeTunnel, double facingTunnelAngle)
+	{
+		this.turnUntil(facingTunnelAngle);
+		
+			this.turnTo(270);
+			this.RegularGoStraight(sensorDist-3);
+			
+			leftMotor.setSpeed(150);
+			rightMotor.setSpeed(150);
+			this.moveBackward();
+			correct();
+			this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
+
+			this.turnTo(90);
+			
+			odometer.setXYT(xBeforeTunnel, yBeforeTunnel, facingTunnelAngle);
+		
+	}
+	
+	
+	/**
 	 * Localizes the robot after exiting the tunnel
 	 * @param xAfterTunnel
 	 * @param yAfterTunnel

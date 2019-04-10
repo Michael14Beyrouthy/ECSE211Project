@@ -60,6 +60,11 @@ public class Project2 {
 	public static double startingX;
 	public static double startingY;
 	
+	public static double Search_LL_x;
+	public static double Search_LL_y;
+	public static double Search_UR_x;
+	public static double Search_UR_y;
+	
 	/**
 	 * main() method of class 
 	 * This is the method that runs when the whole project is run
@@ -96,6 +101,8 @@ public class Project2 {
 		WifiInfo wifi = new WifiInfo();
 		wifi.getInfo();
 		
+		//Removes the wifi class messages so we can see the odometer readings
+		
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
@@ -106,8 +113,6 @@ public class Project2 {
 		
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
-
-		//Removes the wifi class messages so we can see the odometer readings
 
 		
 		// start the ultrasonic localization
@@ -138,6 +143,27 @@ public class Project2 {
 	    	startingX = 0.5;
 			startingY = 8.5;
 	    }
+	    
+	    if (wifi.Search_LL_x == 0)
+	    {
+	    	Search_LL_x = wifi.Search_LL_x+1;
+	    }
+	    else 
+	    {
+	    	Search_LL_x = wifi.Search_LL_x;
+	    }
+	    
+	    if (wifi.Search_LL_y == 0)
+	    {
+	    	Search_LL_y = wifi.Search_LL_y+1;
+	    }
+	    else 
+	    {
+	    	Search_LL_y = wifi.Search_LL_y;
+	    }
+	    
+	    
+	    
 	
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		
@@ -157,13 +183,13 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
-				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				nav.localizeBeforeSearchZone(Search_LL_x*30.48, Search_LL_y*30.48, 0);
 				
 				try {
 					Thread.sleep(1000);
@@ -177,7 +203,7 @@ public class Project2 {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
 				nav.newTravelTo(wifi.Tunnel_UR_x+0.5, wifi.Tunnel_UR_y-0.5);
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
 				nav.traverseTunnel();
@@ -195,13 +221,13 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
-				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				nav.localizeBeforeSearchZone(Search_LL_x*30.48, Search_LL_y*30.48, 0);
 				
 				try {
 					Thread.sleep(1000);
@@ -216,7 +242,7 @@ public class Project2 {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
 				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
 				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
 				nav.traverseTunnel();
@@ -235,13 +261,13 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
-				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				nav.localizeBeforeSearchZone(Search_LL_x*30.48, Search_LL_y*30.48, 0);
 				
 				try {
 					Thread.sleep(1000);
@@ -257,7 +283,7 @@ public class Project2 {
 					e.printStackTrace();
 				}
 												
-				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
 				nav.newTravelTo(wifi.Tunnel_UR_x-0.5, wifi.Tunnel_UR_y+0.5);
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
 				nav.traverseTunnel();
@@ -272,13 +298,13 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
-				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
+				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
+				nav.localizeBeforeSearchZone(Search_LL_x*30.48, Search_LL_y*30.48, 0);
 				
 				try {
 					Thread.sleep(1000);
@@ -292,7 +318,7 @@ public class Project2 {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
+				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
 				nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
 				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
 				nav.traverseTunnel();
@@ -301,7 +327,7 @@ public class Project2 {
 			}
 		}
 		
-		nav.RegularGoStraight(14);
+		nav.RegularGoStraight(8);
 		
 		Sound.beep();
 		try {
