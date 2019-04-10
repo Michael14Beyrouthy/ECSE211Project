@@ -120,22 +120,57 @@ public class ColorCalibration {
 		if(sortColors[0]== eGreen) {
 			System.out.println("GREEN");
 			Sound.playTone(1000, weight);
-			
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Sound.playTone(1000, weight);
 			return 2;
 		}
 		if(sortColors[0]==eRed) {
 			System.out.println("RED");
 			Sound.playTone(1000, weight);
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Sound.playTone(1000, weight);
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Sound.playTone(1000, weight);
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Sound.playTone(1000, weight);
 			return 4;
 		}
 		if(sortColors[0]==eYellow) {
 			System.out.println("YELLOW");
 			Sound.playTone(1000, weight);
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Sound.playTone(1000, weight);
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Sound.playTone(1000, weight);
 			return 3;
 		}

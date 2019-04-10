@@ -131,15 +131,6 @@ public class Search implements NavigationController {
 		Sound.twoBeeps();
 		Sound.beep();
 
-		if(SZR_UR_x == 15) {
-			SZR_UR_x--;
-			SZR_UR_x--;
-		}
-		if(SZR_UR_y == 9) {
-			SZR_UR_y--;
-			SZR_UR_y--;
-		}
-
 		int column = SZR_UR_x - SZR_LL_x;
 		int row = SZR_UR_y - SZR_LL_y;
 		//record theta when robot starts 
@@ -381,14 +372,17 @@ public class Search implements NavigationController {
 		//create boolean value stands for line detected status in left and right
 		boolean rightLineDetected = false;
 		boolean leftLineDetected = false;
+		double startingColor = rightLS.fetch();
+
 
 		//slow down the speed for correction
 		leftMotor.setSpeed(CORRECTION_SPEED);
 		rightMotor.setSpeed(CORRECTION_SPEED);
 		leftMotor.forward();
 		rightMotor.forward();
+		
 		// Move the robot until one of the sensors detects a line
-		while (!leftLineDetected && !rightLineDetected) {
+		/*while (!leftLineDetected && !rightLineDetected) {
 			// when the right light sensor detects a grid line
 			if (rightLS.fetch() < COLOR) { 
 				rightLineDetected = true;
@@ -411,6 +405,32 @@ public class Search implements NavigationController {
 				leftLineDetected = true;
 				this.stopMoving();
 			} else if (leftLineDetected && rightLS.fetch() < COLOR) {
+				rightLineDetected = true;
+				this.stopMoving();
+			}
+		}*/
+		
+		while (!leftLineDetected && !rightLineDetected ) {
+			if (Math.abs(rightLS.fetch()-startingColor) > 0.15) {
+				rightLineDetected = true;
+				// Stop the right motor
+				this.stopMoving(false, true);
+
+			} else if (Math.abs(leftLS.fetch()-startingColor) > 0.15) {
+				leftLineDetected = true;
+
+				// Stop the left motor
+				this.stopMoving(true, false);
+			}
+		}
+
+		// Keep moving the left/right motor until both lines have been detected
+		while ((!leftLineDetected || !rightLineDetected)) {
+			// If the other line detected, stop the motors
+			if (rightLineDetected && Math.abs(leftLS.fetch()-startingColor) > 0.15) {
+				leftLineDetected = true;
+				this.stopMoving();
+			} else if (leftLineDetected && Math.abs(rightLS.fetch()-startingColor) > 0.15) {
 				rightLineDetected = true;
 				this.stopMoving();
 			}
@@ -467,7 +487,6 @@ public class Search implements NavigationController {
 	public void turnUntil (double ang)
 	{
 		boolean isTurningRight = true;
-//		boolean isTurningLeft = false;
 		double angleToTurnTo = ang;
 		
 		if (ang>=360)
@@ -693,7 +712,7 @@ public class Search implements NavigationController {
 	}
 
 	public void openClaw() {
-		clawMotor.rotate(convertAngle(-60), false);
+		clawMotor.rotate(convertAngle(-70), false);
 	}
 
 }

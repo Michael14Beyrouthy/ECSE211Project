@@ -129,7 +129,53 @@ public class Navigation extends Thread{
 //		leftMotor.setSpeed(300);
 //	    rightMotor.setSpeed(300);
 	    
-	    RegularGoStraight(distance, 255); 
+	    RegularGoStraight(distance, 275); 
+	   
+	    odometer.setX(targetx*30.48);
+	    odometer.setY(targety*30.48);
+	    odometer.setTheta(theta);
+	    
+	  isNavigating = false;
+	  
+	  try {
+		Thread.sleep(350);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
+	  }
+	
+	public void newTravelTo(double targetx, double targety, int speed) {
+
+		isNavigating = true;
+		double minAng = computeAngle(targetx, targety);
+		this.turnTo(minAng);
+		
+		double deltaX = targetx*30.48 - odometer.getXYT()[0];
+	    double deltaY = targety*30.48 - odometer.getXYT()[1];
+	    double theta;
+	    double deltaTheta;
+	    double distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+		
+		if (deltaY == 0) {
+	        if (deltaX >= 0) {
+	          theta = 90;
+	        } 
+	        else {
+	          theta = -90;
+	        }
+	      }
+	    
+	      //calculate the theta that the robot should travel to 
+	    else {
+	    	theta = Math.atan2(deltaX, deltaY) * 180 / Math.PI; 
+	    }
+		
+//		leftMotor.setSpeed(300);
+//	    rightMotor.setSpeed(300);
+	    
+	    RegularGoStraight(distance, speed); 
 	   
 	    odometer.setX(targetx*30.48);
 	    odometer.setY(targety*30.48);
@@ -155,10 +201,6 @@ public class Navigation extends Thread{
 	public void localizeBeforeTunnel(double xBeforeTunnel, double yBeforeTunnel, double facingTunnelAngle)
 	{
 		this.turnUntil(facingTunnelAngle);
-		Sound.beep();
-//		this.moveBackward();
-//		correct();
-//		this.RegularGoStraight(Project2.TILE_SIZE/2);
 		
 		if ((xBeforeTunnel==0.5*30.48 && facingTunnelAngle==0) || (xBeforeTunnel==14.5*30.48 && facingTunnelAngle==180) || (yBeforeTunnel==0.5*30.48 && facingTunnelAngle==270) || (yBeforeTunnel==8.5*30.48 && facingTunnelAngle==0))
 		{
@@ -199,12 +241,12 @@ public class Navigation extends Thread{
 	 */
 	public void localizeAfterTunnel(double xAfterTunnel, double yAfterTunnel, double leavingTunnelAngle)
 	{
+		this.RegularGoStraight(sensorDist, 400);
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
-		this.RegularGoStraight(sensorDist);
 		this.moveForward();
 		correct();
-		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist);
+		this.RegularGoStraight(-Project2.TILE_SIZE/2-sensorDist, 300);
 		odometer.setXYT(xAfterTunnel, yAfterTunnel, leavingTunnelAngle);
 		
 	}
@@ -220,14 +262,19 @@ public class Navigation extends Thread{
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
 		this.turnUntil(angle+90);
-		this.RegularGoStraight(-sensorDist);
+		this.RegularGoStraight(-sensorDist, 300);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveForward();
 		correct();
-		this.RegularGoStraight(-sensorDist);
+		this.RegularGoStraight(-sensorDist, 150);
 		this.turnTo(270);
+		this.RegularGoStraight(-sensorDist, 300);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveForward();
 		correct();
-		this.RegularGoStraight(-sensorDist);
+		this.RegularGoStraight(-sensorDist, 150);
 		odometer.setXYT(LLx, LLy, angle);
 	}
 	
@@ -241,11 +288,15 @@ public class Navigation extends Thread{
 		leftMotor.setSpeed(150);
 		rightMotor.setSpeed(150);
 		this.turnUntil(90);
-		this.RegularGoStraight(-sensorDist);
+		this.RegularGoStraight(-sensorDist, 300);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveForward();
 		correct();
-		this.RegularGoStraight(-sensorDist);
+		this.RegularGoStraight(-sensorDist, 150);
 		this.turnTo(270);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 		this.moveForward();
 		correct();
 		this.RegularGoStraight(-sensorDist);
@@ -286,7 +337,6 @@ public class Navigation extends Thread{
 	public void turnUntil (double ang)
 	{
 		boolean isTurningRight = true;
-//		boolean isTurningLeft = false;
 		double angleToTurnTo = ang;
 		
 		if (ang>=360)
@@ -351,7 +401,7 @@ public class Navigation extends Thread{
 		RegularGoStraight(sensorDist+2, 175);
 		this.moveForward();
 		correct();
-		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist, 175);
+		RegularGoStraight(2.5*Project2.TILE_SIZE-sensorDist, 325);
 	}
 	
 	
@@ -406,15 +456,16 @@ public class Navigation extends Thread{
 
 			boolean rightLineDetected = false;
 			boolean leftLineDetected = false;
+			double startingColor = rightLS.fetch();
 
 			// Move the robot until one of the sensors detects a line
 			while (!leftLineDetected && !rightLineDetected ) {
-				if (rightLS.fetch() < color) {
+				if (Math.abs(rightLS.fetch()-startingColor) > 0.15) {
 					rightLineDetected = true;
 					// Stop the right motor
 					this.stopMoving(false, true);
 
-				} else if (leftLS.fetch() < color) {
+				} else if (Math.abs(leftLS.fetch()-startingColor) > 0.15) {
 					leftLineDetected = true;
 
 					// Stop the left motor
@@ -425,10 +476,10 @@ public class Navigation extends Thread{
 			// Keep moving the left/right motor until both lines have been detected
 			while ((!leftLineDetected || !rightLineDetected)) {
 				// If the other line detected, stop the motors
-				if (rightLineDetected && leftLS.fetch() < color) {
+				if (rightLineDetected && Math.abs(leftLS.fetch()-startingColor) > 0.15) {
 					leftLineDetected = true;
 					this.stopMoving();
-				} else if (leftLineDetected && rightLS.fetch() < color) {
+				} else if (leftLineDetected && Math.abs(rightLS.fetch()-startingColor) > 0.15) {
 					rightLineDetected = true;
 					this.stopMoving();
 				}

@@ -216,16 +216,16 @@ public class LightLocalizer {
 
 		boolean rightLineDetected = false;
 		boolean leftLineDetected = false;
+		double startingColor = rightLS.fetch();
 
-		//robot moving until one of the sensors detects a line 
-		//stop corresponding motor
+		// Move the robot until one of the sensors detects a line
 		while (!leftLineDetected && !rightLineDetected ) {
-			if (rightLS.fetch() < color) {
+			if (Math.abs(rightLS.fetch()-startingColor) > 0.15) {
 				rightLineDetected = true;
 				// Stop the right motor
 				this.stopMoving(false, true);
 
-			} else if (leftLS.fetch() < color) {
+			} else if (Math.abs(leftLS.fetch()-startingColor) > 0.15) {
 				leftLineDetected = true;
 
 				// Stop the left motor
@@ -236,10 +236,10 @@ public class LightLocalizer {
 		// Keep moving the left/right motor until both lines have been detected
 		while ((!leftLineDetected || !rightLineDetected)) {
 			// If the other line detected, stop the motors
-			if (rightLineDetected && leftLS.fetch() < color) {
+			if (rightLineDetected && Math.abs(leftLS.fetch()-startingColor) > 0.15) {
 				leftLineDetected = true;
 				this.stopMoving();
-			} else if (leftLineDetected && rightLS.fetch() < color) {
+			} else if (leftLineDetected && Math.abs(rightLS.fetch()-startingColor) > 0.15) {
 				rightLineDetected = true;
 				this.stopMoving();
 			}

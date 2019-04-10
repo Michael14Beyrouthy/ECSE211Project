@@ -34,7 +34,6 @@ public class Project2 {
 	private static final EV3LargeRegulatedMotor rightMotor = new EV3LargeRegulatedMotor(LocalEV3.get().getPort("D"));
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 	private static final Port usPort = LocalEV3.get().getPort("S2");
-	//private static boolean Risingorfalling = true;
 	
 	private static final Port portColourLeft = LocalEV3.get().getPort("S1");
 	private static final SensorModes myColorLeft = new EV3ColorSensor(portColourLeft);
@@ -53,7 +52,7 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static double TRACK = 14.1; // begin motion with default track (zero cans in storage area)
+	public static double TRACK = 14; // begin motion with default track (zero cans in storage area)
 	//public static final double TRACK2= 14.1; //14.3 one heavy one light
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
@@ -68,20 +67,6 @@ public class Project2 {
 	 * @throws OdometerExceptions
 	 */
 	public static void main(String[] args) throws OdometerExceptions {
-		
-	
-		WifiInfo wifi = new WifiInfo();
-		wifi.getInfo();
-
-		//Removes the wifi class messages so we can see the odometer readings
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		System.out.println("");
-		
 		
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor);
@@ -103,13 +88,28 @@ public class Project2 {
 		//Start display thread
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
-		
-		Search search = new Search(rightMotor, leftMotor,
-				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
 
 		// Create ultrasonicsensor light localizer and navigation objects
 		USLocalizer USLocalizer = new USLocalizer(odometer, leftMotor, rightMotor, usDistance);
 		LightLocalizer lightLocalizer = new LightLocalizer(odometer, leftLS, rightLS, leftMotor, rightMotor);
+		
+		WifiInfo wifi = new WifiInfo();
+		wifi.getInfo();
+		
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
+		
+		Search search = new Search(rightMotor, leftMotor,
+				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
+
+		//Removes the wifi class messages so we can see the odometer readings
+
+		
 		// start the ultrasonic localization
 	    USLocalizer.localize();
 	    // run the light localization
@@ -159,21 +159,21 @@ public class Project2 {
 				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
 				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				search.searchcans();
 				
 				try {
-					Thread.sleep(3500);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -182,7 +182,7 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
-				nav.newTravelTo(startingX, startingY);
+				nav.newTravelTo(startingX, startingY, 450);
 				nav.dropCans();
 				search.openClaw();
 				
@@ -197,29 +197,31 @@ public class Project2 {
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
 				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
 				search.searchcans();
 				
 				try {
-					Thread.sleep(3500);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				nav.localizeAfterSearching(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48);
 				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
 				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
-				nav.newTravelTo(startingX, startingY);
+				nav.newTravelTo(startingX, startingY, 450);
 			}
 		}
 		
@@ -235,21 +237,22 @@ public class Project2 {
 				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
 				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				
 				search.searchcans();
 				
 				try {
-					Thread.sleep(3500);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -259,7 +262,7 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
-				nav.newTravelTo(startingX, startingY);
+				nav.newTravelTo(startingX, startingY, 450);
 			}
 			
 			//Tunnel UR is in our start zone	
@@ -271,21 +274,21 @@ public class Project2 {
 				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
 				nav.newTravelTo(wifi.Search_LL_x, wifi.Search_LL_y);
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				nav.localizeBeforeSearchZone(wifi.Search_LL_x*30.48, wifi.Search_LL_y*30.48, 0);
 				
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				search.searchcans();
 				
 				try {
-					Thread.sleep(3500);
+					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -294,24 +297,43 @@ public class Project2 {
 				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
 				nav.traverseTunnel();
 				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
-				nav.newTravelTo(startingX, startingY);
+				nav.newTravelTo(startingX, startingY, 450);
 			}
 		}
 		
-		// Opens the claw motor to deposit the cans
-		search.openClaw();
-		
-		//drive away from cans 
-		leftMotor.setSpeed(300);
-		rightMotor.setSpeed(300);
-		leftMotor.rotate(-10);
-		rightMotor.rotate(-10);
+		nav.RegularGoStraight(14);
 		
 		Sound.beep();
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Sound.beep();
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Sound.beep();
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Sound.beep();
+		try {
+			Thread.sleep(250);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Sound.beep();
+		//odometer.setXYT(7*30.48, 1*30.48, 0);
+		//search.searchcans();
 		
 		//End process
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
