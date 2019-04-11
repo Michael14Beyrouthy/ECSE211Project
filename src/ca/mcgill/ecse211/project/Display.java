@@ -7,7 +7,7 @@ import lejos.hardware.lcd.TextLCD;
 
 /**
  * Display class, displays odometer's values (x, y, Theta)
- * @author Jamie
+ * @author Jamie McLeish
  */
 public class Display implements Runnable {
 

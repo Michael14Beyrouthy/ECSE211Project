@@ -3,6 +3,10 @@ package ca.mcgill.ecse211.odometer;
 import ca.mcgill.ecse211.project.Project2;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 
+/**
+ * Odometer class, holds and constantly updates the values of the robot's odometer
+ * @author Michael Beyrouthy
+ */
 public class Odometer extends OdometerData implements Runnable {
 
   private OdometerData odoData;
@@ -29,8 +33,6 @@ public class Odometer extends OdometerData implements Runnable {
    * @param rightMotor
    * @throws OdometerExceptions
    */
-
- 
   private Odometer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor) throws OdometerExceptions {
 
     odoData = OdometerData.getOdometerData(); // Allows access to x,y,z
@@ -55,7 +57,6 @@ public class Odometer extends OdometerData implements Runnable {
    * @return new or existing Odometer Object
    * @throws OdometerExceptions
    */
-
   public synchronized static Odometer getOdometer(EV3LargeRegulatedMotor leftMotor,
       EV3LargeRegulatedMotor rightMotor)
       throws OdometerExceptions {
@@ -132,8 +133,6 @@ public class Odometer extends OdometerData implements Runnable {
       }
     }
   }
-
-
 
   /**
    * Motor accesor

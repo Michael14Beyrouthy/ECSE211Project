@@ -6,14 +6,11 @@ import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.TextLCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.motor.UnregulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
-import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
-import lejos.utility.Delay;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import ca.mcgill.ecse211.controller.LightSensorController;
@@ -24,7 +21,7 @@ import ca.mcgill.ecse211.navigation.*;
 /**
  * Project class, instantiates the motors and sets some constants
  * Instantiates all threads and objects of other classes and runs them accordingly
- * @author michael
+ * @author Michael Beyrouthy
  * 
  */
 public class Project2 {
@@ -52,11 +49,11 @@ public class Project2 {
 
 	//Robot related parameters
 	public static final double WHEEL_RAD = 2.09;
-	public static double TRACK = 14; // begin motion with default track (zero cans in storage area)
-	//public static final double TRACK2= 14.1; //14.3 one heavy one light
+	public static double TRACK = 14; 
 	public static final double TILE_SIZE = 30.48;
 	public static final int FORWARD_SPEED = 100, ROTATE_SPEED = 150;
 	
+	//Navigation related parameters
 	public static double startingX;
 	public static double startingY;
 	
@@ -102,7 +99,6 @@ public class Project2 {
 		wifi.getInfo();
 		
 		//Removes the wifi class messages so we can see the odometer readings
-		
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
@@ -111,6 +107,8 @@ public class Project2 {
 		System.out.println("");
 		System.out.println("");
 		
+		//Creates search object after getting the info from the wifi class
+		//since it takes in the parameters instantly
 		Search search = new Search(rightMotor, leftMotor,
 				odometer,  usDistance,  leftLS,  rightLS, clawMotor, sensorMotor, TRACK);
 
@@ -118,71 +116,70 @@ public class Project2 {
 		// start the ultrasonic localization
 	    USLocalizer.localize();
 	    // run the light localization
-	    lightLocalizer.initialLocalize(wifi.Corner);
+	    lightLocalizer.initialLocalize(WifiInfo.Corner);
 		
-	    if (wifi.Corner == 0)
+	    //Depending on which corner we are in, set the starting X and Y to the points 
+	    //we need to travel back to after getting the cans
+	    if (WifiInfo.Corner == 0)
 	    {
-	    	startingX = 1;
-			startingY = 1;
+	    	startingX = 0.5;
+			startingY = 0.5;
 	    }
 	    
-	    if (wifi.Corner == 1)
+	    if (WifiInfo.Corner == 1)
 	    {
 	    	startingX = 14.5;
 			startingY = 0.5;
 	    }
 	    
-	    if (wifi.Corner == 2)
+	    if (WifiInfo.Corner == 2)
 	    {
 	    	startingX = 14.5;
 			startingY = 8.5;
 	    }
 	    
-	    if (wifi.Corner == 3)
+	    if (WifiInfo.Corner == 3)
 	    {
 	    	startingX = 0.5;
 			startingY = 8.5;
 	    }
 	    
-	    if (wifi.Search_LL_x == 0)
+	    if (WifiInfo.Search_LL_x == 0)
 	    {
-	    	Search_LL_x = wifi.Search_LL_x+1;
+	    	Search_LL_x = WifiInfo.Search_LL_x+1;
 	    }
 	    else 
 	    {
-	    	Search_LL_x = wifi.Search_LL_x;
+	    	Search_LL_x = WifiInfo.Search_LL_x;
 	    }
 	    
-	    if (wifi.Search_LL_y == 0)
+	    if (WifiInfo.Search_LL_y == 0)
 	    {
-	    	Search_LL_y = wifi.Search_LL_y+1;
+	    	Search_LL_y = WifiInfo.Search_LL_y+1;
 	    }
 	    else 
 	    {
-	    	Search_LL_y = wifi.Search_LL_y;
+	    	Search_LL_y = WifiInfo.Search_LL_y;
 	    }
 	    
-	    
-	    
-	
+	    //Navigation objects
 		Navigation nav = new Navigation(odometer, leftLS, rightLS, leftMotor, rightMotor);
 		
 		/*
 		 * The following is 4 possible conditions for our navigation, each being a combination 
 		 * of one of two tunnel orientations and one of two tunnel coordinate being in our search zone 
-		 * 
-		*/
+		 */
 		
 		//Tunnel facing X direction
-		if ((wifi.Tunnel_UR_y-wifi.Tunnel_LL_y) == 1 && (wifi.Tunnel_UR_x-wifi.Tunnel_LL_x) == 2)
+		if ((WifiInfo.Tunnel_UR_y-WifiInfo.Tunnel_LL_y) == 1 && (WifiInfo.Tunnel_UR_x-WifiInfo.Tunnel_LL_x) == 2)
 		{
 			//Tunnel LL is in our start zone	
-			if (wifi.Start_UR_x >= wifi.Tunnel_LL_x && wifi.Start_UR_y >= wifi.Tunnel_LL_y && wifi.Start_LL_x <= wifi.Tunnel_LL_x && wifi.Start_LL_y <= wifi.Tunnel_LL_y)
+			if (WifiInfo.Start_UR_x >= WifiInfo.Tunnel_LL_x && WifiInfo.Start_UR_y >= WifiInfo.Tunnel_LL_y && WifiInfo.Start_LL_x <= WifiInfo.Tunnel_LL_x && WifiInfo.Start_LL_y <= WifiInfo.Tunnel_LL_y)
 			{
-				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
+				nav.newTravelTo(WifiInfo.Tunnel_LL_x-0.5, WifiInfo.Tunnel_LL_y+0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_LL_x-0.5)*30.48, (WifiInfo.Tunnel_LL_y+0.5)*30.48, 90);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_UR_x+0.5)*30.48, (WifiInfo.Tunnel_UR_y-0.5)*30.48, 90);
 				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
@@ -204,10 +201,10 @@ public class Project2 {
 					e.printStackTrace();
 				}
 				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
-				nav.newTravelTo(wifi.Tunnel_UR_x+0.5, wifi.Tunnel_UR_y-0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
+				nav.newTravelTo(WifiInfo.Tunnel_UR_x+0.5, WifiInfo.Tunnel_UR_y-0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_UR_x+0.5)*30.48, (WifiInfo.Tunnel_UR_y-0.5)*30.48, 270);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_LL_x-0.5)*30.48, (WifiInfo.Tunnel_LL_y+0.5)*30.48, 270);
 				nav.newTravelTo(startingX, startingY, 450);
 				nav.dropCans();
 				search.openClaw();
@@ -215,12 +212,12 @@ public class Project2 {
 			}
 			
 			//Tunnel UR is in our start zone	
-			else if (wifi.Start_UR_x >= wifi.Tunnel_UR_x && wifi.Start_UR_y >= wifi.Tunnel_UR_y && wifi.Start_LL_x <= wifi.Tunnel_UR_x && wifi.Start_LL_y <= wifi.Tunnel_UR_y)
+			else if (WifiInfo.Start_UR_x >= WifiInfo.Tunnel_UR_x && WifiInfo.Start_UR_y >= WifiInfo.Tunnel_UR_y && WifiInfo.Start_LL_x <= WifiInfo.Tunnel_UR_x && WifiInfo.Start_LL_y <= WifiInfo.Tunnel_UR_y)
 			{
-				nav.newTravelTo(wifi.Tunnel_UR_x+0.5, wifi.Tunnel_UR_y-0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 270);
+				nav.newTravelTo(WifiInfo.Tunnel_UR_x+0.5, WifiInfo.Tunnel_UR_y-0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_UR_x+0.5)*30.48, (WifiInfo.Tunnel_UR_y-0.5)*30.48, 270);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 270);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_LL_x-0.5)*30.48, (WifiInfo.Tunnel_LL_y+0.5)*30.48, 270);
 				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
@@ -243,24 +240,24 @@ public class Project2 {
 					e.printStackTrace();
 				}
 				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
-				nav.newTravelTo(wifi.Tunnel_LL_x-0.5, wifi.Tunnel_LL_y+0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x-0.5)*30.48, (wifi.Tunnel_LL_y+0.5)*30.48, 90);
+				nav.newTravelTo(WifiInfo.Tunnel_LL_x-0.5, WifiInfo.Tunnel_LL_y+0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_LL_x-0.5)*30.48, (WifiInfo.Tunnel_LL_y+0.5)*30.48, 90);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_UR_x+0.5)*30.48, (wifi.Tunnel_UR_y-0.5)*30.48, 90);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_UR_x+0.5)*30.48, (WifiInfo.Tunnel_UR_y-0.5)*30.48, 90);
 				nav.newTravelTo(startingX, startingY, 450);
 			}
 		}
 		
 		//Tunnel facing Y direction
-		else if ((wifi.Tunnel_UR_x-wifi.Tunnel_LL_x) == 1 && (wifi.Tunnel_UR_y-wifi.Tunnel_LL_y) == 2)
+		else if ((WifiInfo.Tunnel_UR_x-WifiInfo.Tunnel_LL_x) == 1 && (WifiInfo.Tunnel_UR_y-WifiInfo.Tunnel_LL_y) == 2)
 		{
 			//Tunnel LL is in our start zone	
-			if (wifi.Start_UR_x >= wifi.Tunnel_LL_x && wifi.Start_UR_y >= wifi.Tunnel_LL_y && wifi.Start_LL_x <= wifi.Tunnel_LL_x && wifi.Start_LL_y <= wifi.Tunnel_LL_y)
+			if (WifiInfo.Start_UR_x >= WifiInfo.Tunnel_LL_x && WifiInfo.Start_UR_y >= WifiInfo.Tunnel_LL_y && WifiInfo.Start_LL_x <= WifiInfo.Tunnel_LL_x && WifiInfo.Start_LL_y <= WifiInfo.Tunnel_LL_y)
 			{
-				nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
+				nav.newTravelTo(WifiInfo.Tunnel_LL_x+0.5, WifiInfo.Tunnel_LL_y-0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_LL_x+0.5)*30.48, (WifiInfo.Tunnel_LL_y-0.5)*30.48, 0);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_UR_x-0.5)*30.48, (WifiInfo.Tunnel_UR_y+0.5)*30.48, 0);
 				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
@@ -284,20 +281,20 @@ public class Project2 {
 				}
 												
 				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
-				nav.newTravelTo(wifi.Tunnel_UR_x-0.5, wifi.Tunnel_UR_y+0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
+				nav.newTravelTo(WifiInfo.Tunnel_UR_x-0.5, WifiInfo.Tunnel_UR_y+0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_UR_x-0.5)*30.48, (WifiInfo.Tunnel_UR_y+0.5)*30.48, 180);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_LL_x+0.5)*30.48, (WifiInfo.Tunnel_LL_y-0.5)*30.48, 180);
 				nav.newTravelTo(startingX, startingY, 450);
 			}
 			
 			//Tunnel UR is in our start zone	
-			else if (wifi.Start_UR_x >= wifi.Tunnel_UR_x && wifi.Start_UR_y >= wifi.Tunnel_UR_y && wifi.Start_LL_x <= wifi.Tunnel_UR_x && wifi.Start_LL_y <= wifi.Tunnel_UR_y)
+			else if (WifiInfo.Start_UR_x >= WifiInfo.Tunnel_UR_x && WifiInfo.Start_UR_y >= WifiInfo.Tunnel_UR_y && WifiInfo.Start_LL_x <= WifiInfo.Tunnel_UR_x && WifiInfo.Start_LL_y <= WifiInfo.Tunnel_UR_y)
 			{
-				nav.newTravelTo(wifi.Tunnel_UR_x-0.5, wifi.Tunnel_UR_y+0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 180);
+				nav.newTravelTo(WifiInfo.Tunnel_UR_x-0.5, WifiInfo.Tunnel_UR_y+0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_UR_x-0.5)*30.48, (WifiInfo.Tunnel_UR_y+0.5)*30.48, 180);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 180);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_LL_x+0.5)*30.48, (WifiInfo.Tunnel_LL_y-0.5)*30.48, 180);
 				nav.newTravelTo(Search_LL_x, Search_LL_y);
 				try {
 					Thread.sleep(1000);
@@ -319,16 +316,19 @@ public class Project2 {
 					e.printStackTrace();
 				}
 				nav.localizeAfterSearching(Search_LL_x*30.48, Search_LL_y*30.48);
-				nav.newTravelTo(wifi.Tunnel_LL_x+0.5, wifi.Tunnel_LL_y-0.5);
-				nav.localizeBeforeTunnel((wifi.Tunnel_LL_x+0.5)*30.48, (wifi.Tunnel_LL_y-0.5)*30.48, 0);
+				nav.newTravelTo(WifiInfo.Tunnel_LL_x+0.5, WifiInfo.Tunnel_LL_y-0.5);
+				nav.localizeBeforeTunnel((WifiInfo.Tunnel_LL_x+0.5)*30.48, (WifiInfo.Tunnel_LL_y-0.5)*30.48, 0);
 				nav.traverseTunnel();
-				nav.localizeAfterTunnel((wifi.Tunnel_UR_x-0.5)*30.48, (wifi.Tunnel_UR_y+0.5)*30.48, 0);
+				nav.localizeAfterTunnel((WifiInfo.Tunnel_UR_x-0.5)*30.48, (WifiInfo.Tunnel_UR_y+0.5)*30.48, 0);
 				nav.newTravelTo(startingX, startingY, 450);
 			}
 		}
 		
+		//go straight to make sure we are in our starting corner
 		nav.RegularGoStraight(8);
 		
+		//beep 5 times to indicate the end of our run
+		//there is a little pause between each beep to make sure they are distinguishable
 		Sound.beep();
 		try {
 			Thread.sleep(250);

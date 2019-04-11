@@ -3,23 +3,24 @@ package ca.mcgill.ecse211.navigation;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.UnregulatedMotor;
 
+/**
+ * WeightIdentification class, weighs cans using an unregulated motor
+ * @author Jamie McLeish
+ *
+ */
 public class WeightIdentification {
-	
-	/**
-	 * Power for unregulated weighing motor
-	 */
+
+	//Power for unregulated weighing motor
 	private static final int MOTOR_POWER = 15;
 	
-	/**
-	 * Threshold tachomter count difference to classify cans as either heavy or light
-	 */
-	private static final int TACHO_THRESHOLD = 19;
+	//Threshold tachomter count difference to classify cans as either heavy or light
+	 private static final int TACHO_THRESHOLD = 19;
 
 	/**
 	 * Classifies a can as either heavy or light
 	 * @return 500mS for a light can, 1000mS for a heavy can
 	 */
-	public int getWeight() {
+	 public int getWeight() {
 		
 		
 		//Re-initialize the claw motor as an unregulated motor

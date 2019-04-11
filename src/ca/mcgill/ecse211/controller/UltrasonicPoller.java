@@ -13,7 +13,7 @@ import lejos.robotics.SampleProvider;
 
 /**
  * UltrasonicPoller class, periodically processes the distance from an object
- * @author Sumail
+ * @author Xiangyu Li
  *
  */
 public class UltrasonicPoller extends Thread {

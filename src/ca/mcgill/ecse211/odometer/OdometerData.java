@@ -5,39 +5,33 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class stores and provides thread safe access to the odometer data.
- * 
- * @author Rodrigo Silva
- * @author Dirk Dubois
- * @author Derek Yu
- * @author Karim El-Baba
- * @author Michael Smith
+ * @author Michael Beyrouthy
  */
-
 public class OdometerData {
 
   // Position parameters
-  private volatile double x; // x-axis position
-  private volatile double y; // y-axis position
-  private volatile double theta; // Head angle
+  private volatile double x; 
+  private volatile double y; 
+  private volatile double theta; //heading angle
 
   // Class control variables
-  private volatile static int numberOfIntances = 0; // Number of OdometerData
-                                                    // objects instantiated
-                                                    // so far
-  private static final int MAX_INSTANCES = 1; // Maximum number of
-                                              // OdometerData instances
+  private volatile static int numberOfIntances = 0; //Number of OdometerData
+                                                    //objects instantiated
+                                                    //so far
+  private static final int MAX_INSTANCES = 1; //Maximum number of
+                                              //OdometerData instances
 
   // Thread control tools
-  private static Lock lock = new ReentrantLock(true); // Fair lock for
-                                                      // concurrent writing
-  private volatile boolean isReseting = false; // Indicates if a thread is
-                                               // trying to reset any
-                                               // position parameters
-  private Condition doneReseting = lock.newCondition(); // Let other threads
-                                                        // know that a reset
-                                                        // operation is
-                                                        // over.
-
+  private static Lock lock = new ReentrantLock(true); //Fair lock for
+                                                      //concurrent writing
+  private volatile boolean isReseting = false; //Indicates if a thread is
+                                               //trying to reset any
+                                               //position parameters
+  private Condition doneReseting = lock.newCondition(); //Let other threads
+                                                        //know that a reset
+                                                        //operation is
+                                                        //over.
+  
   private static OdometerData odoData = null;
 
   /**
@@ -78,7 +72,6 @@ public class OdometerData {
    * Writes the current position and orientation of the robot onto the odoData array. odoData[0] =
    * x, odoData[1] = y; odoData[2] = theta;
    * 
-   * @param position the array to store the odometer data
    * @return the odometer data.
    */
   public double[] getXYT() {

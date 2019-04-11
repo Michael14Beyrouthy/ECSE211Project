@@ -4,35 +4,26 @@ import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.controller.NavigationController;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.project.Project2;
-import ca.mcgill.ecse211.project.UltrasonicController;
 import ca.mcgill.ecse211.project.WifiInfo;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.port.Port;
 import lejos.hardware.Sound;
-import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.RegulatedMotor;
 import lejos.robotics.SampleProvider;
-import ca.mcgill.ecse211.controller.UltrasonicPoller;
 
 /**
  * Search class, searches for cans in the search zone
- * 
- * @author Sumail
+ * @author Xiangyu Li
  *
  */
 public class Search implements NavigationController {
 	
-	/**
-	 * create a constant holding max amount of cans
-	 */
-	
+	//create a constant holding max amount of cans
 	private static final int MAXNUMBERCANS = 2;
-	/**
-	 * create all robot motors, odometer instance
-	 */
+	
+	//create all robot motors, odometer instance
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 	private EV3LargeRegulatedMotor clawMotor;
@@ -40,40 +31,39 @@ public class Search implements NavigationController {
 	private Odometer odometer;
 	private boolean isNavigating = false;
 	
-	/**
+	/*
 	 * angle status before search
 	 * distance between two front wheels 
 	 */
 	private double anglebeforesearch=0;
 	public double TRACK;
-	/**
+	
+	/*
 	 * Current position of the robot [0] = X corr (cm), [1] = Y corr (cm), [2] = theta (deg)
 	 * Instantiate ultrasonic sensor
 	 */
 	private static double currentPosition[] = new double[3];
 	private SensorModes usSensor; 
 	
-	/**
+	/*
 	 * keeps track of number of cans in storage area
 	 * keeps track of number of heavy cans
 	 */
 	private int numcans = 0; 
 	private int numheavy = 0; 
 	
-	/**
+	/*
 	 * float array for ultrasonic data
 	 * fetch samples from ultrasonic sensor
 	 */
 	private float[] usData;
 	private SampleProvider usDistance;
 	
-	/**
-	 * specific distance of x and y from x=0 and y=0
-	 */
+	//specific distance of x and y from x=0 and y=0
 	private double xcoor = 0;
 	private double ycoor = 0;
 
-	/**
+	/*
 	 * WiFi class parameters to decide the search zone
 	 * Including coordinates for lower left and upper right point
 	 * Corresponding to related paramaters fetch from WIFI GUI
@@ -83,20 +73,27 @@ public class Search implements NavigationController {
 	private int SZR_LL_x=WifiInfo.Search_LL_x; 
 	private int SZR_LL_y=WifiInfo.Search_LL_y;
 	 
-	/**
+	/*
 	 * Create instance for two light sensors 
 	 * used for correction 
 	 */
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
 
-	/**
-	 * color calibration class used for color identification 
-	 */
+	//color calibration class instance used for color identification 
 	private ColorCalibration cc;
 
 	/**
-	 * Constructor for search class
+	 * Constructor for Search class
+	 * @param rightMotor
+	 * @param leftMotor
+	 * @param odometer
+	 * @param usDistance
+	 * @param leftLS
+	 * @param rightLS
+	 * @param clawMotor
+	 * @param sensorMotor
+	 * @param track
 	 */
 	public Search(EV3LargeRegulatedMotor rightMotor, EV3LargeRegulatedMotor leftMotor, Odometer odometer,
 			SampleProvider usDistance, LightSensorController leftLS, LightSensorController rightLS,
@@ -123,7 +120,6 @@ public class Search implements NavigationController {
 
 	/**
 	 * Main method to search for cans in the search field
-	 * 
 	 */
 	public void searchcans() {
 		
@@ -312,10 +308,11 @@ public class Search implements NavigationController {
 	}
 
 	/**
-	 * This method implement catch and identify can
-	 * Upon detecting a can in the search region, approaches the can, performs color
+	 * This method implements catching and identifying a can
+	 * Upon detecting a can in the search region, it approaches the can, performs color
 	 * and weight identification then pulls the can into the storage area of the
 	 * robot
+	 * @param i
 	 */
 	public void getCan(int i) {
 
@@ -547,8 +544,8 @@ public class Search implements NavigationController {
 
 	/**
 	 * Moves robot to a certain point
-	 * @param x (cm)
-	 * @param y (cm)
+	 * @param targetx (cm)
+	 * @param targety (cm)
 	 */
 	public void RegularTravelTo(double targetx, double targety) {
 		isNavigating = true;
@@ -635,8 +632,8 @@ public class Search implements NavigationController {
 
 	/**
 	 * This method compute angle for robot need to rotate for travel
-	 * @param xvar (cm)
-	 * @param yvar (cm)
+	 * @param targetx (cm)
+	 * @param targety (cm)
 	 */
 	public double computeAngle(double targetx , double targety) {
 
@@ -670,7 +667,9 @@ public class Search implements NavigationController {
 
 	/**
 	 * This method make robot stop moving
-	 * @param boolean stopLeft and stopRight control which motors will be stopped
+	 * @param stopLeft 
+	 * @param stopRight 
+	 * parameters control which motors will be stopped
 	 */
 	public void stopMoving(boolean stopLeft, boolean stopRight) {
 		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
@@ -682,11 +681,19 @@ public class Search implements NavigationController {
 		leftMotor.endSynchronization();
 	}
 
+	/**
+	 * This method make robot stop moving
+	 */
 	public void stopMoving() {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 	}
 	
+	/**
+	 * Sets motors' speeds and moves robot forward
+	 * @param lSpd
+	 * @param rSpd
+	 */
 	public void setSpeeds(int lSpd, int rSpd) {
 		this.leftMotor.setSpeed(lSpd);
 		this.rightMotor.setSpeed(rSpd);
@@ -721,6 +728,7 @@ public class Search implements NavigationController {
 	}
 	
 	/**
+	 * Gets the distance read from the US sensor
 	 * @return the sampled distance from the ultrasonic sensor
 	 */
 	private int fetchUS() {
@@ -728,6 +736,9 @@ public class Search implements NavigationController {
 		return (int) (usData[0] * 100);
 	}
 
+	/**
+	 * Opens claw 
+	 */
 	public void openClaw() {
 		clawMotor.rotate(convertAngle(-70), false);
 	}

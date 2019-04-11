@@ -5,13 +5,13 @@ import ca.mcgill.ecse211.WiFiClient.WifiConnection;
 
 /**
  * WifiInfo class, used to connect robot to a server and pass it parameters
- * @author micha
+ * @author Michael Beyrouthy
  *
  */
 public class WifiInfo {
 /*
  * The server IP to connect to
- * During the demo and final demo, it is "192.168.2.3"
+ * During the demo and final demo, it is "192.168.2.4"
  * When we test, it is the laptop's IP assigned by the DPM router (get from network settings on laptop)
  */
  private static final String SERVER_IP = "192.168.2.4";

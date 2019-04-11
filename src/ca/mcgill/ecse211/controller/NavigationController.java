@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.controller;
 
 /**
  * NavigationController class, holds certain robot constants
- * @author Sumail
+ * @author Xiangyu Li
  */
 public interface NavigationController {
 

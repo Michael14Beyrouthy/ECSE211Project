@@ -2,7 +2,7 @@ package ca.mcgill.ecse211.project;
 
 /**
  * UltrasonicController interface, declares methods used by classes using the US sensor
- * @author Hongshuo
+ * @author Hongshuo Zhou
  */
 public interface UltrasonicController {
 

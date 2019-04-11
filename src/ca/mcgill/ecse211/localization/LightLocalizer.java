@@ -1,20 +1,14 @@
 package ca.mcgill.ecse211.localization;
 
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.SensorMode;
 import lejos.robotics.RegulatedMotor;
-import lejos.utility.Delay;
 import ca.mcgill.ecse211.odometer.*;
-import ca.mcgill.ecse211.project.*;
 import ca.mcgill.ecse211.controller.LightSensorController;
-import ca.mcgill.ecse211.navigation.*;
 
 /**
  * LightLocalizer class, performs Light Localization once US Localization is complete
- * @author Hongshuo
+ * @author Hongshuo Zhou
  *
  */
 public class LightLocalizer {
@@ -25,17 +19,17 @@ public class LightLocalizer {
 	private final static double SENSOR_LENGTH = 6.5;
 	public final double WHEEL_RAD = 2.09;
 	public final double TRACK = 14.15;
+	private double color = 0.30;
+
+	//Instances of other classes
 	private Odometer odometer;
-
-	//private static RobotController robot;
-
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
 	
-	private  static EV3LargeRegulatedMotor leftMotor;
-	private  static EV3LargeRegulatedMotor rightMotor;
+	//Motors
+	private static EV3LargeRegulatedMotor leftMotor;
+	private static EV3LargeRegulatedMotor rightMotor;
 
-	private double color = 0.30;
 	/**
 	 * Constructor for this class
 	 * @param odometer odometer of the robot (singleton)
@@ -44,7 +38,6 @@ public class LightLocalizer {
 	 */
 	public LightLocalizer(Odometer odometer, LightSensorController leftLS, LightSensorController rightLS, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor ) {
 		this.odometer = odometer;
-		//this.robot = robot;
 		this.FORWARD_SPEED = 250;
 		this.ROTATE_SPEED = 150;		
 		LightLocalizer.leftLS = leftLS;
@@ -55,6 +48,7 @@ public class LightLocalizer {
 
 	/**
 	 * Localizes the robot to the starting point using the two light sensors
+	 * @param corner
 	 */
 	public void initialLocalize(long corner) {
 
@@ -80,7 +74,8 @@ public class LightLocalizer {
 		//Sequence of three beeps 
 		Sound.twoBeeps();
 		Sound.beep();
-		//Set position for robot determine by corresponding start angle
+		
+		//Set position for robot determined by corresponding starting corner
 		if (corner == 1)
 		{
 			odometer.setXYT(14*30.48, 30.48, 270.0);
@@ -209,6 +204,7 @@ public class LightLocalizer {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 	}
+	
 	/**
 	 * corrects the orientation of the robot with line detection
 	 */

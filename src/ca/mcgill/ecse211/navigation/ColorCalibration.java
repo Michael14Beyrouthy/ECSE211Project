@@ -4,13 +4,12 @@ import java.util.Arrays;
 
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
 
 /**
  * ColorCalibration class, determines color of a can
- * @author Jamie
+ * @author Jamie McLeish
  *
  */
 public class ColorCalibration {
@@ -19,6 +18,7 @@ public class ColorCalibration {
 	private static double[] redArray = new double [10];
 	private static double[] greenArray = new double [10];
 	private static double[] blueArray = new double [10];
+	private boolean onLeftSide;
 	
 	private static double redMean, greenMean, blueMean;
 	
@@ -50,12 +50,10 @@ public class ColorCalibration {
 	final private static double YELLOW_TB = 0.298730941;
 	final private static double YELLOW_TG = 0.518506479;
 
-	
+	//sensor motor
 	private EV3MediumRegulatedMotor sensorMotor;
 	
-	private boolean onLeftSide;
-	
-	
+	//color sensor
 	private static final EV3ColorSensor colorSensor = new EV3ColorSensor(LocalEV3.get().getPort("S3"));
 	private static float[] RGBValues = new float[3]; // Stores the sample returned by the color sensor
 

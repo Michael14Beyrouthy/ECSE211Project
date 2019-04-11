@@ -1,14 +1,12 @@
 package ca.mcgill.ecse211.controller;
 
-import lejos.hardware.lcd.TextLCD;
-import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorMode;
 import lejos.hardware.sensor.SensorModes;
 
 /**
  * This class implements the light sensor controller
  * used for line detection on the board
- * @author Hongshuo
+ * @author Hongshuo Zhou
  */
 public class LightSensorController{
 	
@@ -17,7 +15,6 @@ public class LightSensorController{
 	private float[] colorValue;
 	
 	private float colorIntensity;
-	//private TextLCD lcd;
 	
 	/**
 	 * A constructor for this class

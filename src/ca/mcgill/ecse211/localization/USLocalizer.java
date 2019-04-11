@@ -1,6 +1,5 @@
 package ca.mcgill.ecse211.localization;
 
-import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.robotics.SampleProvider;
 import ca.mcgill.ecse211.odometer.*;
@@ -8,22 +7,20 @@ import ca.mcgill.ecse211.project.*;
 
 /**
  * USLocalizer class, performs US localization to correct heading
- * @author Hongshuo
+ * @author Hongshuo Zhou
  *
  */
 public class USLocalizer {
 
 
- /**
-  * Localizization speed
-  * Changes in Theta
-  *    
-  */
+  /* Localization speed
+   * Changes in Theta    
+   */
   public static int ROTATION_SPEED = 200;
   private double deltaTheta;
   private static final double TURNING_ERROR = 3.5 ;
   
-  /**
+  /*
    * Required instances for localization
    */
   private Odometer odometer;
@@ -32,7 +29,7 @@ public class USLocalizer {
   private boolean Risingorfalling;
   private SampleProvider usDistance;
 
-  /**
+  /*
    * required ultrasonic constant
    */
   private double d = 18.00;
@@ -43,7 +40,6 @@ public class USLocalizer {
    * @param odo
    * @param leftMotor
    * @param rightMotor
-   * @param localizationType
    * @param usDistance
    */
   public USLocalizer(Odometer odo, EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor,

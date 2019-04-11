@@ -2,31 +2,29 @@ package ca.mcgill.ecse211.navigation;
 import ca.mcgill.ecse211.controller.LightSensorController;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.project.*;
-import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3ColorSensor;
-import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.RegulatedMotor;
-import lejos.robotics.SampleProvider;
 
 /**
  * Navigation class, holds multiple methods to navigate the robot around the map accurately
- * @author Michael
+ * @author Michael Beyrouthy
  *
  */
 public class Navigation extends Thread{
 	
-	
+	//motors
 	public EV3LargeRegulatedMotor leftMotor;
 	public EV3LargeRegulatedMotor rightMotor;
-	Odometer odometer;	
+	
+	//odometer
+	Odometer odometer;
+	
+	//booleans and constants for methods
 	public boolean isNavigating = false;
 	public double sensorDist = 6.35; 
 	private double color = 0.30;
 
+	//instances of other classes
 	private static LightSensorController leftLS;
 	private static LightSensorController rightLS;
 	
@@ -47,10 +45,7 @@ public class Navigation extends Thread{
 		
 			//instantiate motors and sets accelerations
 		this.leftMotor = leftMotor;
-		this.rightMotor = rightMotor;
-		
-		//odometer.setXYT(0.0, 0.0, 0.0);
-		
+		this.rightMotor = rightMotor;		
 	    }
 	
 	/**
@@ -146,6 +141,12 @@ public class Navigation extends Thread{
 	  
 	  }
 	
+	/**
+	 * Moves robot towards target position at a given speed
+	 * @param targetx 
+	 * @param targety
+	 * @param speed
+	 */
 	public void newTravelTo(double targetx, double targety, int speed) {
 
 		isNavigating = true;
@@ -232,32 +233,6 @@ public class Navigation extends Thread{
 		
 		odometer.setXYT(xBeforeTunnel, yBeforeTunnel, facingTunnelAngle);
 	}
-	
-	/**
-	 * Localizes robot before entering the tunnel
-	 * @param xBeforeTunnel
-	 * @param yBeforeTunnel
-	 * @param facingTunnelAngle
-	 */
-	public void localizeBeforeTunnel2(double xBeforeTunnel, double yBeforeTunnel, double facingTunnelAngle)
-	{
-		this.turnUntil(facingTunnelAngle);
-		
-			this.turnTo(270);
-			this.RegularGoStraight(sensorDist-3);
-			
-			leftMotor.setSpeed(150);
-			rightMotor.setSpeed(150);
-			this.moveBackward();
-			correct();
-			this.RegularGoStraight(Project2.TILE_SIZE/2-sensorDist);
-
-			this.turnTo(90);
-			
-			odometer.setXYT(xBeforeTunnel, yBeforeTunnel, facingTunnelAngle);
-		
-	}
-	
 	
 	/**
 	 * Localizes the robot after exiting the tunnel
@@ -438,36 +413,36 @@ public class Navigation extends Thread{
 	 * @param distance
 	 * @return converted distance
 	 */
-	  public static int convertDistance(double radius, double distance) {
-	    return (int) ((180.0 * distance) / (Math.PI * radius));
-	  }
+	public static int convertDistance(double radius, double distance) {
+		return (int) ((180.0 * distance) / (Math.PI * radius));
+	}
 
-	  /**
-	   * Converts an angle in degrees to the corresponding wheel rotations required
-	   * @param radius
-	   * @param width
-	   * @param angle
-	   * @return converted angle
-	   */
-	  public static int convertAngle(double radius, double width, double angle) {
-	    return convertDistance(radius, Math.PI * width * angle / 360.0);
-	  }
+	/**
+	 * Converts an angle in degrees to the corresponding wheel rotations required
+	 * @param radius
+	 * @param width
+	 * @param angle
+	 *  @return converted angle
+	 */
+	public static int convertAngle(double radius, double width, double angle) {
+		return convertDistance(radius, Math.PI * width * angle / 360.0);
+	}
 	
 	  /**
 	   * Moves robot forward
 	   */
-	  public void moveForward() {
-			leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
-			leftMotor.startSynchronization();
-			leftMotor.forward();
-			rightMotor.forward();
-			leftMotor.endSynchronization();
-		}
+	public void moveForward() {
+		leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
+		leftMotor.startSynchronization();
+		leftMotor.forward();
+		rightMotor.forward();
+		leftMotor.endSynchronization();
+	}
 	  
 	  /**
 	   * Moves robot backward
 	   */
-	  public void moveBackward() {
+	public void moveBackward() {
 			leftMotor.synchronizeWith(new RegulatedMotor[] { rightMotor });
 			leftMotor.startSynchronization();
 			leftMotor.backward();
@@ -530,8 +505,6 @@ public class Navigation extends Thread{
 	  
 	  /**
 	   * Stops the robot
-	   * @param stopLeft
-	   * @param stopRight
 	   */
 	  public void stopMoving() {
 		  leftMotor.stop(true);
